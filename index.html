@@ -1,0 +1,225 @@
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Search and Score</title>
+    <link rel="stylesheet" href="timer.css" />
+  </head>
+  <body>
+    <div class="title-css">Search and Score</div>
+    <div class="minLength-css">
+      <label for="minLength" id="minLengthText">Minimum Word Length:</label>
+      <input
+        type="range"
+        id="minLength"
+        min="3"
+        max="6"
+        value="3"
+        step="1"
+        onchange="updateMinLength()"
+      />
+      <span id="minLengthValue">3</span>
+    </div>
+    <div id="input" class="input-css">
+      <span id="prev"></span> <span id="curLetter"></span>
+      <input type="text" id="searchQuery" placeholder="Enter your phrase" />
+    </div>
+    <div id="random" class="random-css">
+      <span id="generateRandom"></span>
+    </div>
+    <div class="button-css">
+      <button id="startButton" onclick="start()">Start</button>
+      <button id="resetButton" onclick="reset()">Reset</button>
+    </div>
+
+    <div id="resultCount"></div>
+    <div id="timer">
+      Time Remaining: <span id="timerValue">60</span> seconds
+    </div>
+    <div id="score">Score: <span id="scoreValue">0</span></div>
+    <div id="maxscore">High Score: <span id="maxScoreValue">0</span></div>
+
+    <ul id="list"></ul>
+    <div class="hover-css">
+      Help?
+      <div class="tooltip">
+        Keep the chain going by creating a valid word that starts with the given
+        letter. Earn points based on the search results for your phrase, and
+        race against the clock to maximize your score!
+      </div>
+    </div>
+    <script>
+      const apiKey = "AIzaSyBZpVCZKwRmfBNuZJjRQuBhEc2h68DYrso";
+      const cx = "450f8832fcce44a27";
+      let score = 0;
+      let prev = "";
+      let curLetter = "";
+      let nextLetter = "";
+      let timerValue = 60;
+      let timerInterval;
+      let minWordLength = parseInt(
+        document.getElementById("minLength").value,
+        10
+      );
+
+      let minWordLengthValue = parseInt(
+        document.getElementById("minLengthValue").value,
+        10
+      );
+      async function getSearchResults(query) {
+        const addQuery =
+          document.getElementById("prev").textContent +
+          " " +
+          document.getElementById("curLetter").textContent +
+          query;
+        const quotedQuery = `"${addQuery}"`;
+        const url = `https://www.googleapis.com/customsearch/v1?key=${apiKey}&cx=${cx}&q=${quotedQuery}`;
+
+        try {
+          const response = await fetch(url);
+          const data = await response.json();
+          const totalResults = data.searchInformation.totalResults;
+          score += parseInt(totalResults);
+          document.getElementById("scoreValue").textContent = score;
+          document.getElementById(
+            "resultCount"
+          ).textContent = `About ${totalResults} results for "${addQuery}"`;
+
+          const listItem = document.createElement("li");
+          listItem.textContent = addQuery + " - Results: " + totalResults;
+          document.getElementById("list").appendChild(listItem);
+        } catch (error) {
+          console.error("Error fetching search results:", error);
+          document.getElementById("resultCount").textContent =
+            "Failed to retrieve results.";
+        }
+      }
+
+      async function handleSearch() {
+        const query = document.getElementById("searchQuery").value;
+        if (query.length < minWordLength - 1) {
+          alert(
+            "Word is too short! Must be at least " + minWordLength + " letters."
+          );
+          return;
+        }
+        if (query.split(" ").length > 1) {
+          alert("Please enter only one word.");
+          return;
+        }
+        if (query.trim()) {
+          await getSearchResults(query);
+          prev = curLetter + query;
+          curLetter = nextLetter;
+          document.getElementById("prev").textContent = prev;
+          document.getElementById("curLetter").textContent = curLetter;
+          nextLetter = generateRandom();
+          document.getElementById("searchQuery").value = "";
+          document.getElementById("generateRandom").textContent =
+            "Next Letter: " + nextLetter;
+        } else {
+          alert("Please enter a search term.");
+        }
+      }
+      function start() {
+        startTimer();
+      }
+      function reset() {
+        if (
+          score > parseInt(document.getElementById("maxScoreValue").textContent)
+        ) {
+          document.getElementById("maxScoreValue").textContent = score;
+        }
+        score = 0;
+        document.getElementById("scoreValue").textContent = score;
+        document.getElementById("resultCount").textContent = "";
+        document.getElementById("searchQuery").value = "";
+        clearInterval(timerInterval);
+        timerValue = 60;
+        document.getElementById("timerValue").textContent = timerValue;
+        updatePrev();
+        document.getElementById("list").innerHTML = "";
+        document.getElementById("searchQuery").disabled = true;
+        document.getElementById("searchQuery").style.backgroundColor =
+          "#f0f0f0";
+        document.querySelector('button[onclick="start()"]').disabled = false;
+        document.querySelector(
+          'button[onclick="start()"]'
+        ).style.backgroundColor = "";
+        document.getElementById("minLength").disabled = false;
+      }
+
+      function generateRandom() {
+        const letters =
+          "aaaaaaaabbccccddddeeeeeeeeeeeffggghhhiiiiiiiiijkllllllmmmnnnnnnnnooooooopppqrrrrrrrrssssssssstttttttuuuuvwxyyz";
+        return letters[Math.floor(Math.random() * letters.length)];
+      }
+
+      function updatePrev() {
+        curLetter = generateRandom();
+        prevText = "apple";
+        nextLetter = generateRandom();
+        document.getElementById("prev").textContent = prevText;
+        document.getElementById("curLetter").textContent = curLetter;
+        document.getElementById("generateRandom").textContent =
+          "Next Letter: " + nextLetter;
+      }
+
+      function startTimer() {
+        timerInterval = setInterval(() => {
+          if (timerValue > 0) {
+            timerValue--;
+            document.getElementById("searchQuery").disabled = false;
+            document.getElementById("searchQuery").style.backgroundColor = "#";
+            document.getElementById("timerValue").textContent = timerValue;
+            document.getElementById("searchQuery").focus();
+            document.querySelector('button[onclick="start()"]').disabled = true;
+            document.getElementById("minLength").disabled = true;
+            document.querySelector(
+              'button[onclick="start()"]'
+            ).style.backgroundColor = "#f0f0f0";
+          } else {
+            clearInterval(timerInterval);
+            alert(`Time's up! Final Score: ${score}`);
+            if (
+              score >
+              parseInt(document.getElementById("maxScoreValue").textContent)
+            ) {
+              document.getElementById("maxScoreValue").textContent = score;
+            }
+            document.getElementById("searchQuery").disabled = true;
+            document.getElementById("searchQuery").style.backgroundColor =
+              "#f0f0f0";
+          }
+        }, 1000);
+      }
+
+      function updateMinLength() {
+        let value = parseInt(document.getElementById("minLength").value, 10);
+
+        if (value < 3) {
+          value = 3;
+        } else if (value > 6) {
+          value = 6;
+        }
+
+        minWordLength = value;
+        document.getElementById("minLength").value = minWordLength;
+        document.getElementById("minLengthValue").textContent = minWordLength;
+      }
+      window.onload = () => {
+        updatePrev();
+        document.getElementById("searchQuery").disabled = true;
+        document.getElementById("searchQuery").style.backgroundColor =
+          "#f0f0f0";
+        const searchBox = document.getElementById("searchQuery");
+
+        searchBox.addEventListener("keydown", (event) => {
+          if (event.key === "Enter") {
+            handleSearch();
+          }
+        });
+      };
+    </script>
+  </body>
+</html>

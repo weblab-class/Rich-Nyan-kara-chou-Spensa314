@@ -1,0 +1,174 @@
+body {
+  background: url("https://www.transparenttextures.com/patterns/cubes.png");
+  background-color: #f9f9f9;
+}
+
+.title-css {
+  font-size: 36px;
+  font-weight: bold;
+  text-align: center;
+  margin: 20px auto;
+  padding: 10px 20px;
+  color: #333;
+  background-color: #f0f8ff;
+  border: 2px solid #007bff;
+  border-radius: 10px;
+  width: fit-content;
+  flex: 1;
+}
+
+.minLength-css {
+  font-size: 20px;
+  font-weight: bold;
+  text-align: center;
+  margin: 20px auto;
+  padding: 10px 20px;
+  color: #333;
+  background-color: #e1bbfa;
+  border: 2px solid #8b1cf3;
+  border-radius: 10px;
+  width: fit-content;
+}
+.title-css:hover {
+  background-color: #b7daf8;
+}
+.minLength-css:hover {
+  background-color: #ca98f5;
+}
+
+.input-css {
+  font-size: 24px;
+  font-weight: 300;
+  text-align: center;
+}
+
+#curLetter {
+  margin-right: 0px;
+}
+#searchQuery {
+  margin-left: 0px;
+  padding: 10px;
+  font-size: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  width: 200px;
+}
+
+.random-css {
+  font-size: 24px;
+  font-weight: 300;
+  text-align: center;
+  margin: 10px 0;
+}
+.button-css {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+button {
+  text-align: center;
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+#startButton {
+  background-color: #4bb64e;
+}
+#startButton:hover {
+  background-color: #176019;
+}
+
+#resetButton {
+  background-color: #d54d4d;
+}
+#resetButton:hover {
+  background-color: #821818;
+}
+
+#resultCount,
+#timer,
+#score,
+#maxscore {
+  text-align: center;
+  margin: 10px 0;
+  font-size: 18px;
+}
+#resultCount {
+  min-height: 20px;
+}
+
+#timer span,
+#score span,
+#maxscore span {
+  font-weight: bold;
+}
+
+#list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.6;
+  height: 300px;
+  overflow-y: auto;
+  padding: 0;
+  margin: 0;
+  list-style-type: none;
+}
+
+#list li {
+  background-color: #f4f4f4;
+  padding: 10px;
+  margin: 5px 0;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease;
+  text-align: center;
+}
+
+#list li:hover {
+  background-color: #e0e0e0;
+  cursor: pointer;
+}
+
+#minLengthText {
+  margin: 10px 0;
+  font-size: 18px;
+}
+
+.hover-css {
+  display: inline-block;
+  padding: 10px;
+  background-color: #474747;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+  position: relative;
+}
+
+.tooltip {
+  visibility: hidden;
+  width: 200px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 5px;
+  padding: 10px;
+  position: absolute;
+  z-index: 1;
+  bottom: -50px;
+  left: 0;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.hover-css:hover .tooltip {
+  visibility: visible;
+  opacity: 1;
+}
