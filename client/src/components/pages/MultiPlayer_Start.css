@@ -1,0 +1,392 @@
+.multiplayer-container {
+    height: 100vh;
+    width: 100vw;
+    background-color: var(--light--brown);
+    box-shadow: inset 0 0 var(--xs) rgba(0, 0, 0, 0.3); /* Adjust as needed */
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.mp-settings-container {
+    position: absolute;
+    top: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.mp-settings-button {
+    background-color: #5e433f; /* Dark brown */
+    color: #ffffff;
+    padding: 10px 20px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 30px;
+    font-weight: bold;
+    border: none;
+    text-transform: uppercase;
+}
+.mp-settings-button:hover {
+    transform: scale(1.05);
+}
+.mp-start-container {
+    position: absolute;
+    top: 30%;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.mp-start-button {
+    background-color: #f5e3c9;
+    color: #5e433f;
+    font-size: 60px;
+    font-weight: bold;
+    padding: 20px 60px;
+    border-radius: 50px;
+    cursor: pointer;
+    border: none;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s;
+}
+
+.mp-start-button:hover {
+    transform: scale(1.05);
+}
+
+.mp-players-container {
+    position: relative;
+    margin-top: 10%;
+    text-align: center;
+}
+
+.mp-players-title {
+    font-size: 40px;
+    font-weight: bold;
+    color: #ffffff;
+    margin-bottom: 5%;
+    text-align: center;
+    width: 100%;
+}
+
+.mp-players-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 40px;
+}
+
+.mp-players-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 150px;
+    text-align: center;
+}
+
+.mp-player-logo {
+    height: 100px;
+    object-fit: contain;
+    border-radius: 50%;
+}
+
+.mp-player-name {
+    font-size: 24px;
+    font-weight: bold;
+    color: #5e433f;
+    margin-top: 10px;
+    text-align: center;
+}
+
+
+.mp-room-code-container {
+    position: absolute;
+    margin-top: 20px;
+    top: 85%;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.mp-room-code {
+    font-size: 30px;
+    font-weight: bold;
+    color: #5e433f;
+    background-color: #f5e3c9;
+    padding: 10px 20px;
+    border-radius: 15px;
+    display: inline-block;
+}
+.mp-settings-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.mp-settings-modal-content {
+    background-color: #392a2a;
+    padding: 50px;
+    border-radius: 10px;
+    width: 500px;
+    text-align: center;
+}
+
+.mp-settings-modal-close {
+    font-size: 18px;
+    color: #5e433f;
+    cursor: pointer;
+    margin-bottom: 20px;
+    padding: 10px 20px;
+    background-color: #ffffff;
+    border: 2px solid #5e433f;
+    border-radius: 5px;
+    text-align: center; 
+    transition: all 0.3s ease; 
+}
+
+.mp-settings-modal-close:hover {
+    background-color: #5e433f;
+    color: #ffffff; 
+    border-color: #5e433f; 
+}
+
+.mp-settings-modal-minLetters {
+    display: flex;
+    gap: 20px; 
+    align-items: center; 
+    justify-content: space-between; 
+    width: 100%; 
+}
+
+.mp-settings-modal-minLetters-title {
+    flex: 4;
+    text-align: left;
+    font-size: 24px;
+    color: #ffffff;
+}
+
+.mp-settings-modal-minLetters-slider {
+    flex: 6;
+    align-items: center;
+    justify-content: space-between;
+    margin: 0 auto;
+    background-color: #392a2a;
+    border-radius: 30px;
+    height: 10px;
+    position: relative;
+}
+
+input[type="range"] {
+    -webkit-appearance: none; /* Remove default browser styling */
+    appearance: none;
+    width: 100%; /* Full width */
+    height: 10px; /* Height of the track */
+    background: #5e433f; /* Track background color */
+    border-radius: 10px; /* Rounded track edges */
+    outline: none; /* Remove outline */
+}
+
+/* Track Styling (Webkit browsers like Chrome, Safari) */
+input[type="range"]::-webkit-slider-runnable-track {
+    background: #5e433f; /* Track background color */
+    border-radius: 10px;
+    height: 10px;
+}
+
+/* Thumb Styling (Webkit browsers like Chrome, Safari) */
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none; /* Remove default browser styling */
+    appearance: none;
+    width: 20px; /* Thumb width */
+    height: 20px; /* Thumb height */
+    background: #ffffff; /* Thumb color */
+    border-radius: 50%; /* Circular thumb */
+    cursor: pointer; /* Pointer cursor */
+    position: relative;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2); /* Shadow for aesthetics */
+    transform: translateY(-5px);
+}
+
+/* Track Styling (Mozilla browsers like Firefox) */
+input[type="range"]::-moz-range-track {
+    background: #5e433f; /* Track background color */
+    border-radius: 10px;
+    height: 10px;
+}
+
+/* Thumb Styling (Mozilla browsers like Firefox) */
+input[type="range"]::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    background: #ffffff; /* Thumb color */
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2); /* Shadow for aesthetics */
+    transform: translateY(-5px);
+}
+
+/* Track Styling (Microsoft Edge and IE) */
+input[type="range"]::-ms-track {
+    background: transparent; /* IE requires transparent track */
+    border-color: transparent;
+    color: transparent;
+    width: 100%;
+    height: 10px;
+}
+
+input[type="range"]::-ms-fill-lower {
+    background: #5e433f; /* Track background color */
+    border-radius: 10px;
+}
+
+input[type="range"]::-ms-fill-upper {
+    background: #5e433f; /* Track background color */
+    border-radius: 10px;
+}
+
+/* Thumb Styling (Microsoft Edge and IE) */
+input[type="range"]::-ms-thumb {
+    width: 20px;
+    height: 20px;
+    background: #ffffff; /* Thumb color */
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2); /* Shadow for aesthetics */
+}
+
+.mp-settings-modal-minLetters-value {
+    flex: 1;
+    font-size: 24px;
+    color: #ffffff;
+    text-align: right;
+}
+
+.mp-settings-modal-time {
+    margin-top: 20px;
+    display: flex;
+    gap: 20px; 
+    align-items: center;
+}
+
+.mp-settings-modal-time-title {
+    display: flex;
+    font-size: 24px;
+    width: 100%;
+    color: #ffffff;
+}
+
+.mp-settings-modal-time-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.mp-settings-modal-time-buttons div {
+    font-size: 24px;
+    color: #5e433f;
+    cursor: pointer;
+    padding: 10px 20px;
+    background-color: transparent;
+    border: 2px solid #5e433f;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+
+.mp-settings-modal-time-buttons div.active {
+    background-color: #ffffff; 
+    color: #5e433f; 
+    border-color: #5e433f; 
+}
+
+.mp-settings-modal-hideLetter,
+.mp-settings-modal-hardMode {
+    margin: 20px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #ffffff;
+    font-size: 24px;
+}
+
+.mp-switch {
+    position: relative;
+    display: inline-block;
+    width: 34px;
+    height: 20px;
+}
+
+.mp-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+.mp-settings-modal-hideLetter,
+.mp-settings-modal-hardMode {
+    margin: 20px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #ffffff;
+    font-size: 24px;
+}
+
+.mp-switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+}
+
+.mp-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.mp-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: 0.4s;
+    border-radius: 34px;
+}
+
+.mp-slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    border-radius: 50%;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: 0.4s;
+}
+
+input:checked + .mp-slider {
+    background-color: #5e433f; 
+}
+
+input:checked + .mp-slider:before {
+    transform: translateX(26px);
+}
+
+.mp-settings-modal-hideLetter,
+.mp-settings-modal-hardMode {
+    margin: 20px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #ffffff;
+    font-size: 24px;
+}

@@ -14,18 +14,21 @@ const Home = () => {
     setIsModalOpen(true);
   };
   const onSingleplayerClick = () => {
-    navigate("/singleplayer-start-page");
+    navigate(`/solo`);
   };
   const onExitClick = () => {
     setIsModalOpen(false);
   };
 
   const onCreateRoomClick = () => {
-    navigate("/multiplayer-start-page");
+    const newRoomCode = Math.floor(Math.random() * 10000).toString();
+    setRoomCode(newRoomCode);
+    console.log(newRoomCode);
+    navigate(`/${newRoomCode}`);
   };
 
   const onJoinRoomClick = () => {
-    /* pass in id and navigate to multiplayer start page with id*/
+    navigate(`/${roomCode}`);
   };
 
   return (
