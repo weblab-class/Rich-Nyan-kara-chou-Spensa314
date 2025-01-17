@@ -24,13 +24,16 @@
   --beige: #fae0cf;
   --brown: #7f5539;
   --dark--brown: #4a260f;
+  --dull--dark--brown: #5c3c27;
   --gold: #e4aa20;
 
   --xxs: 0.5vw;
   --xs: 1vw;
+  --xss: 1.5vw;
   --s: 2vw;
   --sm: 3vw;
   --m: 4vw;
+  --ml: 5vw;
   --l: 6vw;
   --xl: 8vw;
 }
