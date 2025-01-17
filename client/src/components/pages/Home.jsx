@@ -8,6 +8,7 @@ import "./Home.css";
 const Home = () => {
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [roomCode, setRoomCode] = useState(""); // Define roomCode state
 
   const onMultiplayerClick = () => {
     setIsModalOpen(true);
@@ -47,8 +48,19 @@ const Home = () => {
                 X
               </div>
 
-              <div onClick={onJoinRoomClick} className="room-button">
-                Join
+              <div className="join-room-container">
+                <input
+                  type="text"
+                  id="roomCode"
+                  className="room-code"
+                  value={roomCode}
+                  onChange={(e) => setRoomCode(e.target.value)}
+                  placeholder="Room Code"
+                />
+
+                <div onClick={onJoinRoomClick} className="room-button join-room-button">
+                  Join
+                </div>
               </div>
               <div onClick={onCreateRoomClick} className="room-button create-room-button">
                 Create Room

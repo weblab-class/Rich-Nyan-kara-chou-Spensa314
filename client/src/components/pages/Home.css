@@ -59,6 +59,12 @@
   box-shadow: 0 0 var(--xs) rgba(0, 0, 0, 0.3);
   width: 30vw; /* Set the width of the modal */
   height: 30vw;
+  display: flex;
+  flex-direction: column; /* Change to column to stack elements vertically */
+  justify-content: center;
+
+  align-items: center; /* Center elements horizontally */
+  position: relative; /* To position the close button */
 }
 
 .room-button {
@@ -72,14 +78,59 @@
 
 .close-button {
   font-size: var(--s);
+  position: absolute;
+  top: var(--xxs);
+  right: var(--xs);
+  color: var(--dark--brown);
 }
 
-.room-code-container {
+.join-room-container {
+  display: flex;
+  flex-direction: row; /* Change to column to stack elements vertically */
+  align-items: center; /* Center elements horizontally */
+  position: relative; /* To position the close button */
+}
+
+.room-code {
+  width: 12vw;
+  padding: var(--xxs);
+  font-size: var(--s);
+  border: none;
+  border-radius: var(--xxs);
   background-color: var(--dark--brown);
+  color: var(--light--brown);
+  font-family: inherit;
+  box-shadow: 0 0 var(--xxs) rgba(0, 0, 0, 0.5);
+  opacity: 0.6;
+  margin-right: var(--xs);
+}
+
+.room-code:focus {
+  outline: none; /* Removes the default focus outline */
+  border: none; /* Ensure no border appears on focus */
+  opacity: 1;
+}
+
+.room-code::placeholder {
+  color: var(--light--brown); /* Change placeholder color to your desired value */
+  opacity: 0.6; /* Ensure the placeholder is not faded (opacity is usually less than 1) */
+}
+
+.join-room-button {
+  background-color: var(--beige);
+  padding: var(--xxs);
+  color: var(--brown);
+  font-size: var(--s);
+  border-radius: var(--xxs);
+  box-shadow: 0 0 var(--xxs) rgba(0, 0, 0, 0.5);
 }
 
 .create-room-button {
-  background-color: var(--dull--beige);
-  color: var(--light--brown);
+  background-color: var(--beige);
+  color: var(--brown);
   font-size: var(--sm);
+  border-radius: var(--xxs);
+  box-shadow: 0 0 var(--xxs) rgba(0, 0, 0, 0.5);
+  margin-top: var(--s);
+  padding: var(--xs);
 }
