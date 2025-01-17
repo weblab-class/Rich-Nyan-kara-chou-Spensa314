@@ -1,0 +1,43 @@
+.navbar-container {
+  background-color: var(--light--brown);
+
+  padding: var(--xxs);
+  display: flex;
+  justify-content: space-between;
+  align-items: center; /* Ensure vertical alignment */
+}
+
+.navbar-link {
+  cursor: pointer;
+  transition: transform 0.2s ease, opacity 0.2s ease; /* Smooth transition */
+}
+
+.navbar-link:hover {
+  opacity: 0.65; /* Slight transparency when hovered */
+}
+
+.navigate-home-container {
+  margin-left: var(--xs);
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  height: var(--s);
+  width: var(--s);
+}
+
+.title-text {
+  color: var(--beige);
+  margin-left: var(--xs);
+  font-size: var(--s);
+  text-decoration: none;
+}
+
+.logout {
+  height: var(--s);
+  width: var(--s);
+  margin-right: var(--xs);
+  display: flex;
+  align-items: center;
+}

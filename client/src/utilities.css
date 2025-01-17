@@ -4,38 +4,45 @@
 * and can be used to add general styles; variable definitions
 * for colors; and styles to html, body, and other high level
 * DOMs.
-* 
+*
 * All utility classes start with a `u-` and all do
 * one basic CSS thing (for example, making the font-weight
 * 600 for bolding) or are super generic.
-* 
+*
 * This is 𝙉𝙊𝙏 the place to define classes for components or
 * do rigorous styling. You shoud not need to change this file
 * much after initial creation.
 */
 
 /* TODO: REPLACE WITH YOUR OWN FONT! */
-@import url("https://fonts.googleapis.com/css?family=Roboto&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Paytone+One&display=swap");
 
 :root {
-  --primary: #396dff;
-  --primary--dim: #6987db;
-  --darkgrey: #d4d4d4;
-  --medgrey: #e0e0e0;
-  --grey: #f7f7f7;
+  --light--brown: #b08968;
   --white: #fff;
+  --dull--beige: #ede0d4;
+  --beige: #fae0cf;
+  --brown: #7f5539;
+  --dark--brown: #4a260f;
+  --gold: #e4aa20;
 
-  --xs: 4px;
-  --s: 8px;
-  --m: 16px;
-  --l: 24px;
+  --xxs: 0.5vw;
+  --xs: 1vw;
+  --s: 2vw;
+  --sm: 3vw;
+  --m: 4vw;
+  --l: 6vw;
+  --xl: 8vw;
 }
 
 body {
   margin: 0;
   padding: 0;
-  font-family: "Roboto", sans-serif;
-  font-weight: 300;
+  font-family: "Paytone One", sans-serif;
+  font-weight: normal;
+  overflow: hidden;
+  font-style: normal;
+  text-shadow: 0 0 0.4vw rgba(0, 0, 0, 0.5); /* Horizontal, Vertical, Blur radius, Color */
 }
 
 form {
@@ -80,11 +87,11 @@ form {
 }
 
 .u-link {
-  color: var(--primary);
+  color: var(--primary); /*would need to adjust if using*/
   text-decoration: none;
   cursor: pointer;
 }
 
 .u-link:hover {
-  color: var(--primary--dim);
+  color: var(--primary--dim); /*would need to adjust if using*/
 }

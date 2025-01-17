@@ -1,0 +1,115 @@
+.login-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100vw;
+  padding: 0 var(--xs); /* Add padding for responsiveness */
+
+  background-color: var(--light--brown);
+
+  border: var(--xs) solid var(--beige); /* **Added Border** */
+  box-sizing: border-box; /* Ensures padding and border don't affect the layout */
+
+  box-shadow: inset 0 0 var(--xs) rgba(0, 0, 0, 0.3); /* Adjust as needed */
+}
+
+/* Styling for the title container */
+.title-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  align-items: center;
+  flex-grow: 1;
+}
+
+/* Individual styles for 'Chain' */
+.chain {
+  margin: var(--s);
+  width: 50vw;
+  padding: var(--xs);
+
+  background-color: var(--brown);
+  border: var(--xxs) solid var(--dull--beige); /* **Added Border** */
+  box-sizing: border-box; /* Ensures padding and border don't affect the layout */
+  box-shadow: 0 0 var(--xxs) rgba(0, 0, 0, 0.25); /* Horizontal, vertical, blur radius, shadow color */
+  border-radius: var(--s); /* Adjust the radius value as needed */
+
+  display: flex;
+  align-items: center; /* Vertically centers the text */
+  justify-content: center; /* Centers the content horizontally */
+  position: relative; /* Allows absolute positioning of the logo */
+}
+
+.logo-login {
+  height: var(--m);
+  width: var(--m);
+  position: absolute;
+  left: var(--s);
+}
+
+.chain-text {
+  font-size: var(--l); /* Larger size for 'Chain' */
+  font-weight: normal;
+  color: var(--dull--beige); /* Dark color for 'Chain' */
+}
+
+/* Individual styles for 'Reaction' */
+.reaction {
+  font-size: var(--l); /* Smaller size for 'Reaction' */
+  font-weight: normal;
+
+  color: var(--beige); /* Red color for 'Reaction' */
+  margin: 0;
+
+  overflow: hidden; /* Ensures the content is not revealed until the animation */
+  border-right: 0.25vw solid var(--beige); /* The typewriter cursor */
+  white-space: nowrap; /* Keeps the content on a single line */
+  animation: typeEraseLoop 6s steps(15) infinite, blink-caret 1s steps(1) infinite;
+}
+
+/* The typing effect */
+@keyframes typeEraseLoop {
+  0% {
+    clip-path: inset(0 100% 0 0);
+  }
+  15% {
+    clip-path: inset(0 0 0 0);
+  }
+  65% {
+    clip-path: inset(0 0 0 0);
+  }
+  80% {
+    clip-path: inset(0 100% 0 0);
+  }
+  100% {
+    clip-path: inset(0 100% 0 0);
+  }
+}
+
+/* The typewriter cursor effect */
+@keyframes blink-caret {
+  0%,
+  100% {
+    border-color: transparent;
+  }
+  50% {
+    border-color: var(--beige);
+  }
+}
+
+.reaction-line {
+  width: 50vw; /* Adjust this width to your preference */
+  border: none;
+  border-top: var(--xxs) solid var(--dark--brown); /* Make the line using a border */
+  margin: 0 auto; /* Center the line */
+  border-radius: var(--s); /* Adjust the radius value as needed */
+}
+
+/* Style for the Google login container */
+.google-login-container {
+  margin-top: auto; /* Pushes the Google login button to the bottom */
+  padding-bottom: var(--s);
+}
