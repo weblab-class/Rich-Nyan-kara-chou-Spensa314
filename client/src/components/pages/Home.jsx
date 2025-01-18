@@ -14,7 +14,7 @@ const Home = () => {
     setIsModalOpen(true);
   };
   const onSingleplayerClick = () => {
-    navigate(`/solo`);
+    navigate(`/room/solo`);
   };
   const onExitClick = () => {
     setIsModalOpen(false);
