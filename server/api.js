@@ -34,7 +34,6 @@ router.post("/initsocket", (req, res) => {
   res.send({});
 });
 
-
 // Route: Check game status
 router.get("/game/status/:roomCode", (req, res) => {
   const roomCode = req.params.roomCode;
@@ -53,7 +52,7 @@ router.get("/game/status/:roomCode", (req, res) => {
       }
       game.state = "waiting";
       console.log(`Game ${roomCode} is in waiting state.`);
-      
+
       // Start a timer to transition to "started"
       setTimeout(() => {
         game.state = "started";
@@ -68,10 +67,10 @@ router.get("/game/status/:roomCode", (req, res) => {
       }
     }
 
-    res.status(200).send({ 
-      roomCode, 
-      state: game.state, 
-      started: game.state === "started" 
+    res.status(200).send({
+      roomCode,
+      state: game.state,
+      started: game.state === "started",
     });
   } catch (err) {
     console.error(`Error in /game/status/${roomCode}:`, err.message);
@@ -79,7 +78,7 @@ router.get("/game/status/:roomCode", (req, res) => {
   }
 });
 
-// Route: Start game 
+// Route: Start game
 // TODO: auth.ensureLoggedIn
 router.post("/startGame", (req, res) => {
   try {
@@ -98,13 +97,12 @@ router.post("/startGame", (req, res) => {
     console.error("Error in /startGame route:", err.message);
 
     // Send a clear error response to the client
-    res.status(500).send({ 
-      msg: "Internal Server Error", 
-      error: err.message 
+    res.status(500).send({
+      msg: "Internal Server Error",
+      error: err.message,
     });
   }
 });
-
 
 // Route: Search
 router.get("/search", async (req, res) => {
@@ -114,7 +112,7 @@ router.get("/search", async (req, res) => {
   }
 
   const quotedQuery = `"${query}"`;
-  
+
   const url = `https://www.googleapis.com/customsearch/v1?key=${apiKey}&cx=${cx}&q=${quotedQuery}`;
   console.log(url);
   try {
