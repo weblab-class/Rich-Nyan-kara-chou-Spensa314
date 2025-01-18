@@ -9,6 +9,7 @@ import SinglePlayer_Start from "./components/pages/SinglePlayer_Start";
 import Leaderboard from "./components/pages/Leaderboard";
 import MultiPlayer_Game from "./components/pages/MultiPlayer_Game";
 import SinglePlayer_Game from "./components/pages/SinglePlayer_Game";
+import SinglePlayer_Score_Summary from "./components/pages/SinglePlayer_Score_Summary";
 
 import {
   createBrowserRouter,
@@ -33,6 +34,7 @@ const router = createBrowserRouter(
       <Route path="/room/solo" element={<SinglePlayer_Start />} />
       <Route path="/game/:roomCode" element={<MultiPlayer_Game />} />
       <Route path="/game/solo" element={<SinglePlayer_Game />} />
+      <Route path="/soloscore" element={<SinglePlayer_Score_Summary />} />
     </Route>
   )
 );

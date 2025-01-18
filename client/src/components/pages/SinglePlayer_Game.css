@@ -1,147 +1,200 @@
 /* General Container */
 .game-container {
-    height: 100vh;
-    width: 100vw;
-    background-color: var(--light--brown);
-    box-shadow: inset 0 0 var(--xs) rgba(0, 0, 0, 0.3);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
-  }
-  
-  /* Scoreboard */
-  .highScore-css {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin: var(--xxxs) 0; /* Reduced gap */
-    padding: var(--xxs);
-    border-radius: var(--xxs);
-    font-size: var(--s);
-    margin-top: var(--xxxs); /* Reduced gap */
-    margin-bottom: var(--xxxs); /* Reduced gap */
-  }
-  #highScore {
-    color: var(--gold);
-  }
-  #highScoreVal {
-    color: var(--gold);
-  }
-  
-  .score-css {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin: var(--xxxs) 0; /* Reduced gap */
-    padding: var(--xxs);
-    border-radius: var(--xxs);
-    font-size: var(--m);
-    margin-bottom: 0;
-  }
-  #score {
-    color: var(--dark--brown);
-  }
-  #scoreVal {
-    color: var(--beige);
-  }
-  
-  /* Previous Word */
-  #prevWord {
-    display: flex;
-    justify-content: space-between;
-    text-align: center;
-    margin: var(--xxxs) 0; /* Reduced gap */
-    padding: var(--xxs);
-    border-radius: var(--xxs);
-    text-align: center;
-    gap: var(--xxxs); /* Reduced gap */
-    margin-top:0;
-    margin-bottom: 0;
-    font-size: var(--l);
-  }
-  
-  .curLetter-css {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 0;
-  }
-  #curLetter {
-    font-size: var(--l);
-  }
-  
-  /* Current Word */
-  .curWord-css {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin: var(--xxxs) 0; /* Reduced gap */
-    padding: var(--xxxs); /* Reduced padding */
-    border-radius: var(--xxs);
-    text-align: center;
-    margin-top:0;
-    margin-bottom: 0;
-    font-size: var(--l);
-  }
-  
-  #searchQuery {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-left: 0px;
-    padding: var(--xxxs); /* Reduced padding */
-    font-size: var(--l);
-    border: none;
-    outline: none;
-    background: transparent;
-    border-radius: 5px;
-    width: 200px;
-    font-family: "Paytone One", sans-serif;
-  }
-  
-  #searchQuery.error {
-    color: rgb(71, 7, 7);
-  }
-  
-  /* Random Letter */
-  .random-css {
-    margin: var(--xxxs) 0; /* Reduced vertical gap */
-    font-size: var(--s);
-    color: #3c2f24;
-    font-weight: bold;
-  }
-  
-  /* Timer */
-  .timer-css {
-    margin: var(--xxxs) 0; /* Reduced vertical gap */
-    font-size: var(--s);
-    color: #3c2f24;
-  }
-  
-  /* Results */
-  .result-css {
-    margin: var(--xxs) 0; /* Reduced vertical gap */
-    font-size: 16px;
-  }
-  
-  .result-css span {
-    font-weight: bold;
-    color: #000;
-  }
-  
-  /* Query History */
-  .resultsList-css {
-    text-align: left;
-    border-radius: 4px;
-    font-size: 14px;
-    margin-bottom: 0;
-  }
-  
-  .resultsList-css span {
-    margin-right: 3px; /* Reduced horizontal spacing */
-    color: #3c2f24;
-    font-weight: bold;
-  }
-  
+  height: 100vh;
+  width: 100vw;
+  background-color: var(--light--brown);
+  box-shadow: inset 0 0 var(--xs) rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  justify-content: top;
+  align-items: center;
+  overflow: hidden;
+}
+
+/* Scoreboard */
+.highscore-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-top: var(--s); /* Reduced gap */
+  color: var(--gold);
+  font-size: var(--s);
+}
+
+.highscore-crown {
+  height: var(--s);
+  width: var(--sm);
+}
+
+.score-container {
+  display: flex;
+  align-items: center;
+  font-size: 4.5vw;
+}
+
+.score-label {
+  color: var(--dark--brown);
+  margin-right: var(--xs);
+}
+
+.score-value {
+  color: var(--beige);
+}
+
+/* Results */
+.result-container {
+  font-size: 2.4vw;
+  color: var(--beige);
+  display: flex;
+  align-items: center;
+}
+
+.result-count {
+  color: var(--white);
+  margin-right: var(--xxs);
+}
+
+.result-word {
+  color: var(--white);
+  max-width: 60vw;
+  display: inline-block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Previous Word */
+.prevword-container {
+  display: flex;
+  align-items: center; /* Vertically centers the text */
+  justify-items: center;
+  justify-content: center; /* Centers the content horizontally */
+  position: relative;
+
+  margin: var(--xs);
+  width: 80vw;
+  padding: var(--xs);
+
+  background-color: var(--brown);
+  border: var(--xxs) solid var(--dull--beige); /* **Added Border** */
+  box-sizing: border-box; /* Ensures padding and border don't affect the layout */
+  box-shadow: 0 0 var(--xxs) rgba(0, 0, 0, 0.25); /* Horizontal, vertical, blur radius, shadow color */
+  border-radius: var(--s); /* Adjust the radius value as needed */
+  font-size: var(--ml);
+
+  color: var(--dull--beige);
+
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-behavior: smooth;
+}
+
+.prevword-text {
+  margin-left: 7vw;
+  flex-grow: 1;
+  white-space: nowrap; /* Prevent the text from wrapping */
+  text-overflow: ellipsis; /* Adds an ellipsis if the text overflows */
+  overflow: hidden; /* Hide any overflowing text */
+}
+
+.prevword-container::-webkit-scrollbar {
+  display: none; /* This hides the scrollbar */
+}
+
+.logo-prevword {
+  height: var(--m);
+  width: var(--m);
+  position: absolute;
+  left: var(--s);
+}
+
+/* Current Word */
+
+.currword-container {
+  width: 63vw;
+  font-size: var(--ml);
+  color: var(--brown);
+
+  display: flex;
+  flex-direction: row;
+  justify-content: left;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+}
+
+.currword-container::-webkit-scrollbar {
+  display: none; /* This hides the scrollbar */
+}
+
+.currword-line {
+  margin-top: 0;
+  width: 75vw; /* Adjust this width to your preference */
+  border: 0.1vw solid var(--dark--brown);
+  border-radius: var(--s); /* Adjust the radius value as needed */
+}
+
+#searchQuery {
+  flex-shrink: 0;
+  position: relative;
+  font-size: var(--ml);
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: "Paytone One", sans-serif;
+  color: var(--beige);
+  overflow: auto;
+}
+
+#searchQuery.error {
+  color: rgb(71, 7, 7);
+}
+
+/* Next Letter */
+.random-next-letter {
+  font-size: 2.4vw;
+  color: var(--dark--brown);
+  margin-top: var(--xs);
+}
+
+/* Query History */
+
+.results-list-container {
+  gap: var(--xxs);
+  color: var(--brown);
+  display: flex;
+  font-size: var(--s);
+  text-align: left;
+  width: 90vw;
+  white-space: nowrap;
+  overflow: auto;
+  margin-top: var(--xs);
+  background-color: var(--dull--beige);
+  border-radius: var(--xs);
+  border: var(--xxs) solid var(--dull--beige);
+  box-shadow: 0 0.1vw var(--xxs) rgba(0, 0, 0, 0.55); /* Horizontal, vertical, blur radius, shadow color */
+}
+
+.results-list-container::-webkit-scrollbar {
+  display: none; /* This hides the scrollbar */
+}
+
+/* Timer */
+.time-container {
+  background-color: var(--dull--beige);
+  border-radius: 50%;
+  height: var(--l);
+  width: var(--l);
+
+  box-shadow: 0 0.1vw var(--xxs) rgba(0, 0, 0, 0.55); /* Horizontal, vertical, blur radius, shadow color */
+  color: var(--dark--brown);
+  font-size: 2.4vw;
+
+  display: flex;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+
+  position: absolute;
+  top: var(--s);
+  left: var(--s);
+}

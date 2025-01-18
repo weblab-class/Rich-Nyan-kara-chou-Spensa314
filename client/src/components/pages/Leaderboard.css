@@ -67,6 +67,7 @@
   height: 3.5vw;
   display: flex;
   justify-content: center;
+  text-align: center;
   align-items: center;
   box-shadow: 0 0.1vw 0.2vw rgba(0, 0, 0, 0.5); /* Adjust as needed */
 }

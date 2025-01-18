@@ -62,7 +62,7 @@
   font-size: var(--l); /* Smaller size for 'Reaction' */
   font-weight: normal;
 
-  color: var(--beige); /* Red color for 'Reaction' */
+  color: var(--beige);
   margin: 0;
 
   overflow: hidden; /* Ensures the content is not revealed until the animation */
