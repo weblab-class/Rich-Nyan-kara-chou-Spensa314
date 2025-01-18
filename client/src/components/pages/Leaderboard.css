@@ -1,15 +1,103 @@
-.leaderboard-container {
+.leaderboard-page-container {
   height: 100vh;
   width: 100vw;
   background-color: var(--light--brown);
   box-shadow: inset 0 0 var(--xs) rgba(0, 0, 0, 0.3); /* Adjust as needed */
   flex-grow: 1;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   overflow: hidden;
 }
 
 .leaderboard-title {
+  margin: 0;
   font-size: var(--xl);
+  color: var(--dark--brown);
+  font-style: bold;
+  text-shadow:
+    var(--outline) var(--outline) 0 var(--beige),
+    var(---outline) var(---outline) 0 var(--beige),
+    var(--outline) var(---outline) 0 var(--beige),
+    var(---outline) var(--outline) 0 var(--beige),
+    /* Outline effect */ var(--xxs) var(--xxs) var(--xxs) rgba(0, 0, 0, 0.7); /* Black shadow */
+}
+
+.leaderboard-list-container {
+  background-color: var(--beige);
+  border-radius: var(--s);
+  width: 60vw;
+  height: 22vw;
+  box-shadow: 0 0 var(--xxs) rgba(0, 0, 0, 0.5); /* Adjust as needed */
+  margin-bottom: var(--m);
+  display: flex;
+  flex-direction: column;
+  justify-content: top;
+  padding: var(--s);
+  overflow-y: auto;
+  scroll-behavior: smooth;
+}
+
+.leaderboard-list-container::-webkit-scrollbar {
+  display: none; /* This hides the scrollbar */
+}
+
+.leaderboard-player-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: top;
+  background-color: var(--off--beige);
+  box-shadow: 0 0.1vw 0.2vw rgba(0, 0, 0, 0.5); /* Adjust as needed */
+  margin: var(--xxs);
+  padding: var(--xxs) var(--xs);
+  margin-bottom: var(--xs);
+  border-radius: var(--s);
+  color: var(--dark--brown);
+  font-size: 2.5vw;
+
+  display: flex;
+  align-items: center;
+}
+
+.leaderboard-place {
+  border-radius: 50%;
+  background-color: var(--light--beige);
+  width: 3.5vw;
+  height: 3.5vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 0.1vw 0.2vw rgba(0, 0, 0, 0.5); /* Adjust as needed */
+}
+
+.leaderboard-player {
+  margin-left: var(--xs);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.top-player-1 {
+  background-color: var(--gold);
+}
+
+.top-player-2 {
+  background-color: var(--silver);
+}
+
+.top-player-3 {
+  background-color: var(--bronze);
+}
+
+.top-player-1-place {
+  background-color: var(--light--gold);
+}
+
+.top-player-2-place {
+  background-color: var(--light--silver);
+}
+
+.top-player-3-place {
+  background-color: var(--light--bronze);
 }

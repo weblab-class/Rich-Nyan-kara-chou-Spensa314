@@ -37,6 +37,19 @@
   text-decoration: none;
 }
 
+.right-container {
+  display: flex;
+  align-items: center;
+}
+
+.leaderboard {
+  height: var(--s);
+  width: var(--s);
+  margin-right: var(--s);
+  display: flex;
+  align-items: center;
+}
+
 .logout {
   height: var(--s);
   width: var(--s);

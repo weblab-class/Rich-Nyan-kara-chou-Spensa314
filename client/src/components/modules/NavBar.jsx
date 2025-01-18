@@ -19,6 +19,10 @@ const NavBar = () => {
     navigate("/home");
   };
 
+  const handleLeaderboardClick = () => {
+    navigate("/leaderboard");
+  };
+
   return (
     <div className="navbar-container">
       <div onClick={handleHomeClick} className="navigate-home-container navbar-link">
@@ -26,8 +30,13 @@ const NavBar = () => {
         <div className="title-text">Chain Reaction</div>
       </div>
 
-      <div onClick={handleLogoutClick} className="navbar-link">
-        <img src="../../../logout.png" alt="Logout" className="logout" />
+      <div className="right-container">
+        <div onClick={handleLeaderboardClick} className="navbar-link">
+          <img src="../../../crown.png" alt="Crown" className="leaderboard" />
+        </div>
+        <div onClick={handleLogoutClick} className="navbar-link">
+          <img src="../../../logout.png" alt="Logout" className="logout" />
+        </div>
       </div>
     </div>
   );

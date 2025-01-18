@@ -20,12 +20,21 @@
 :root {
   --light--brown: #b08968;
   --white: #fff;
+  --off--beige: #f2d3be;
+  --light--beige: #ffebdd;
   --dull--beige: #ede0d4;
   --beige: #fae0cf;
   --brown: #7f5539;
   --dark--brown: #4a260f;
   --dull--dark--brown: #5c3c27;
   --gold: #e4aa20;
+  --light--gold: #ffd05e;
+  --silver: #acacac;
+  --light--silver: #e0e0e0;
+  --bronze: #a6795b;
+  --light--bronze: #d5b198;
+  --outline: 0.3vw;
+  ---outline: -0.3vw;
 
   --xxs: 0.5vw;
   --xs: 1vw;
