@@ -14,7 +14,7 @@ const Home = () => {
     setIsModalOpen(true);
   };
   const onSingleplayerClick = () => {
-    navigate(`/solo`);
+    navigate(`/room/solo`);
   };
   const onExitClick = () => {
     setIsModalOpen(false);
@@ -24,11 +24,11 @@ const Home = () => {
     const newRoomCode = Math.floor(Math.random() * 10000).toString();
     setRoomCode(newRoomCode);
     console.log(newRoomCode);
-    navigate(`/${newRoomCode}`);
+    navigate(`/room/${newRoomCode}`);
   };
 
   const onJoinRoomClick = () => {
-    navigate(`/${roomCode}`);
+    navigate(`/room/${roomCode}`);
   };
 
   return (

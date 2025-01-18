@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import "../../utilities.css";
 import NavBar from "../modules/NavBar";
 import { useNavigate, useParams } from "react-router-dom";
-
 import "./MultiPlayer_Start.css";
+import { post } from "../../utilities";
 
 const MultiPlayer_Start = () => {
     const { roomCode } = useParams();
@@ -16,9 +16,21 @@ const MultiPlayer_Start = () => {
     const navigate = useNavigate();
 
     const onStartClick = () => {
-        navigate(`/game/${roomCode}`);
-    };
-
+        const gameDetails = {
+            roomCode,
+            players: players,
+            timeLimit: activeTime,
+            hideLetter,
+            hardMode,
+            minWordLength: minLetters,
+            gameState: "waiting"
+        };
+        post("/api/startGame", gameDetails).then((res) => {
+            console.log(res);
+            navigate(`/game/${roomCode}`);
+        })
+      };
+      
     const onSettingsClick = () => {
         setIsModalOpen(true);
     };
