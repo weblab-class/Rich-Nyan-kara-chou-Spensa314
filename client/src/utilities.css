@@ -18,17 +18,18 @@
 @import url("https://fonts.googleapis.com/css2?family=Paytone+One&display=swap");
 
 :root {
-  --light--brown: #b08968;
   --white: #fff;
+  --light--beige: #ffebdd;
   --dull--beige: #ede0d4;
   --beige: #fae0cf;
+  --off--beige: #f2d3be;
+  --light--brown: #b08968;
   --brown: #7f5539;
-  --dark--brown: #4a260f;
   --dull--dark--brown: #5c3c27;
+  --dark--brown: #4a260f;
 
   /* Leaderboard */
-  --off--beige: #f2d3be;
-  --light--beige: #ffebdd;
+
   --gold: #e4aa20;
   --light--gold: #ffd05e;
   --silver: #acacac;
