@@ -1,45 +1,198 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useOutletContext } from "react-router-dom";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import "../../utilities.css";
 import "./SinglePlayer_Game.css";
 import { get } from "../../utilities";
-
+import seedrandom from "seedrandom";
+import NavBar from "../modules/NavBar";
 const SinglePlayer_Game = () => {
-  const canvasRef = useRef(null); // Reference to the game canvas
-  const [score, setScore] = useState(null); // Track the winner of the game
-  const [isWaiting, setIsWaiting] = useState(true); // Flag to track if the game is waiting for the start
+    const location = useLocation();
+    const { minLetters, activeTime, hideLetter, hardMode, player} = location.state || {};
+    const [isWaiting, setIsWaiting] = useState(true); // Flag for waiting state
+    const [query, setQuery] = useState(""); // Input query
+    const [resultMessage, setResultMessage] = useState(""); // Result feedback
+    const [index, setIndex] = useState(0);
+    const [isError, setIsError] = useState(false);
+    const inputRef = useRef(null);
+    const [gameState, setGameState] = useState({
+        prevWord:"apple",
+        score: 0,
+        curScore: 0,
+        curQuery: "",
+        curLetter: "",
+        nextLetter: "",
+        timerValue: parseInt(activeTime),
+        minWordLength: minLetters,
+        seed: "",
+        queries: [],
+        words:["apple"],
+    });
+     console.log(parseInt(activeTime)*1000);
+    // Start the game
     const startGame = () => {
-      console.log("Game started!");
-      setIsWaiting(false); // Transition to the game screen
-    };
-  
-    // Trigger a 3-second timer on component mount
+        console.log("Game started!");
+        setIsWaiting(false);
+      
+        // Generate a random seed once for the game
+        const gameSeed = "seed" + Math.floor(Math.random() * 1000000);
+      
+        const firstLetter = generateRandomLetter(gameSeed); // Initialize the first letter
+        setIndex(index + 1);
+        setGameState((prevState) => ({
+          ...prevState,
+          curLetter: firstLetter,
+          nextLetter: generateRandomLetter(deriveSeed(gameSeed, index)), // Generate next letter using the same seed
+          seed: gameSeed, // Store the seed for the game
+        }));
+
+        if (inputRef.current) {
+            inputRef.current.focus();
+        }
+
+      };
+      
+      // Generate a random letter using seed
+      const generateRandomLetter = (seed) => {
+        let alphabet = "abcdefghijklmnopqrstuvwxyz";
+        if (!hardMode) {
+          alphabet = "aaaaaaaabbccccddddeeeeeeeeeeeffggghhhiiiiiiiiijkllllllmmmnnnnnnnnooooooopppqrrrrrrrrssssssssstttttttuuuuvwxyyz";
+        }
+        const rng = seedrandom(seed); // Seed-based RNG
+        const randomIndex = Math.floor(rng() * alphabet.length);
+        return alphabet.charAt(randomIndex);
+      };
+      const deriveSeed = (baseSeed, offset) => {
+        return `${baseSeed}-${offset}`;
+      };
+      // On Enter Key Press
+      const onEnterKeyPress = (event) => {
+        if (event.key === "Enter") {
+            if (event.target.value.length < minLetters - 1) {
+                console.error(`Word is too short!`);
+                setResultMessage(`Word must be at least ${minLetters} letters long.`);
+                setIsError(true);
+                setTimeout(() => {
+                    setIsError(false);
+                  }, 500); // 0.5 seconds
+
+                return; // Stop execution if the input is too short
+                }
+            const queryText = `${gameState.prevWord} ${gameState.curLetter}${event.target.value}`;
+            console.log("Search Query:", queryText);
+        
+            get("/api/search", { query: queryText })
+            .then((res) => {
+            // Update index and state in a controlled manner
+            setQuery("");
+            setIndex((prevIndex) => prevIndex + 1);
+            setGameState((prevState) => {
+                const newLetter = generateRandomLetter(deriveSeed(prevState.seed, index)); // Generate new letter using seed
+                return {
+                ...prevState,
+                prevWord: `${prevState.curLetter}${event.target.value}`, // Update previous word
+                curScore: parseInt(res.totalResults, 10) || 0,
+                curQuery: queryText,
+                score: prevState.score + (parseInt(res.totalResults, 10) || 0), // Safely parse and update score
+                curLetter: prevState.nextLetter, // Shift next letter to current
+                nextLetter: newLetter, // Generate next letter
+                queries: [
+                    ...prevState.queries,
+                    [queryText, res.totalResults],
+                  ],
+                words: [...prevState.words, `${prevState.curLetter}${event.target.value}`],
+            };
+            });
+            console.log(gameState.queries);
+            // Clear input field
+            })
+            .catch((err) => {
+              console.error("Error during search:", err.message);
+            });
+        }
+      };
+      
+      useEffect(() => {
+        if (isWaiting) return;
+        const timer = setInterval(() => {
+          setGameState((prevState) => {
+            const newTimerValue = prevState.timerValue - 0.1;
+            if (newTimerValue <= 0) {
+              clearInterval(timer);
+              alert(`Game Over! Final Score: ${prevState.score}`);
+              return { ...prevState, timerValue: 0 }; // Stop timer at 0
+            }
+            return { ...prevState, timerValue: newTimerValue };
+          });
+        }, 100); // Update every 10 milliseconds
+    
+        return () => clearInterval(timer); // Cleanup timer
+      }, [isWaiting]);
+    
+    // Trigger the 3-second delay to start the game
     useEffect(() => {
       const timer = setTimeout(() => {
         startGame();
       }, 3000);
-  
-      return () => {
-        clearTimeout(timer);
-      };
+    
+      return () => clearTimeout(timer); // Cleanup timer
     }, []);
-  
+    
     if (isWaiting) {
-      return (
-        <div>Waiting for the game to start...</div>
-      );
+      return <div>Waiting for the game to start...</div>;
     }
   
     return (
-      <div>
-        <h1>Single Player Game</h1>
-        <div>
+        <>
+        <NavBar />
+        <div className="game-container">
+            {/* Scoreboard */}
+            <div id="highScore" className="highScore-css">High Score: <span id="highScoreVal" className="highScore-css">{gameState.highScore}</span></div>
+            <div id="score" className="score-css">Score: <span id="scoreVal" className="score-css">{gameState.score}</span></div>
+            {/* Current Word and Input */}
+                <span id="prevWord" className="prevWord-css">{gameState.prevWord} </span>
+                <div className = "curWord-css">
+                    <span id="curLetter" className="curLetter-css">{gameState.curLetter}</span>
+                    <input
+                        type="text"
+                        id="searchQuery"
+                        value={query}
+                        placeholder=""
+                        onChange={(e) => setQuery(e.target.value)}
+                        onKeyDown={(e) => e.key === "Enter" && onEnterKeyPress(e)}
+                        className={isError ? "error" : ""}
+                        style={{
+                            width: `${query.length+1}ch`,
+                          }}
+                          ref = {inputRef}
+                    />
+            </div>
+
+            {/* Next Letter */}
+            <div id="random" className="random-css">
+            <span id="nextLetter">Next Letter: {gameState.nextLetter}</span>
+            </div>
+
+            {/* Timer */}
+            <div id="timer" className="timer-css">
+            Time Remaining: <span id="timerValue">{Math.max(0, gameState.timerValue.toFixed(1))}</span> seconds
+            </div>
+
+            {/* Results */}
+            <div id="resultCount" className="result-css">
+                There are <span id="resultCount">{gameState.curScore}</span> results for <span id="resultQuery">"{gameState.curQuery}"</span>
+            </div>
+
+            {/* Query History */}
+            <div id="resultsList" className = "resultsList-css">
+                {gameState.words.map((word, index) => (
+                    <span key={index}>{word} </span>
+                ))}
+            </div>
 
         </div>
-      </div>
-    );
+        </>
+        );
   };
   
   export default SinglePlayer_Game;
-  

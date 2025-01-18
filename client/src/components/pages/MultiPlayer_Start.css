@@ -43,7 +43,7 @@
 
 .mp-players-title {
   font-size: var(--sm);
-  color: #ffffff;
+  color: var(--white);
 }
 
 .mp-players-list {

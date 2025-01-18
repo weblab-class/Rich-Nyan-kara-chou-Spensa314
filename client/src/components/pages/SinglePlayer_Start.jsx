@@ -16,7 +16,15 @@ const SinglePlayer_Start = () => {
   const navigate = useNavigate();
 
   const onStartClick = () => {
-    navigate(`/game/solo`);
+    navigate(`/game/solo`, {
+        state: {
+          minLetters,
+          activeTime,
+          hideLetter,
+          hardMode,
+          player
+        },
+      });
   };
 
   const onSettingsClick = () => {

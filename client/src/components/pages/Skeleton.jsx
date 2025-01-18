@@ -26,7 +26,7 @@ const Skeleton = () => {
       <ul>
         <li>
           Change the Frontend CLIENT_ID (index.jsx) to your team's CLIENT_ID (obtain this at
-          http://weblab.is/clientid)
+          http://weblab.is/Cclientid)
         </li>
         <li>Change the Server CLIENT_ID to the same CLIENT_ID (auth.js)</li>
         <li>

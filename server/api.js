@@ -7,15 +7,15 @@
 |
 */
 require("dotenv").config();
-
 const express = require("express");
 const auth = require("./auth");
 const socketManager = require("./server-socket");
 
+const router = express.Router();
+
 // Load environment variables
 const apiKey = process.env.GOOGLE_API_KEY;
 const cx = process.env.GOOGLE_CX;
-const router = express.Router();
 
 const games = {}; // In-memory store for game states
 router.post("/login", auth.login);
@@ -79,7 +79,6 @@ router.get("/game/status/:roomCode", (req, res) => {
   }
 });
 
-
 // Route: Start game 
 // TODO: auth.ensureLoggedIn
 router.post("/startGame", (req, res) => {
@@ -108,30 +107,31 @@ router.post("/startGame", (req, res) => {
 
 
 // Route: Search
-// router.get("/search", async (req, res) => {
-//   const query = req.query.q;
+router.get("/search", async (req, res) => {
+  const query = req.query["query"];
+  if (!query) {
+    return res.status(400).send({ msg: "Enter something to search." });
+  }
 
-//   if (!query) {
-//     return res.status(400).send({ msg: "Query parameter 'q' is required." });
-//   }
-
-//   const quotedQuery = `"${query}"`;
-//   const url = `https://www.googleapis.com/customsearch/v1?key=${apiKey}&cx=${cx}&q=${quotedQuery}`;
-
-//   try {
-//     const response = await axios.get(url);
-//     const data = response.data;
-//     const totalResults = data?.searchInformation?.totalResults || 0;
-
-//     res.send({
-//       phrase: query,
-//       totalResults,
-//     });
-//   } catch (error) {
-//     console.error("Error fetching search results:", error);
-//     res.status(500).send({ msg: "Error fetching search results." });
-//   }
-// });
+  const quotedQuery = `"${query}"`;
+  
+  const url = `https://www.googleapis.com/customsearch/v1?key=${apiKey}&cx=${cx}&q=${quotedQuery}`;
+  console.log(url);
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+    console.log(data);
+    const totalResults = data.searchInformation.totalResults || 0;
+    console.log(totalResults);
+    res.send({
+      phrase: query,
+      totalResults,
+    });
+  } catch (error) {
+    console.error("Error fetching search results:", error);
+    res.status(500).send({ msg: "Error fetching search results." });
+  }
+});
 
 // Catch-all for undefined routes
 router.all("*", (req, res) => {
