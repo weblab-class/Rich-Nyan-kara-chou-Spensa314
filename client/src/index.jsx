@@ -6,6 +6,7 @@ import Login from "./components/pages/Login";
 import Home from "./components/pages/Home";
 import MultiPlayer_Start from "./components/pages/MultiPlayer_Start";
 import SinglePlayer_Start from "./components/pages/SinglePlayer_Start";
+import Leaderboard from "./components/pages/Leaderboard";
 import MultiPlayer_Game from "./components/pages/MultiPlayer_Game";
 import SinglePlayer_Game from "./components/pages/SinglePlayer_Game";
 
@@ -27,6 +28,8 @@ const router = createBrowserRouter(
       <Route path="/" element={<Login />} />
       <Route path="/home" element={<Home />} />
       <Route path="/room/:roomCode" element={<MultiPlayer_Start />} />
+      <Route path="/solo" element={<SinglePlayer_Start />} />
+      <Route path="/leaderboard" element={<Leaderboard />} />
       <Route path="/room/solo" element={<SinglePlayer_Start />} />
       <Route path="/game/:roomCode" element={<MultiPlayer_Game />} />
       <Route path="/game/solo" element={<SinglePlayer_Game />} />

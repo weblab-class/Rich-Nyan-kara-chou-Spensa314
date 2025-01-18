@@ -5,11 +5,14 @@
   display: flex;
   justify-content: space-between;
   align-items: center; /* Ensure vertical alignment */
+  height: 2.75vw;
 }
 
 .navbar-link {
   cursor: pointer;
-  transition: transform 0.2s ease, opacity 0.2s ease; /* Smooth transition */
+  transition:
+    transform 0.2s ease,
+    opacity 0.2s ease; /* Smooth transition */
 }
 
 .navbar-link:hover {
@@ -32,6 +35,19 @@
   margin-left: var(--xs);
   font-size: var(--s);
   text-decoration: none;
+}
+
+.right-container {
+  display: flex;
+  align-items: center;
+}
+
+.leaderboard {
+  height: var(--s);
+  width: var(--s);
+  margin-right: var(--s);
+  display: flex;
+  align-items: center;
 }
 
 .logout {
