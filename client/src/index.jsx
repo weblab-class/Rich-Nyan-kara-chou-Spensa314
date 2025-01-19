@@ -27,7 +27,7 @@ const router = createBrowserRouter(
     <Route errorElement={<NotFound />} element={<App />}>
       <Route path="/" element={<Login />} />
       <Route path="/home" element={<Home />} />
-      <Route path="/room/:roomCode" element={<MultiPlayer_Start />} />
+      <Route path="/room/:roomCode" element={<MultiPlayer_Start/>} />
       <Route path="/solo" element={<SinglePlayer_Start />} />
       <Route path="/leaderboard" element={<Leaderboard />} />
       <Route path="/room/solo" element={<SinglePlayer_Start />} />

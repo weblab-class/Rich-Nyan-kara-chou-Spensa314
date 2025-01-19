@@ -1,33 +1,69 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../../utilities.css";
 import NavBar from "../modules/NavBar";
 import { useNavigate, useParams } from "react-router-dom";
 import "./Settings.css";
 import "./MultiPlayer_Start.css";
-import { post } from "../../utilities";
+import { post, get } from "../../utilities";
+import { socket } from "../../client-socket"; // Import Socket.IO client
 
 const MultiPlayer_Start = () => {
-  const { roomCode } = useParams();
+  const { roomCode } = useParams(); // Get room code from URL
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [minLetters, setMinLetters] = useState(3);
   const [activeTime, setActiveTime] = useState(30);
   const [hideLetter, setHideLetter] = useState(false);
   const [hardMode, setHardMode] = useState(false);
-  const [players, setPlayers] = useState(["Player 1", "Player 2", "Player 3", "Player 4"]); //temp
+  const [players, setPlayers] = useState([]); // Player list from the server
+  const [username, setUsername] = useState(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    get("/api/whoami").then((res) => {
+        console.log(res.name);
+      if (res.name !== null) {
+        setUsername(res.name);
+      }
+    });
+    if (!username) {
+      console.error("Username is not defined");
+      return;
+    }
+
+    // Join the room on component mount
+    socket.emit("joinRoom", { roomId: roomCode, user: { name: username } });
+
+    // Listen for updates to the player list
+    socket.on("updatePlayers", (updatedPlayers) => {
+      setPlayers(updatedPlayers);
+    });
+
+    // Cleanup when the component unmounts
+    return () => {
+      socket.emit("leaveRoom", roomCode);
+      socket.off("updatePlayers");
+    };
+  }, [roomCode, username]);
 
   const onStartClick = () => {
     const gameDetails = {
       roomCode,
-      players: players,
+      players: players.map((player) => player.name),
       timeLimit: activeTime,
       hideLetter,
       hardMode,
       minWordLength: minLetters,
       gameState: "waiting",
     };
+
+    // Notify the server to start the game
     post("/api/startGame", gameDetails).then((res) => {
       console.log(res);
+      socket.emit("startGame", roomCode);
+      if (res.error) {
+        alert(res.error);
+        return;
+      }
       navigate(`/game/${roomCode}`);
     });
   };
@@ -35,6 +71,7 @@ const MultiPlayer_Start = () => {
   const onSettingsClick = () => {
     setIsModalOpen(true);
   };
+
   const onExitClick = () => {
     setIsModalOpen(false);
   };
@@ -42,19 +79,23 @@ const MultiPlayer_Start = () => {
   const on30Click = () => {
     setActiveTime(30);
   };
+
   const on60Click = () => {
     setActiveTime(60);
   };
+
   const onHideLetterClick = () => {
     setHideLetter(!hideLetter);
   };
+
   const onHardModeClick = () => {
     setHardMode(!hardMode);
   };
+
   const onSliderChange = (event) => {
     setMinLetters(event.target.value);
   };
-  // Replace with player's actual logo
+
   return (
     <>
       <NavBar />
@@ -68,9 +109,9 @@ const MultiPlayer_Start = () => {
         <div className="mp-players-title">Players</div>
         <div className="mp-players-list">
           {players.map((player) => (
-            <div key={player} className="mp-players-item">
+            <div key={player.id} className="mp-players-item">
               <img src="../../../default.png" alt="default" className="mp-player-logo" />
-              <div className="mp-player-name">{player}</div>
+              <div className="mp-player-name">{player.name}</div>
             </div>
           ))}
         </div>

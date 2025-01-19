@@ -18,6 +18,7 @@ const apiKey = process.env.GOOGLE_API_KEY;
 const cx = process.env.GOOGLE_CX;
 
 const games = {}; // In-memory store for game states
+
 router.post("/login", auth.login);
 router.post("/logout", auth.logout);
 router.get("/whoami", (req, res) => {
@@ -32,6 +33,19 @@ router.post("/initsocket", (req, res) => {
   if (req.user)
     socketManager.addUser(req.user, socketManager.getSocketFromSocketID(req.body.socketid));
   res.send({});
+});
+
+router.get("/room/:roomCode", (req, res) => {
+  const { roomCode } = req.params;
+  console.log(socketManager.getRoom(roomCode));
+  // Check if the roomCode exists in the rooms object
+  if (socketManager.getRoom(roomCode)) {
+    // Room exists
+    res.send({ exists: true, room: socketManager.getRoom(roomCode) });
+  } else {
+    // Room does not exist
+    res.send({ exists: false, message: "Room not found" });
+  }
 });
 
 // Route: Check game status
@@ -84,6 +98,7 @@ router.post("/startGame", (req, res) => {
   try {
     // Extract gameDetails directly from req.body
     const gameDetails = req.body;
+    console.log(socketManager.startGame(gameDetails.roomCode));
     // Validate that gameDetails is provided
     if (!gameDetails) {
       throw new Error("Missing gameDetails in request body");
@@ -104,6 +119,14 @@ router.post("/startGame", (req, res) => {
   }
 });
 
+router.get("/getRoom/:roomCode", (req, res) => {
+  const room = socketManager.getRoom(req.params.roomCode);
+  if (room) {
+    res.send(room);
+  } else {
+    res.status(404).send({ msg: "Room not found" });
+  }
+});
 // Route: Search
 router.get("/search", async (req, res) => {
   const query = req.query["query"];

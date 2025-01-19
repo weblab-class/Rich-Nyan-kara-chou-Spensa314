@@ -27,7 +27,7 @@ function getOrCreateUser(user) {
       name: user.name,
       googleid: user.sub,
     });
-
+    console.log("newUser", newUser);
     return newUser.save();
   });
 }

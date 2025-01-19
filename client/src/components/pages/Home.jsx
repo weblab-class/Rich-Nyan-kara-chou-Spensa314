@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "../../utilities.css";
 import NavBar from "../modules/NavBar";
 import { useNavigate } from "react-router-dom";
+import { get } from "../../utilities";
 
 import "./Home.css";
 
@@ -28,7 +29,25 @@ const Home = () => {
   };
 
   const onJoinRoomClick = () => {
-    navigate(`/room/${roomCode}`);
+    get(`/api/room/${roomCode}`).then((res) => {
+      console.log(res);
+      if (res.exists === true){
+        console.log(res);
+        get(`/api/getRoom/${roomCode}`).then((res) => {
+          console.log(res);
+          if (res.gameStarted === true){
+            alert("Game already started!");
+          }
+          else{
+            navigate(`/room/${roomCode}`);
+          }
+        })
+      }
+      else {
+        alert("Room does not exist!");
+      }
+    });
+    
   };
 
   return (
