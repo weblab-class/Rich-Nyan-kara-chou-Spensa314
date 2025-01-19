@@ -44,7 +44,7 @@
 
 .leaderboard {
   height: var(--s);
-  width: var(--s);
+  width: var(--sm);
   margin-right: var(--s);
   display: flex;
   align-items: center;
