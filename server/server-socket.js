@@ -5,27 +5,34 @@ let io;
 const userToSocketMap = {}; // maps user ID to socket object
 const socketToUserMap = {}; // maps socket ID to user object
 const rooms = {}; // stores room data
+const socketToIDMap = {};
 
 const getAllConnectedUsers = () => Object.values(socketToUserMap);
 const getSocketFromUserID = (userid) => userToSocketMap[userid];
 const getUserFromSocketID = (socketid) => socketToUserMap[socketid];
 const getSocketFromSocketID = (socketid) => io.sockets.sockets.get(socketid);
-
+const getIDFromSocketID = (socket) => socketToIDMap[socket.id];
 const addUser = (user, socket) => {
+  console.log(user);
+  
   if (!user || !user._id) {
+    console.log(user);
     console.error("Invalid user object provided to addUser");
     return;
   }
 
   const oldSocket = userToSocketMap[user._id];
-  if (oldSocket && oldSocket.id !== socket.id) {
-    // Disconnect the old socket if a new one connects for the same user
-    oldSocket.disconnect();
-    delete socketToUserMap[oldSocket.id];
+  if (oldSocket && oldSocket.id) {
+    if (oldSocket.id !== socket.id) {
+      console.warn(`Disconnecting old socket for user ID: ${user._id}`);
+      oldSocket.disconnect(); // Disconnect previous connection
+      delete socketToUserMap[oldSocket.id]; // Remove from map
+      delete socketToIDMap[oldSocket.id];
+    }
   }
-
   userToSocketMap[user._id] = socket;
   socketToUserMap[socket.id] = user;
+  socketToIDMap[socket.id] = user._id;
 };
 
 const removeUser = (user, socket) => {
@@ -33,9 +40,10 @@ const removeUser = (user, socket) => {
     delete userToSocketMap[user._id];
   }
   delete socketToUserMap[socket.id];
+  delete socketToIDMap[socket.id];
 };
 
-const joinRoom = (roomId, user, socket) => {
+const joinRoom = (roomId, user, socket, settings) => {
   if (!roomId || !user || !user.name) {
     console.error("Invalid roomId or user object in joinRoom");
     return;
@@ -43,7 +51,7 @@ const joinRoom = (roomId, user, socket) => {
 
   // Initialize the room if it doesn't exist
   if (!rooms[roomId]) {
-    gameLogic.initializeRoom(roomId);
+    gameLogic.initializeRoom(roomId, settings);
     rooms[roomId] = { players: [], gameStarted: false };
   }
 
@@ -51,7 +59,8 @@ const joinRoom = (roomId, user, socket) => {
 
   // Prevent duplicate players in the room
   if (!room.players.some((p) => p.id === socket.id)) {
-    room.players.push({ id: socket.id, name: user.name, userId: user._id });
+    console.log(user);
+    room.players.push({ id: socket.id, name: user.name, userId: socketToIDMap[socket.id] });
   }
 
   socket.join(roomId);
@@ -84,7 +93,7 @@ const leaveRoom = (roomId, socket) => {
   }
 };
 
-const startGame = (roomId) => {
+const startGame = (roomId, gameDetails) => {
   console.log(`startGame called with roomId: ${roomId}`);
   if (!rooms[roomId]) {
     console.error(`Room ${roomId} not found in startGame`);
@@ -92,24 +101,25 @@ const startGame = (roomId) => {
   }
   // set gameStarted to true
   rooms[roomId].gameStarted = true;
-  console.log(rooms);
+  gameLogic.initializeRoom(roomId, { minLength: gameDetails.minWordLength, hideLetter: gameDetails.hideLetter, type: gameDetails.hardMode });
   // Emit to everyone that the game has started in this room
-  io.emit("gameStarted", {
+  io.to(roomId).emit("gameStarted", {
     roomId,
     message: `The game in room ${roomId} has started!`,
-    gameState: { players: rooms[roomId].players , started: true},
+    gameState: { players: rooms[roomId].players, started: true },
   });
 
   console.log(`Game started in room ${roomId}, notification sent to everyone.`);
 };
 
 
-const getRoom = (roomId) => {
-  if (!rooms[roomId]) {
+const gR = (roomId) => {
+  if (!gameLogic.getRoom(roomId)) {
     return;
   }
-  return rooms[roomId];
+  return gameLogic.getRoom(roomId);
 };
+
 module.exports = {
   init: (http) => {
     io = require("socket.io")(http);
@@ -174,7 +184,7 @@ module.exports = {
   getUserFromSocketID: getUserFromSocketID,
   getSocketFromSocketID: getSocketFromSocketID,
   getIo: () => io,
-  getRoom: getRoom,
+  gR: gR,
 
   joinRoom: joinRoom,
   leaveRoom: leaveRoom,

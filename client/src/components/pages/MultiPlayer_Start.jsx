@@ -31,7 +31,7 @@ const MultiPlayer_Start = () => {
     }
 
     // Join the room on component mount
-    socket.emit("joinRoom", { roomId: roomCode, user: { name: username } });
+    socket.emit("joinRoom", { roomId: roomCode, user: { name: username }, settings: { hideLetter, hardMode, minWordLength: minLetters} });
 
     // Listen for updates to the player list
     socket.on("updatePlayers", (updatedPlayers) => {
@@ -57,17 +57,49 @@ const MultiPlayer_Start = () => {
     };
 
     // Notify the server to start the game
-    post("/api/startGame", gameDetails).then((res) => {
+    post(`/api/startGame/${roomCode}`, gameDetails).then((res) => {
       console.log(res);
-      socket.emit("startGame", roomCode);
       if (res.error) {
         alert(res.error);
         return;
       }
-      navigate(`/game/${roomCode}`);
+      navigate(`/game/${roomCode}`, {
+        state: {
+          roomId: roomCode,
+          userId: socket.id,
+          userName: username,
+          minLetters,
+          hideLetter,
+          hardMode,
+        },
+      });
     });
   };
 
+  useEffect(() => {
+    socket.on("gameStarted", ({ message, gameState }) => {
+      console.log(message); // Debug message
+      // Update game state or navigate to the game page
+      get("/api/room/${roomCode}").then((res) => {
+        console.log(res);
+        navigate(`/game/${roomCode}`, {
+            state: {
+            roomId: roomCode,
+            userId: socket.id,
+            userName: username,
+            minLetters: res.minWordLength,
+            hideLetter: res.hideLetter,
+            hardMode: res.hardMode,
+        },
+      });
+    });
+    });
+  
+    return () => {
+      socket.off("gameStarted");
+    };
+  }, [navigate]);
+  
   const onSettingsClick = () => {
     setIsModalOpen(true);
   };
@@ -95,6 +127,8 @@ const MultiPlayer_Start = () => {
   const onSliderChange = (event) => {
     setMinLetters(event.target.value);
   };
+
+
 
   return (
     <>

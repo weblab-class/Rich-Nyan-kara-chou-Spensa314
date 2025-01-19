@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 const axios = require("axios");
 const seedrandom = require("seedrandom"); // For seed-based random generation
 
@@ -13,8 +15,8 @@ const letters = {
 };
 
 // State Maps
-const roomStates = new Map(); // Map to hold room states
-const playerStates = new Map(); // Map to hold player states
+const roomStates = {};
+const playerStates = {};
 
 // Helper: Generate Seeded Random Sequence
 function generateSeededSequence(seed, length = DEFAULT_SEQUENCE_LENGTH, type = "regular") {
@@ -24,22 +26,24 @@ function generateSeededSequence(seed, length = DEFAULT_SEQUENCE_LENGTH, type = "
 }
 
 // Initialize a Room
-function initializeRoom(roomId, type = "regular", seed = null) {
-  if (!roomStates.has(roomId)) {
-    const roomSeed = seed || `${roomId}-${Date.now()}`;
-    roomStates.set(roomId, {
-      randomLetters: generateSeededSequence(roomSeed, DEFAULT_SEQUENCE_LENGTH, type),
+function initializeRoom(roomId, settings = {minLength: 3, hideLetter: false, type: "regular"}) {
+    const rando = Math.floor(Math.random() * 10000); // Random number between 0 and 999999
+    const seed = parseInt(roomId, 10) || roomId.length || 0; // Fallback to roomId length if not numeric
+    const roomSeed = seed - rando || `${roomId}-${rando}`;
+
+    roomStates[roomId] = {
+      randomLetters: generateSeededSequence(roomSeed, DEFAULT_SEQUENCE_LENGTH, settings.type),
       currentIndex: 0,
       createdAt: Date.now(),
-      type,
       seed: roomSeed,
-    });
-  }
+      settings: { ...settings },
+    };
+    console.log(roomStates);
 }
 
 // Get the Next Letter for a Room
 function getNextLetter(roomId) {
-  const roomState = roomStates.get(roomId);
+  const roomState = roomStates[roomId];
   if (!roomState) throw new Error(`Room ${roomId} not found.`);
   
   const letter = roomState.randomLetters[roomState.currentIndex];
@@ -49,18 +53,18 @@ function getNextLetter(roomId) {
 
 // Get or Initialize Player State
 function getPlayerState(playerId) {
-  if (!playerStates.has(playerId)) {
-    playerStates.set(playerId, {
+  if (!playerStates[playerId]) {
+    playerStates[playerId] = {
       score: 0,
       highScore: 0,
-      prevWord: "",
+      prevWord: "apple",
       curLetter: "",
       nextLetter: "",
       timerValue: DEFAULT_TIMER_VALUE,
       minWordLength: DEFAULT_MIN_WORD_LENGTH,
-    });
+    };
   }
-  return playerStates.get(playerId);
+  return playerStates[playerId];
 }
 
 // Reset Player State
@@ -78,20 +82,23 @@ function resetPlayerState(playerId, roomId) {
 // Handle Player Search
 async function handlePlayerSearch(playerId, roomId, query) {
   const state = getPlayerState(playerId);
-  const roomState = roomStates.get(roomId);
+  const roomState = roomStates[roomId];
   if (!roomState) throw new Error(`Room ${roomId} not initialized.`);
 
   if (!query || query.length < state.minWordLength) {
     throw new Error(`Word must be at least ${state.minWordLength} letters long.`);
   }
-
   const addQuery = `${state.curLetter}${query}`;
   const quotedQuery = `"${addQuery}"`;
-  const url = `https://www.googleapis.com/customsearch/v1?key=${process.env.API_KEY}&cx=${process.env.CX}&q=${quotedQuery}`;
+  // const url = `https://www.googleapis.com/customsearch/v1?key=${apiKey}&cx=${cx}&q=${quotedQuery}`; FIX ME
+  const url = `https://www.googleapis.com/customsearch/v1?key=AIzaSyBZpVCZKwRmfBNuZJjRQuBhEc2h68DYrso&cx=450f8832fcce44a27&q=${quotedQuery}`;
 
+  console.log(url);
   try {
-    const response = await axios.get(url);
-    const totalResults = parseInt(response.data.searchInformation.totalResults, 10) || 0;
+    const response = await fetch(url);
+    const data = await response.json();
+    console.log(data);
+    const totalResults = data.searchInformation.totalResults || 0;
 
     state.score += totalResults;
     state.prevWord = addQuery;
@@ -112,14 +119,17 @@ async function handlePlayerSearch(playerId, roomId, query) {
 // Helper: Expire Old Rooms
 function expireOldRooms(expirationTime = ROOM_EXPIRATION_TIME) {
   const now = Date.now();
-  for (const [roomId, roomState] of roomStates.entries()) {
+  for (const [roomId, roomState] of Object.entries(roomStates)) {
     if (now - roomState.createdAt > expirationTime) {
-      roomStates.delete(roomId);
+      roomStates[roomId] = null;
       console.log(`Room ${roomId} expired and removed.`);
     }
   }
 }
 
+function getRoom(roomId) {
+  return roomStates[roomId];
+}
 // Periodically Check for Expired Rooms
 setInterval(expireOldRooms, 60000); // Check every minute
 
@@ -131,4 +141,5 @@ module.exports = {
   resetPlayerState,
   handlePlayerSearch,
   expireOldRooms,
+  getRoom,
 };

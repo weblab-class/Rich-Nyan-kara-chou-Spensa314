@@ -37,11 +37,10 @@ router.post("/initsocket", (req, res) => {
 
 router.get("/room/:roomCode", (req, res) => {
   const { roomCode } = req.params;
-  console.log(socketManager.getRoom(roomCode));
   // Check if the roomCode exists in the rooms object
-  if (socketManager.getRoom(roomCode)) {
+  if (socketManager.gR(roomCode)) {
     // Room exists
-    res.send({ exists: true, room: socketManager.getRoom(roomCode) });
+    res.send({ exists: true, room: socketManager.gR(roomCode) });
   } else {
     // Room does not exist
     res.send({ exists: false, message: "Room not found" });
@@ -94,11 +93,11 @@ router.get("/game/status/:roomCode", (req, res) => {
 
 // Route: Start game
 // TODO: auth.ensureLoggedIn
-router.post("/startGame", (req, res) => {
+router.post("/startGame/:roomCode", (req, res) => {
   try {
     // Extract gameDetails directly from req.body
     const gameDetails = req.body;
-    console.log(socketManager.startGame(gameDetails.roomCode));
+    socketManager.startGame(gameDetails.roomCode, gameDetails);
     // Validate that gameDetails is provided
     if (!gameDetails) {
       throw new Error("Missing gameDetails in request body");
@@ -120,7 +119,7 @@ router.post("/startGame", (req, res) => {
 });
 
 router.get("/getRoom/:roomCode", (req, res) => {
-  const room = socketManager.getRoom(req.params.roomCode);
+  const room = socketManager.gR(req.params.roomCode);
   if (room) {
     res.send(room);
   } else {
@@ -151,6 +150,26 @@ router.get("/search", async (req, res) => {
   } catch (error) {
     console.error("Error fetching search results:", error);
     res.status(500).send({ msg: "Error fetching search results." });
+  }
+});
+
+router.post("/initializeRoom", (req, res) => {
+  const { roomId, type, seed, settings } = req.body;
+  try {
+    game.initializeRoom(roomId, { type, seed, ...settings });
+    res.status(200).json({ message: "Room initialized." });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.get("/getNextLetter/:roomId", (req, res) => {
+  const { roomId } = req.params;
+  try {
+    const letter = game.getNextLetter(roomId);
+    res.status(200).json({ letter });
+  } catch (error) {
+    res.status(404).json({ error: error.message });
   }
 });
 

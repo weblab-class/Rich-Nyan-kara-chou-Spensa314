@@ -1,143 +1,165 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useOutletContext } from "react-router-dom";
-import { useParams, useNavigate } from "react-router-dom";
+import { socket } from "../../client-socket.js";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
+import { get } from "../../utilities";
+
 import "../../utilities.css";
 import "./MultiPlayer_Game.css";
-import { get } from "../../utilities";
-import { socket } from "../../client-socket.js";
 
 const MultiPlayer_Game = () => {
-  // Use outlet context if necessary (currently unused in this code)
-  let props = useOutletContext();
-  
+  const navigate = useNavigate();
+  const { roomCode } = useParams();
+  const location = useLocation();
   const canvasRef = useRef(null);
-  const [winner, setWinner] = useState(null);
-  const { roomCode } = useParams(); // Get room code from URL parameters
-  const [errorMessage, setErrorMessage] = useState(null); // Error message state
-  const navigate = useNavigate(); // Function to navigate programmatically
-  const [isLoading, setIsLoading] = useState(true); // Loading state for API fetch
-  const [players, setPlayers] = useState([]); // Player list state
-  const [gameState, setGameState] = useState(null); // Game state
-  const [query, setQuery] = useState(""); // Query input state
-  const [username, setUsername] = useState(null);
-    // const username = props.username;
 
-  // Fetch game status on component mount and roomCode change
+  const [gameState, setGameState] = useState({
+    curLetter: "",
+    nextLetter: "",
+    score: 0,
+    highScore: 0,
+    prevWord: "",
+    timerValue: 60,
+  });
+  const [query, setQuery] = useState("");
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [roomSettings, setRoomSettings] = useState({});
+  const [isLoading, setIsLoading] = useState(true); // Loading state for 3-second delay
+  const [randomString, setRandomString] = useState("");
+  const [index, setIndex] = useState(0);
+
+  // Fetch room settings and join room
   useEffect(() => {
-    get("/api/whoami").then((res) => {
-        console.log(res.name);
-      if (res.name !== null) {
-        setUsername(res.name);
+    const fetchRoomSettings = async () => {
+      if (!roomSettings) {
+        try {
+          const response = await get(`/api/room/${roomCode}`);
+          console.log(response.room.settings);
+          setRoomSettings(response.room.settings); // Save room settings (e.g., minLetters, hideLetter)
+          setRandomString(response.room.randomLetters);
+          console.log(roomSettings);
+          joinRoom(roomSettings); // Pass settings to the joinRoom function
+        } catch (error) {
+          console.error("Error fetching room settings:", error);
+          setErrorMessage("Failed to fetch room settings.");
+        }
+      } else {
+        joinRoom(roomSettings);
       }
-    });
-    if (username === null) {
-      console.error("Username is not defined");
+    };
+
+    const joinRoom = (settings) => {
+      socket.emit("joinRoom", { roomId: roomCode, user: { name: location.state?.userName, _id: location.state?.userId }, settings });
+
+      socket.on("updateGameState", (gameState) => {
+        setGameState((prevState) => ({
+          ...prevState,
+          curLetter: randomString[index],
+          nextLetter: randomString[index + 1],
+        }));
+        setIndex((prevIndex) => prevIndex + 1);
+      });
+      
+      console.log(gameState);
+      socket.on("updatePlayers", (players) => {
+        console.log("Players in room:", players);
+      });
+
+      socket.on("errorMessage", (message) => {
+        setErrorMessage(message);
+        setTimeout(() => setErrorMessage(null), 2000);
+      });
+
+      return () => {
+        socket.emit("leaveRoom", roomCode);
+        socket.off("updateGameState");
+        socket.off("updatePlayers");
+        socket.off("errorMessage");
+      };
+    };
+
+    fetchRoomSettings();
+
+    // Add 3-second delay before setting loading to false
+    const loadingTimer = setTimeout(() => setIsLoading(false), 3000);
+
+    return () => clearTimeout(loadingTimer);
+  }, [roomCode, roomSettings, location.state]);
+
+  // Handle player search
+  const handleSearch = () => {
+    if (!query || query.length < (roomSettings.minLetters || 3)) {
+      setErrorMessage(`Word must be at least ${roomSettings.minLetters || 3} letters long.`);
+      setTimeout(() => setErrorMessage(null), 2000);
       return;
     }
-
-    const fetchGameStatus = () => {
-      if (!isLoading) return;
-      get(`/api/game/status/${roomCode}?username=${encodeURIComponent(username)}`)
-        .then((res) => {
-          const started = res["started"];
-          if (started) {
-            setIsLoading(false);
-            subscribeToRoom(); // Subscribe to real-time updates after game starts
-          } else {
-            setTimeout(fetchGameStatus, 1000); // Retry until the game starts
-          }
-        })
-        .catch((err) => {
-          console.error("Error fetching game status:", err.response || err.message || err);
-          if (err.response?.status === 403) {
-            alert("You are not part of this game!");
-          } else if (err.response?.status === 404) {
-            alert("Room not found!");
-          } else {
-            alert("An error occurred. Please try again.");
-          }
-          navigate("/home");
-        });
-    };
-
-    fetchGameStatus();
-  }, [roomCode, username, navigate, isLoading]);
-
-  // Subscribe to socket events
-  const subscribeToRoom = () => {
-    socket.emit("joinRoom", { roomId: roomCode, user: { name: username } });
-
-    socket.on("updatePlayers", (updatedPlayers) => {
-      setPlayers(updatedPlayers);
-    });
-
-    socket.on("updateGameState", (state) => {
-      setGameState(state);
-    });
-
-    socket.on("errorMessage", (message) => {
-      setErrorMessage(message);
-      setTimeout(() => setErrorMessage(null), 500); // Clear error after 0.5 seconds
-    });
-
-    return () => {
-      socket.emit("leaveRoom", roomCode); // Leave the room on component unmount
-      socket.off("updatePlayers");
-      socket.off("updateGameState");
-      socket.off("errorMessage");
-    };
+  
+    setIndex((prevIndex) => prevIndex + 1);
+    socket.emit("submitQuery", { roomId: roomCode, query });
+  
+    setGameState((prevState) => ({
+      ...prevState,
+      curLetter: randomString[index + 1], // Move to the next letter
+      nextLetter: randomString[index + 2],
+    }));
+    socket.on("updateGameState", handleGameStateUpdate);
+    socket.on("updatePlayers", handlePlayersUpdate);
+    socket.on("errorMessage", handleErrorMessage)
   };
 
-  // Submit player query
-  const submitQuery = () => {
-    if (query.trim()) {
-      socket.emit("submitQuery", { roomId: roomCode, query });
-      setQuery(""); // Clear input
-    }
-  };
+  // Timer logic
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setGameState((prevState) => {
+        const newTimerValue = prevState.timerValue - 1;
+        if (newTimerValue <= 0) {
+          clearInterval(timer);
+          alert(`Game Over! Final Score: ${prevState.score}`);
+          return { ...prevState, timerValue: 0 };
+        }
+        return { ...prevState, timerValue: newTimerValue };
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
 
   if (isLoading) {
-    return <div>Waiting for the game to start...</div>;
+    return <div>Loading game settings, please wait...</div>;
   }
 
   return (
-    <div>
-      <h1>Game Room: {roomCode}</h1>
-      <h2>Welcome, {username}</h2>
-
-      {/* Error Message */}
-      {errorMessage && <div className="error-message">{errorMessage}</div>}
-
-      {/* Player List */}
+    <>
       <div>
-        <h3>Players in Room:</h3>
-        <ul>
-          {players.map((player) => (
-            <li key={player.id}>{player.name}</li>
-          ))}
-        </ul>
-      </div>
-
-      {/* Game State */}
-      {gameState && (
-        <div>
-          <h3>Game State:</h3>
-          <p>Current Letter: {gameState.curLetter}</p>
-          <p>Next Letter: {gameState.nextLetter}</p>
+        {/* Score and High Score */}
+        <div className="scoreboard">
+          <div>Score: {gameState.score}</div>
         </div>
-      )}
 
-      {/* Query Input */}
-      <div>
-        <input
-          type="text"
-          placeholder="Enter your word"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-        />
-        <button onClick={submitQuery}>Submit</button>
+        {/* Previous Word */}
+        <div className="prev-word">Previous Word: {gameState.prevWord}</div>
+
+        {/* Current Letter and Input */}
+        <div className="current-letter">
+          {gameState.curLetter}
+          <input
+            type="text"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+          />
+        </div>
+
+        {/* Next Letter */}
+        <div className="next-letter">Next Letter: {gameState.nextLetter}</div>
+
+        {/* Error Message */}
+        {errorMessage && <div className="error-message">{errorMessage}</div>}
+
+        {/* Timer */}
+        <div className="timer">Time Remaining: {gameState.timerValue}s</div>
       </div>
-    </div>
+    </>
   );
 };
+
 export default MultiPlayer_Game;
