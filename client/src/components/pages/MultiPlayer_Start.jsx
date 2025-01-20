@@ -3,6 +3,7 @@ import "../../utilities.css";
 import NavBar from "../modules/NavBar";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import "./Settings.css";
+import "./Info.css";
 import "./MultiPlayer_Start.css";
 import { post, get } from "../../utilities";
 import { socket } from "../../client-socket"; // Import Socket.IO client
@@ -19,6 +20,14 @@ const MultiPlayer_Start = () => {
   const [players, setPlayers] = useState([]); // Player list from the server
   const [username, setUsername] = useState(null);
   const navigate = useNavigate();
+  const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
+  const onInfoButtonClick = () => {
+    setIsInfoModalOpen(true);
+  };
+
+  const onInfoExitClick = () => {
+    setIsInfoModalOpen(false);
+  };
 
   useEffect(() => {
     get("/api/whoami").then((res) => {
@@ -136,18 +145,16 @@ const MultiPlayer_Start = () => {
       <NavBar />
       <div className="multiplayer-container">
         {host && (
-        <div onClick={onSettingsClick} className="mp-settings-button mp-page-button">
-          Game Settings
-        </div>
+          <div onClick={onSettingsClick} className="mp-settings-button mp-page-button">
+            Game Settings
+          </div>
         )}
-        {host &&<div onClick={onStartClick} className="mp-start-button mp-page-button">
-          Start Game
-        </div>
-        }
-        {!host &&<div className="mp-start-button mp-page-button">
-          Start Game
-        </div>
-        }
+        {host && (
+          <div onClick={onStartClick} className="mp-start-button mp-page-button">
+            Start Game
+          </div>
+        )}
+        {!host && <div className="mp-start-button mp-page-button">Start Game</div>}
         <div className="mp-players-title">Players</div>
         <div className="mp-players-list">
           {players.map((player) => (
@@ -159,6 +166,42 @@ const MultiPlayer_Start = () => {
         </div>
 
         <div className="mp-room-code">Room Code: {roomCode}</div>
+        <div onClick={onInfoButtonClick} className="info-button">
+          ?
+        </div>
+
+        {isInfoModalOpen && (
+          <div className="room-modal-overlay">
+            <div className="info-modal-container">
+              <div className="info-text-container">
+                <div className="info-title">How to Play</div>
+                <div className="info-text">
+                  <span className="info-text-title">Objective: </span> Score the highest points by
+                  entering the trendiest search terms.
+                </div>
+                <div className="info-text">
+                  <span className="info-text-title">Game Mechanics: </span> You're given a starting
+                  word and the starting letter for the following word in the phrase. You are to fill
+                  in the following word. Once you enter your phrase, the word you filled in will now
+                  become the starting word. This process is repeated within the given time limit.
+                </div>
+                <div className="info-text">
+                  <span className="info-text-title">Example: </span>
+                </div>
+                <div className="info-text">
+                  "Apple P": "Apple P<span className="info-text-color">ie</span>"
+                </div>
+                <div className="info-text">
+                  {" "}
+                  "Pie C": "Pie C<span className="info-text-color">hart</span>"
+                </div>
+              </div>
+              <div onClick={onInfoExitClick} className="room-button info-close-button">
+                X
+              </div>
+            </div>
+          </div>
+        )}
 
         {isModalOpen && (
           <div className="settings-modal">
