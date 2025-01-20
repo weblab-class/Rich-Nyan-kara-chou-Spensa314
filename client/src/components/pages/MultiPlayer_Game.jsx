@@ -9,7 +9,7 @@ import { socket } from "../../client-socket.js";
 const MultiPlayer_Game = () => {
   // Use outlet context if necessary (currently unused in this code)
   let props = useOutletContext();
-  
+
   const canvasRef = useRef(null);
   const [winner, setWinner] = useState(null);
   const { roomCode } = useParams(); // Get room code from URL parameters
@@ -20,12 +20,12 @@ const MultiPlayer_Game = () => {
   const [gameState, setGameState] = useState(null); // Game state
   const [query, setQuery] = useState(""); // Query input state
   const [username, setUsername] = useState(null);
-    // const username = props.username;
+  // const username = props.username;
 
   // Fetch game status on component mount and roomCode change
   useEffect(() => {
     get("/api/whoami").then((res) => {
-        console.log(res.name);
+      console.log(res.name);
       if (res.name !== null) {
         setUsername(res.name);
       }

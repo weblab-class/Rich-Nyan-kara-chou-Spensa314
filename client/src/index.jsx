@@ -10,6 +10,8 @@ import Leaderboard from "./components/pages/Leaderboard";
 import MultiPlayer_Game from "./components/pages/MultiPlayer_Game";
 import SinglePlayer_Game from "./components/pages/SinglePlayer_Game";
 import SinglePlayer_Score_Summary from "./components/pages/SinglePlayer_Score_Summary";
+import Profile from "./components/pages/Profile";
+import MultiPlayer_Score_Summary from "./components/pages/MultiPlayer_Score_Summary";
 
 import {
   createBrowserRouter,
@@ -28,13 +30,15 @@ const router = createBrowserRouter(
     <Route errorElement={<NotFound />} element={<App />}>
       <Route path="/" element={<Login />} />
       <Route path="/home" element={<Home />} />
-      <Route path="/room/:roomCode" element={<MultiPlayer_Start/>} />
+      <Route path="/room/:roomCode" element={<MultiPlayer_Start />} />
       <Route path="/solo" element={<SinglePlayer_Start />} />
       <Route path="/leaderboard" element={<Leaderboard />} />
       <Route path="/room/solo" element={<SinglePlayer_Start />} />
       <Route path="/game/:roomCode" element={<MultiPlayer_Game />} />
+      <Route path="/multiscore" element={<MultiPlayer_Score_Summary />} />
       <Route path="/game/solo" element={<SinglePlayer_Game />} />
       <Route path="/soloscore" element={<SinglePlayer_Score_Summary />} />
+      <Route path="/profile" element={<Profile />} />
     </Route>
   )
 );

@@ -44,6 +44,84 @@
   opacity: 0.65;
 }
 
+/* INFO MODAL */
+
+.info-button {
+  position: absolute;
+  bottom: var(--s);
+  left: var(--s);
+
+  font-size: var(--s);
+  color: var(--beige);
+
+  background-color: var(--dark--brown);
+  box-shadow: 0 0 0.3vw rgba(0, 0, 0, 0.6);
+  height: var(--sm);
+  width: var(--sm);
+  border-radius: 50%;
+
+  display: flex;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+  transition:
+    transform 0.2 ease,
+    opacity 0.2s ease;
+}
+
+.info-button:hover {
+  opacity: 0.65;
+}
+
+.info-modal-container {
+  background-color: var(--light--brown);
+  padding: var(--xs);
+  border-radius: var(--xxs);
+  box-shadow: 0 0 var(--xs) rgba(0, 0, 0, 0.3);
+  width: 30vw; /* Set the width of the modal */
+  height: 25vw;
+  display: flex;
+  flex-direction: column; /* Change to column to stack elements vertically */
+  justify-content: top;
+
+  align-items: left; /* Center elements horizontally */
+  position: relative; /* To position the close button */
+  overflow-y: auto;
+  scroll-behavior: smooth;
+}
+
+.info-modal-container::-webkit-scrollbar {
+  display: none; /* This hides the scrollbar */
+}
+
+.info-title {
+  font-size: var(--s);
+  color: white;
+  margin: var(--xs);
+  margin-bottom: var(--xs);
+}
+
+.info-text {
+  font-size: 1.5vw;
+  color: var(--beige);
+  margin-left: var(--xs);
+  margin-right: var(--xs);
+  margin-bottom: var(--xxs);
+}
+
+.info-text-color {
+  color: white;
+}
+
+.info-text-title {
+  color: var(--dark--brown);
+  text-shadow: 0 0 0.1vw rgba(0, 0, 0, 0.503); /* Horizontal, Vertical, Blur radius, Color */
+}
+
+/* MODAL FOR MULTIPLAYER GAME */
+
 .room-modal-overlay {
   position: fixed;
   top: 0;
@@ -83,9 +161,21 @@
 }
 
 .close-button {
-  font-size: var(--s);
+  font-size: 1.5vw;
   position: absolute;
-  top: var(--xxs);
+  background-color: var(--light--beige);
+  height: var(--s);
+  width: var(--s);
+  box-shadow: 0 0 var(--xs) rgba(0, 0, 0, 0.3);
+
+  display: flex;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  top: var(--xs);
   right: var(--xs);
   color: var(--dark--brown);
 }
