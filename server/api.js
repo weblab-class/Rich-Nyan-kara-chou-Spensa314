@@ -47,6 +47,13 @@ router.get("/room/:roomCode", (req, res) => {
   }
 });
 
+router.get("/room/:roomCode/playerStats", (req, res) => {
+  const roomCode = req.params.roomCode;
+  const socketId = req.query.socketId;
+  console.log(`Received request for roomCode: ${roomCode} and socketId: ${socketId}`);
+  res.send(socketManager.getPlayerStats(socketId));
+});
+
 // Route: Check game status
 router.get("/game/status/:roomCode", (req, res) => {
   const roomCode = req.params.roomCode;

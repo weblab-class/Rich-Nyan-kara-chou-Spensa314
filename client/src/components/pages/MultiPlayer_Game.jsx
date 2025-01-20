@@ -16,28 +16,38 @@ const MultiPlayer_Game = () => {
     curLetter: "",
     nextLetter: "",
     score: 0,
-    highScore: 0,
     prevWord: "",
-    timerValue: 60,
+    timerValue: 30,
+    curScore: 0,
+    curQuery: "",
+    words: [],
   });
   const [query, setQuery] = useState("");
   const [errorMessage, setErrorMessage] = useState(null);
-  const [roomSettings, setRoomSettings] = useState({});
+  const [roomSettings, setRoomSettings] = useState(null);
   const [isLoading, setIsLoading] = useState(true); // Loading state for 3-second delay
   const [randomString, setRandomString] = useState("");
   const [index, setIndex] = useState(0);
-
+  const [username, setUsername] = useState(null);
+  const [id, setId] = useState(null);
+  const [scores, setScores] = useState([]);
   // Fetch room settings and join room
   useEffect(() => {
     const fetchRoomSettings = async () => {
       if (!roomSettings) {
         try {
           const response = await get(`/api/room/${roomCode}`);
-          console.log(response.room.settings);
           setRoomSettings(response.room.settings); // Save room settings (e.g., minLetters, hideLetter)
           setRandomString(response.room.randomLetters);
-          console.log(roomSettings);
-          joinRoom(roomSettings); // Pass settings to the joinRoom function
+          setGameState(
+            (prevState) => ({
+              ...prevState,
+              prevWord: response.room.firstWord,
+              words: [response.room.firstWord],
+              timerValue: response.room.settings.type === "regular" ? 30 : 60,
+            })
+            );
+          joinRoom(response.room.settings); // Pass settings to the joinRoom function
         } catch (error) {
           console.error("Error fetching room settings:", error);
           setErrorMessage("Failed to fetch room settings.");
@@ -48,18 +58,22 @@ const MultiPlayer_Game = () => {
     };
 
     const joinRoom = (settings) => {
-      socket.emit("joinRoom", { roomId: roomCode, user: { name: location.state?.userName, _id: location.state?.userId }, settings });
-
+        get("/api/whoami").then((res) => {
+            console.log(res);
+          if (res.name !== null) {
+            setUsername(res.name);
+            setId(res._id);
+            socket.emit("joinRoom", { roomId: roomCode, user: res.name, settings });
+          }});
+      
       socket.on("updateGameState", (gameState) => {
         setGameState((prevState) => ({
           ...prevState,
           curLetter: randomString[index],
           nextLetter: randomString[index + 1],
         }));
-        setIndex((prevIndex) => prevIndex + 1);
       });
       
-      console.log(gameState);
       socket.on("updatePlayers", (players) => {
         console.log("Players in room:", players);
       });
@@ -69,11 +83,16 @@ const MultiPlayer_Game = () => {
         setTimeout(() => setErrorMessage(null), 2000);
       });
 
+      socket.on("updateScores", ({ scores }) => {
+        setScores(scores);
+      });
+
       return () => {
         socket.emit("leaveRoom", roomCode);
         socket.off("updateGameState");
         socket.off("updatePlayers");
         socket.off("errorMessage");
+        socket.off("updateScores");
       };
     };
 
@@ -81,30 +100,43 @@ const MultiPlayer_Game = () => {
 
     // Add 3-second delay before setting loading to false
     const loadingTimer = setTimeout(() => setIsLoading(false), 3000);
+    console.log(gameState);
 
     return () => clearTimeout(loadingTimer);
   }, [roomCode, roomSettings, location.state]);
 
   // Handle player search
   const handleSearch = () => {
-    if (!query || query.length < (roomSettings.minLetters || 3)) {
-      setErrorMessage(`Word must be at least ${roomSettings.minLetters || 3} letters long.`);
+    if (!query || query.length < (roomSettings.minLength - 1 || 2)) {
+      setErrorMessage(`Word must be at least ${roomSettings.minLength || 3} letters long.`);
       setTimeout(() => setErrorMessage(null), 2000);
       return;
     }
-  
     setIndex((prevIndex) => prevIndex + 1);
-    socket.emit("submitQuery", { roomId: roomCode, query });
-  
+    console.log(index);
+    const currentWord = `${gameState.curLetter}${query}`;
+    const queryText = `${gameState.prevWord} ${currentWord}`;
+    
+    setQuery("");
+    socket.emit("submitQuery", { roomId: roomCode, query: queryText });
     setGameState((prevState) => ({
       ...prevState,
-      curLetter: randomString[index + 1], // Move to the next letter
-      nextLetter: randomString[index + 2],
+      words: prevState.words.concat(currentWord),
     }));
-    socket.on("updateGameState", handleGameStateUpdate);
-    socket.on("updatePlayers", handlePlayersUpdate);
-    socket.on("errorMessage", handleErrorMessage)
+    socket.on("updateGameState", (gameState) => {
+      console.log(gameState);
+      setGameState((prevState) => ({
+        ...prevState,
+        score: parseInt(prevState.score) + parseInt(gameState.totalResults),
+        prevWord: currentWord,
+        curLetter: randomString[index % randomString.length], 
+        nextLetter: randomString[(index + 1) % randomString.length],
+        curScore: parseInt(gameState.totalResults),
+        curQuery: queryText,
+      }));
+    });
   };
+  
 
   // Timer logic
   useEffect(() => {
@@ -129,35 +161,67 @@ const MultiPlayer_Game = () => {
 
   return (
     <>
-      <div>
-        {/* Score and High Score */}
-        <div className="scoreboard">
-          <div>Score: {gameState.score}</div>
+      <div className="game-container">
+        {/* Scoreboard */}
+        <div className="score-container">
+          <span className="score-label">Score: </span>
+          <span className="score-value">{gameState.score}</span>
         </div>
 
-        {/* Previous Word */}
-        <div className="prev-word">Previous Word: {gameState.prevWord}</div>
+        {/* Results */}
+        <div className="result-container">
+          <span className="result-count">{gameState.curScore}</span> Results for "
+          <span className="result-word">{gameState.curQuery}</span>"
+        </div>
 
-        {/* Current Letter and Input */}
-        <div className="current-letter">
-          {gameState.curLetter}
+        {/* Prev Word */}
+        <span className="prevword-container">
+          <img src="../../../logo.png" className="logo-prevword" />
+          <div className="prevword-text">{gameState.prevWord}</div>
+        </span>
+
+        {/* Input */}
+
+        <div className="currword-container">
+        {gameState.curLetter}
           <input
             type="text"
+            id="searchQuery"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleSearch()}
           />
         </div>
+        <hr className="currword-line" />
 
         {/* Next Letter */}
-        <div className="next-letter">Next Letter: {gameState.nextLetter}</div>
+        <div className="random-next-letter">
+          <span id="nextLetter">Next Letter: {gameState.nextLetter}</span>
+        </div>
 
-        {/* Error Message */}
-        {errorMessage && <div className="error-message">{errorMessage}</div>}
+        {/* Query History */}
+        <div className="results-list-container">
+          {gameState.words.map((word, index) => (
+            <span key={index}>{word} - </span>
+          ))}
+        </div>
+
+        <div className="scoreboard-container">
+        <h3>Scoreboard</h3>
+        <ul>
+            {scores.map((player, index) => (
+            <li key={index}>
+                {player.playerName}: {parseInt(player.score)}
+            </li>
+            ))}
+        </ul>
+        </div>
 
         {/* Timer */}
-        <div className="timer">Time Remaining: {gameState.timerValue}s</div>
+        <div className="time-container">{gameState.timerValue}s</div>
       </div>
+      
+
     </>
   );
 };

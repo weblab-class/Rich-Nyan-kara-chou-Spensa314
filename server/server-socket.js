@@ -6,14 +6,15 @@ const userToSocketMap = {}; // maps user ID to socket object
 const socketToUserMap = {}; // maps socket ID to user object
 const rooms = {}; // stores room data
 const socketToIDMap = {};
+const userIDtoNameMap = {};
 
 const getAllConnectedUsers = () => Object.values(socketToUserMap);
 const getSocketFromUserID = (userid) => userToSocketMap[userid];
 const getUserFromSocketID = (socketid) => socketToUserMap[socketid];
 const getSocketFromSocketID = (socketid) => io.sockets.sockets.get(socketid);
 const getIDFromSocketID = (socket) => socketToIDMap[socket.id];
+const getNameFromUserID = (userid) => userIDtoNameMap[userid];
 const addUser = (user, socket) => {
-  console.log(user);
   
   if (!user || !user._id) {
     console.log(user);
@@ -30,21 +31,24 @@ const addUser = (user, socket) => {
       delete socketToIDMap[oldSocket.id];
     }
   }
+  console.log(user);
   userToSocketMap[user._id] = socket;
   socketToUserMap[socket.id] = user;
   socketToIDMap[socket.id] = user._id;
+  userIDtoNameMap[user._id] = user.name;
 };
 
 const removeUser = (user, socket) => {
   if (user) {
     delete userToSocketMap[user._id];
+    delete userIDtoNameMap[user._id];
   }
   delete socketToUserMap[socket.id];
   delete socketToIDMap[socket.id];
 };
 
 const joinRoom = (roomId, user, socket, settings) => {
-  if (!roomId || !user || !user.name) {
+  if (!roomId || !user) {
     console.error("Invalid roomId or user object in joinRoom");
     return;
   }
@@ -52,19 +56,16 @@ const joinRoom = (roomId, user, socket, settings) => {
   // Initialize the room if it doesn't exist
   if (!rooms[roomId]) {
     gameLogic.initializeRoom(roomId, settings);
-    rooms[roomId] = { players: [], gameStarted: false };
+    rooms[roomId] = { players: [], gameStarted: false , firstWord: gameLogic.getRoom(roomId).firstWord };
   }
 
   const room = rooms[roomId];
-
   // Prevent duplicate players in the room
   if (!room.players.some((p) => p.id === socket.id)) {
-    console.log(user);
-    room.players.push({ id: socket.id, name: user.name, userId: socketToIDMap[socket.id] });
+    room.players.push({ id: socket.id, name: user, userId: socketToIDMap[socket.id] });
   }
 
   socket.join(roomId);
-
   // Emit the updated player list to everyone in the room
   console.log(`Updated players list for room ${roomId}:`, room.players);
   io.to(roomId).emit("updatePlayers", room.players);
@@ -83,6 +84,7 @@ const leaveRoom = (roomId, socket) => {
   const room = rooms[roomId];
   room.players = room.players.filter((p) => p.id !== socket.id);
   socket.leave(roomId);
+  gameLogic.resetPlayerState(socketToIDMap[socket.id], roomId);
 
   // If the room is empty, delete it
   if (room.players.length === 0) {
@@ -108,7 +110,6 @@ const startGame = (roomId, gameDetails) => {
     message: `The game in room ${roomId} has started!`,
     gameState: { players: rooms[roomId].players, started: true },
   });
-
   console.log(`Game started in room ${roomId}, notification sent to everyone.`);
 };
 
@@ -117,7 +118,33 @@ const gR = (roomId) => {
   if (!gameLogic.getRoom(roomId)) {
     return;
   }
+  console.log('hi');
+  console.log(socketToIDMap);
   return gameLogic.getRoom(roomId);
+};
+
+const getPlayerStats = (socket) => {
+  console.log(socketToIDMap);
+  const userId = socketToIDMap[socket.id];
+  if (!userId) {
+    return;
+  }
+  console.log(gameLogic.getPlayerStats(userId));
+  return gameLogic.getPlayerStats(userId);
+  
+};
+
+const notifyScores = (roomId) => {
+  if (!rooms[roomId]) {
+    console.error(`Room ${roomId} not found in notifyScores`);
+    return;
+  }
+
+  const sortedScores = gameLogic.getSortedScores().map((scoreEntry) => {
+    const userName = getNameFromUserID(scoreEntry.playerName);
+    return { playerName: userName, score: scoreEntry.score };
+});
+  io.to(roomId).emit("updateScores", { scores: sortedScores });
 };
 
 module.exports = {
@@ -133,7 +160,6 @@ module.exports = {
           socket.emit("errorMessage", "Invalid joinRoom request");
           return;
         }
-        addUser(user, socket);
         joinRoom(roomId, user, socket);
       });
 
@@ -151,12 +177,23 @@ module.exports = {
         }
 
         try {
-          const gameState = await gameLogic.handlePlayerSearch(user._id, roomId, query);
-          io.to(roomId).emit("updateGameState", gameState); // Broadcast updated game state
+          // Process the query and get the updated game state
+          const newGameState = await gameLogic.handlePlayerSearch(user._id, roomId, query);
+          // Send the updated game state back to the specific user
+          socket.emit("updateGameState", newGameState);
+          notifyScores(roomId);
+          // Optionally broadcast the game state to all clients in the room
+          io.to(roomId).emit("updateGameState", newGameState);
+          
         } catch (error) {
           console.error(`Error processing query: ${error.message}`);
           socket.emit("errorMessage", error.message);
         }
+      });
+
+
+      socket.on("firstWord", ({ roomId, gameDetails }) => {
+        startGame(roomId, gameDetails);
       });
 
       // Handle disconnection
@@ -189,4 +226,6 @@ module.exports = {
   joinRoom: joinRoom,
   leaveRoom: leaveRoom,
   startGame: startGame,
+  getPlayerStats: getPlayerStats,
+  notifyScores: notifyScores,
 };

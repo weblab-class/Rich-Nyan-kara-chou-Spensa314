@@ -23,6 +23,7 @@ const MultiPlayer_Start = () => {
         console.log(res.name);
       if (res.name !== null) {
         setUsername(res.name);
+        socket.emit("joinRoom", { roomId: roomCode, user: res.name, settings: { hideLetter, hardMode, minWordLength: minLetters} });
       }
     });
     if (!username) {
@@ -30,9 +31,7 @@ const MultiPlayer_Start = () => {
       return;
     }
 
-    // Join the room on component mount
-    socket.emit("joinRoom", { roomId: roomCode, user: { name: username }, settings: { hideLetter, hardMode, minWordLength: minLetters} });
-
+   
     // Listen for updates to the player list
     socket.on("updatePlayers", (updatedPlayers) => {
       setPlayers(updatedPlayers);
@@ -81,7 +80,6 @@ const MultiPlayer_Start = () => {
       console.log(message); // Debug message
       // Update game state or navigate to the game page
       get("/api/room/${roomCode}").then((res) => {
-        console.log(res);
         navigate(`/game/${roomCode}`, {
             state: {
             roomId: roomCode,

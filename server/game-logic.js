@@ -25,6 +25,20 @@ function generateSeededSequence(seed, length = DEFAULT_SEQUENCE_LENGTH, type = "
   return Array.from({ length }, () => charSet[Math.floor(rng() * charSet.length)]);
 }
 
+function firstWord(){
+    const lister = [
+        "apple", "the", "over", "user", "under",
+        "banana", "cherry", "grape", "orange", "lemon",
+        "pineapple", "pear", "mango", "peach", "plum",
+        "table", "chair", "desk", "lamp", "window",
+        "happy", "sad", "excited", "calm", "angry",
+        "ocean", "mountain", "valley", "river", "forest",
+        "house", "building", "apartment", "cabin", "castle"
+      ];
+    const index = Math.floor(Math.random() * lister.length);
+      return lister[index];
+}
+
 // Initialize a Room
 function initializeRoom(roomId, settings = {minLength: 3, hideLetter: false, type: "regular"}) {
     const rando = Math.floor(Math.random() * 10000); // Random number between 0 and 999999
@@ -37,8 +51,8 @@ function initializeRoom(roomId, settings = {minLength: 3, hideLetter: false, typ
       createdAt: Date.now(),
       seed: roomSeed,
       settings: { ...settings },
+      firstWord: firstWord(),
     };
-    console.log(roomStates);
 }
 
 // Get the Next Letter for a Room
@@ -88,25 +102,22 @@ async function handlePlayerSearch(playerId, roomId, query) {
   if (!query || query.length < state.minWordLength) {
     throw new Error(`Word must be at least ${state.minWordLength} letters long.`);
   }
-  const addQuery = `${state.curLetter}${query}`;
-  const quotedQuery = `"${addQuery}"`;
+
+  const quotedQuery = `"${query}"`;
   // const url = `https://www.googleapis.com/customsearch/v1?key=${apiKey}&cx=${cx}&q=${quotedQuery}`; FIX ME
   const url = `https://www.googleapis.com/customsearch/v1?key=AIzaSyBZpVCZKwRmfBNuZJjRQuBhEc2h68DYrso&cx=450f8832fcce44a27&q=${quotedQuery}`;
 
-  console.log(url);
   try {
     const response = await fetch(url);
     const data = await response.json();
-    console.log(data);
     const totalResults = data.searchInformation.totalResults || 0;
-
-    state.score += totalResults;
-    state.prevWord = addQuery;
+    state.score += parseInt(totalResults);
+    state.prevWord = query;
     state.curLetter = state.nextLetter;
     state.nextLetter = getNextLetter(roomId);
 
     return {
-      phrase: addQuery,
+      phrase: query,
       totalResults,
       gameState: state,
     };
@@ -120,8 +131,10 @@ async function handlePlayerSearch(playerId, roomId, query) {
 function expireOldRooms(expirationTime = ROOM_EXPIRATION_TIME) {
   const now = Date.now();
   for (const [roomId, roomState] of Object.entries(roomStates)) {
+    if (!roomState) continue;
+
     if (now - roomState.createdAt > expirationTime) {
-      roomStates[roomId] = null;
+      delete roomStates[roomId];
       console.log(`Room ${roomId} expired and removed.`);
     }
   }
@@ -130,6 +143,12 @@ function expireOldRooms(expirationTime = ROOM_EXPIRATION_TIME) {
 function getRoom(roomId) {
   return roomStates[roomId];
 }
+
+function getSortedScores() {
+    return Object.entries(playerStates)
+      .map(([playerName, state]) => ({ playerName, score: state.score }))
+      .sort((a, b) => b.score - a.score); // Sort in descending order of scores
+  }
 // Periodically Check for Expired Rooms
 setInterval(expireOldRooms, 60000); // Check every minute
 
@@ -142,4 +161,6 @@ module.exports = {
   handlePlayerSearch,
   expireOldRooms,
   getRoom,
+  getSortedScores,
 };
+
