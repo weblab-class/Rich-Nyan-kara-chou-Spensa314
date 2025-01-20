@@ -5,7 +5,8 @@ import "../../utilities.css";
 import "./SinglePlayer_Game.css";
 import { get } from "../../utilities";
 import seedrandom from "seedrandom";
-import NavBar from "../modules/NavBar";
+import "./Loading.css";
+
 const SinglePlayer_Game = () => {
   const location = useLocation();
   const { minLetters, activeTime, hideLetter, hardMode, player } = location.state || {};
@@ -126,17 +127,62 @@ const SinglePlayer_Game = () => {
     return () => clearInterval(timer); // Cleanup timer
   }, [isWaiting]);
 
-  // Trigger the 3-second delay to start the game
+  // Trigger the 5-second delay to start the game
   useEffect(() => {
     const timer = setTimeout(() => {
       startGame();
-    }, 3000);
+    }, 5000);
 
     return () => clearTimeout(timer); // Cleanup timer
   }, []);
 
+  const [countdown, setCountdown] = useState(5); // 5 seconds countdown
+  useEffect(() => {
+    if (isWaiting && countdown > 1) {
+      // Set an interval to decrease the countdown every second
+      const timer = setInterval(() => {
+        setCountdown((prevCountdown) => prevCountdown - 1);
+      }, 1000);
+
+      // Cleanup the interval once countdown reaches 0 or when component unmounts
+      return () => clearInterval(timer);
+    }
+  }, [countdown]);
+
   if (isWaiting) {
-    return <div>Waiting for the game to start...</div>;
+    return (
+      <>
+        <div className="loading-container">
+          <div className="countdown-timer">{countdown}</div>
+
+          <div className="settings-summary-container">
+            <div className="settings-title">Room Settings</div>
+            Minimum Length: <span className="white">{minLetters}</span>
+            {hideLetter && (
+              <div>
+                Hide Letter: <span className="green">True</span>
+              </div>
+            )}
+            {!hideLetter && (
+              <div>
+                Hide Letter: <span className="red">False</span>
+              </div>
+            )}
+            {!hardMode && (
+              <div>
+                Mode: <span className="white">Regular</span>
+              </div>
+            )}
+            {hardMode && (
+              <div>
+                Mode: <span className="red">Hard</span>
+              </div>
+            )}
+            Game Timer: <span className="white">{activeTime}</span>
+          </div>
+        </div>
+      </>
+    );
   }
 
   return (
