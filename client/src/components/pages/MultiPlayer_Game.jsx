@@ -17,7 +17,7 @@ const MultiPlayer_Game = () => {
     nextLetter: "",
     score: 0,
     prevWord: "",
-    timerValue: 30,
+    timerValue: 33,
     curScore: 0,
     curQuery: "",
     words: [],
@@ -31,6 +31,7 @@ const MultiPlayer_Game = () => {
   const [username, setUsername] = useState(null);
   const [id, setId] = useState(null);
   const [scores, setScores] = useState([]);
+  const [hiddenLetter, setHiddenLetter] = useState(false);
   // Fetch room settings and join room
   useEffect(() => {
     const fetchRoomSettings = async () => {
@@ -38,13 +39,16 @@ const MultiPlayer_Game = () => {
         try {
           const response = await get(`/api/room/${roomCode}`);
           setRoomSettings(response.room.settings); // Save room settings (e.g., minLetters, hideLetter)
+          setHiddenLetter(response.room.settings.hideLetter);
           setRandomString(response.room.randomLetters);
-          setGameState((prevState) => ({
-            ...prevState,
-            prevWord: response.room.firstWord,
+          setGameState(
+            (prevState) => ({
+              ...prevState,
+              prevWord: response.room.firstWord,
             words: [response.room.firstWord],
-            timerValue: response.room.settings.type === "regular" ? 30 : 60,
-          }));
+            timerValue: response.room.settings.type ? 63 : 33,
+            })
+            );
           joinRoom(response.room.settings); // Pass settings to the joinRoom function
         } catch (error) {
           console.error("Error fetching room settings:", error);
@@ -122,17 +126,17 @@ const MultiPlayer_Game = () => {
       ...prevState,
       words: prevState.words.concat(currentWord),
     }));
-    socket.on("updateGameState", (gameState) => {
-      console.log(gameState);
+    socket.on("updateGameState", (getGameState) => {
       setGameState((prevState) => ({
         ...prevState,
-        score: parseInt(prevState.score) + parseInt(gameState.totalResults),
+        score: parseInt(getGameState.gameState.score),
         prevWord: currentWord,
         curLetter: randomString[index % randomString.length],
         nextLetter: randomString[(index + 1) % randomString.length],
-        curScore: parseInt(gameState.totalResults),
+        curScore: parseInt(getGameState.gameState.curScore),
         curQuery: queryText,
       }));
+      console.log(gameState);
     });
   };
 
@@ -140,7 +144,7 @@ const MultiPlayer_Game = () => {
   useEffect(() => {
     const timer = setInterval(() => {
       setGameState((prevState) => {
-        const newTimerValue = prevState.timerValue - 1;
+        const newTimerValue = prevState.timerValue - 0.1;
         if (newTimerValue <= 0) {
           clearInterval(timer);
           alert(`Game Over! Final Score: ${prevState.score}`);
@@ -148,7 +152,7 @@ const MultiPlayer_Game = () => {
         }
         return { ...prevState, timerValue: newTimerValue };
       });
-    }, 1000);
+    }, 100);
 
     return () => clearInterval(timer);
   }, []);
@@ -193,9 +197,9 @@ const MultiPlayer_Game = () => {
         <hr className="currword-line" />
 
         {/* Next Letter */}
-        <div className="random-next-letter">
+        {!hiddenLetter && <div className="random-next-letter">
           <span id="nextLetter">Next Letter: {gameState.nextLetter}</span>
-        </div>
+        </div>}
 
         {/* Query History */}
         <div className="results-list-container">
@@ -216,7 +220,7 @@ const MultiPlayer_Game = () => {
         </div>
 
         {/* Timer */}
-        <div className="time-container">{gameState.timerValue}s</div>
+        <div className="time-container">{Math.max(0, gameState.timerValue.toFixed(1))}</div>
       </div>
     </>
   );

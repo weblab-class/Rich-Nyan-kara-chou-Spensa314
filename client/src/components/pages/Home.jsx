@@ -26,7 +26,7 @@ const Home = () => {
     const newRoomCode = Math.floor(Math.random() * 10000).toString();
     setRoomCode(newRoomCode);
     console.log(newRoomCode);
-    navigate(`/room/${newRoomCode}`);
+    navigate(`/room/${newRoomCode}`, {state:{host: true}});
   };
 
   const onJoinRoomClick = () => {
@@ -36,10 +36,10 @@ const Home = () => {
         console.log(res);
         get(`/api/getRoom/${roomCode}`).then((res) => {
           console.log(res);
-          if (res.gameStarted === true) {
+          if (res === true) {
             alert("Game already started!");
           } else {
-            navigate(`/room/${roomCode}`);
+            navigate(`/room/${roomCode}`, {state:{host: false}} );
           }
         });
       } else {

@@ -186,9 +186,11 @@ const SinglePlayer_Game = () => {
         <hr className="currword-line" />
 
         {/* Next Letter */}
-        <div className="random-next-letter">
-          <span id="nextLetter">Next Letter: {gameState.nextLetter}</span>
-        </div>
+        {!hideLetter && (
+          <div className="random-next-letter">
+            <span id="nextLetter">Next Letter: {gameState.nextLetter}</span>
+          </div>
+        )}
 
         {/* Query History */}
         <div className="results-list-container">

@@ -4,11 +4,20 @@ import { useNavigate } from "react-router-dom";
 import { UserContext } from "../App";
 import "./NavBar.css";
 import "../../utilities.css";
+import { useEffect, useState } from "react";
+import { get } from "../../utilities";
 
 const NavBar = () => {
   const { userId, handleLogout } = useContext(UserContext);
   const navigate = useNavigate();
-
+  const [username, setUsername] = useState("");
+  useEffect(() => {
+    get("/api/whoami").then((res) => {
+      if (res.name !== null) {
+        setUsername(res.name);
+      }
+    });
+  }, []);
   const handleLogoutClick = () => {
     googleLogout();
     handleLogout();
@@ -36,7 +45,7 @@ const NavBar = () => {
 
       <div className="right-container">
         <div onClick={handleProfileClick} className="navbar-link nav-profile">
-          Name {/* put in actual name */}
+          {username} {/* put in actual name */}
         </div>
 
         <div onClick={handleLeaderboardClick} className="navbar-link">

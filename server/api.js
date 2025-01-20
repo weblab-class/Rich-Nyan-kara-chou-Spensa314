@@ -36,7 +36,8 @@ router.post("/initsocket", (req, res) => {
 });
 
 router.get("/room/:roomCode", (req, res) => {
-  const { roomCode } = req.params;
+  const roomCode = req.params.roomCode;
+  console.log(roomCode);
   // Check if the roomCode exists in the rooms object
   if (socketManager.gR(roomCode)) {
     // Room exists
@@ -125,13 +126,10 @@ router.post("/startGame/:roomCode", (req, res) => {
   }
 });
 
-router.get("/getRoom/:roomCode", (req, res) => {
-  const room = socketManager.gR(req.params.roomCode);
-  if (room) {
-    res.send(room);
-  } else {
-    res.status(404).send({ msg: "Room not found" });
-  }
+router.get("/getRoom/:roomCode", async (req, res) => {
+  const roomCode = req.params.roomCode;
+  console.log('HUHUHU', socketManager.gameStarted(roomCode));
+  res.send(socketManager.gameStarted(roomCode));
 });
 // Route: Search
 router.get("/search", async (req, res) => {

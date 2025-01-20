@@ -54,6 +54,7 @@ const joinRoom = (roomId, user, socket, settings) => {
   }
 
   // Initialize the room if it doesn't exist
+
   if (!rooms[roomId]) {
     gameLogic.initializeRoom(roomId, settings);
     rooms[roomId] = { players: [], gameStarted: false , firstWord: gameLogic.getRoom(roomId).firstWord };
@@ -69,7 +70,6 @@ const joinRoom = (roomId, user, socket, settings) => {
   // Emit the updated player list to everyone in the room
   console.log(`Updated players list for room ${roomId}:`, room.players);
   io.to(roomId).emit("updatePlayers", room.players);
-
   // Emit the initial game state to everyone in the room
   const initialGameState = gameLogic.getNextLetter(roomId);
   io.to(roomId).emit("updateGameState", { gameState: initialGameState });
@@ -102,8 +102,9 @@ const startGame = (roomId, gameDetails) => {
     return;
   }
   // set gameStarted to true
-  rooms[roomId].gameStarted = true;
   gameLogic.initializeRoom(roomId, { minLength: gameDetails.minWordLength, hideLetter: gameDetails.hideLetter, type: gameDetails.hardMode });
+  gameLogic.setGameStarted(roomId);
+  gameLogic.setRoomId(roomId, rooms[roomId].players);
   // Emit to everyone that the game has started in this room
   io.to(roomId).emit("gameStarted", {
     roomId,
@@ -118,8 +119,6 @@ const gR = (roomId) => {
   if (!gameLogic.getRoom(roomId)) {
     return;
   }
-  console.log('hi');
-  console.log(socketToIDMap);
   return gameLogic.getRoom(roomId);
 };
 
@@ -140,11 +139,16 @@ const notifyScores = (roomId) => {
     return;
   }
 
-  const sortedScores = gameLogic.getSortedScores().map((scoreEntry) => {
-    const userName = getNameFromUserID(scoreEntry.playerName);
+  const sortedScores = gameLogic.getSortedScores(roomId).map((scoreEntry) => {
+    const userName = userIDtoNameMap[scoreEntry.playerName];
     return { playerName: userName, score: scoreEntry.score };
 });
   io.to(roomId).emit("updateScores", { scores: sortedScores });
+};
+
+const gameStarted = (roomId) => {
+  const gameStarted = gameLogic.getGameStarted(roomId);
+  return gameStarted;
 };
 
 module.exports = {
@@ -183,7 +187,7 @@ module.exports = {
           socket.emit("updateGameState", newGameState);
           notifyScores(roomId);
           // Optionally broadcast the game state to all clients in the room
-          io.to(roomId).emit("updateGameState", newGameState);
+          // io.to(roomId).emit("updateGameState", newGameState);
           
         } catch (error) {
           console.error(`Error processing query: ${error.message}`);
@@ -228,4 +232,5 @@ module.exports = {
   startGame: startGame,
   getPlayerStats: getPlayerStats,
   notifyScores: notifyScores,
+  gameStarted: gameStarted, 
 };
