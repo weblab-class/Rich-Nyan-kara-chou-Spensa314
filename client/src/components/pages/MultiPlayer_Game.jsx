@@ -5,6 +5,7 @@ import { get } from "../../utilities";
 
 import "../../utilities.css";
 import "./MultiPlayer_Game.css";
+import "./Loading.css";
 
 const MultiPlayer_Game = () => {
   const navigate = useNavigate();
@@ -24,7 +25,13 @@ const MultiPlayer_Game = () => {
   });
   const [query, setQuery] = useState("");
   const [errorMessage, setErrorMessage] = useState(null);
-  const [roomSettings, setRoomSettings] = useState(null);
+  const [initialTime, setInitialTime] = useState(30);
+  const [roomSettings, setRoomSettings] = useState({
+    minLength: 3,
+    hideLetter: false,
+    type: false,
+    initiate: false,
+  });
   const [isLoading, setIsLoading] = useState(true); // Loading state for 3-second delay
   const [randomString, setRandomString] = useState("");
   const [index, setIndex] = useState(0);
@@ -35,19 +42,24 @@ const MultiPlayer_Game = () => {
   // Fetch room settings and join room
   useEffect(() => {
     const fetchRoomSettings = async () => {
-      if (!roomSettings) {
+      if (!roomSettings.initiate) {
         try {
           const response = await get(`/api/room/${roomCode}`);
-          setRoomSettings(response.room.settings); // Save room settings (e.g., minLetters, hideLetter)
-          setHiddenLetter(response.room.settings.hideLetter);
+          setRoomSettings(response.room.settings); // Save room settings (e.g., minLetters, hideLetter)          setHiddenLetter(response.room.settings.hideLetter);
           setRandomString(response.room.randomLetters);
+          console.log(response.room.settings);
           setGameState((prevState) => ({
             ...prevState,
             prevWord: response.room.firstWord,
             words: [response.room.firstWord],
-            timerValue: response.room.settings.type ? 63 : 33,
+            timerValue: response.room.settings.type === "true" ? 65 : 35,
           }));
+          setInitialTime(response.room.settings.type === "true" ? 60 : 30);
           joinRoom(response.room.settings); // Pass settings to the joinRoom function
+          setRoomSettings((prevState) => ({
+            ...prevState,
+            initiate: true,
+          }));
         } catch (error) {
           console.error("Error fetching room settings:", error);
           setErrorMessage("Failed to fetch room settings.");
@@ -100,7 +112,7 @@ const MultiPlayer_Game = () => {
     fetchRoomSettings();
 
     // Add 3-second delay before setting loading to false
-    const loadingTimer = setTimeout(() => setIsLoading(false), 3000);
+    const loadingTimer = setTimeout(() => setIsLoading(false), 5000);
     console.log(gameState);
 
     return () => clearTimeout(loadingTimer);
@@ -155,8 +167,24 @@ const MultiPlayer_Game = () => {
     return () => clearInterval(timer);
   }, []);
 
+  {
+    /* loading page */
+  }
   if (isLoading) {
-    return <div>Loading game settings, please wait...</div>;
+    return (
+      <>
+        <div className="loading-container">
+          <div className="settings-summary-container">
+            Room Settings: Minimum Length: {roomSettings.minLength}
+            {roomSettings.hideLetter && <div>Hide Letter: True</div>}
+            {!roomSettings.hideLetter && <div>Hide Letter: False</div>}
+            {!roomSettings.type && <div>Regular Mode</div>}
+            {!roomSettings.hideLetter && <div>Hard Mode</div>}
+            Game Timer: {initialTime}
+          </div>
+        </div>
+      </>
+    );
   }
 
   return (
