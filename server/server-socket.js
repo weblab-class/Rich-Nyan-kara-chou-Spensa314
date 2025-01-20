@@ -102,7 +102,7 @@ const startGame = (roomId, gameDetails) => {
     return;
   }
   // set gameStarted to true
-  gameLogic.initializeRoom(roomId, { minLength: gameDetails.minWordLength, hideLetter: gameDetails.hideLetter, type: gameDetails.hardMode });
+  gameLogic.initializeRoom(roomId, { minLength: gameDetails.minWordLength, hideLetter: gameDetails.hideLetter, type: gameDetails.hardMode , time: gameDetails.timeLimit});
   gameLogic.setGameStarted(roomId);
   gameLogic.setRoomId(roomId, rooms[roomId].players);
   // Emit to everyone that the game has started in this room
@@ -123,12 +123,10 @@ const gR = (roomId) => {
 };
 
 const getPlayerStats = (socket) => {
-  console.log(socketToIDMap);
   const userId = socketToIDMap[socket.id];
   if (!userId) {
     return;
   }
-  console.log(gameLogic.getPlayerStats(userId));
   return gameLogic.getPlayerStats(userId);
   
 };
@@ -150,6 +148,18 @@ const gameStarted = (roomId) => {
   const gameStarted = gameLogic.getGameStarted(roomId);
   return gameStarted;
 };
+
+const setInitiated = (userId, roomId) => {
+  if (!userId) {
+    return;
+  }
+  gameLogic.setInitiated(userId, roomId);
+}
+const initiated = (userId, roomId) => {
+  const initiated = gameLogic.getInitiated(userId, roomId);
+  return initiated;
+}
+
 
 module.exports = {
   init: (http) => {
@@ -233,4 +243,6 @@ module.exports = {
   getPlayerStats: getPlayerStats,
   notifyScores: notifyScores,
   gameStarted: gameStarted, 
+  initiated: initiated, 
+  setInitiated: setInitiated
 };

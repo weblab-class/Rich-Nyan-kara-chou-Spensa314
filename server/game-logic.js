@@ -20,8 +20,13 @@ const playerStates = {};
 const startedRooms = [];
 const roomToPlayers = {};
 // Helper: Generate Seeded Random Sequence
-function generateSeededSequence(seed, length = DEFAULT_SEQUENCE_LENGTH, type = "false") {
-  const charSet = letters[type] || letters.false;
+function generateSeededSequence(seed, length = DEFAULT_SEQUENCE_LENGTH, type = false) {
+    let charSet;
+    if (type) {
+        charSet = letters.true;
+    }else{
+        charSet = letters.false;
+    }
   const rng = seedrandom(seed);
   return Array.from({ length }, () => charSet[Math.floor(rng() * charSet.length)]);
 }
@@ -41,7 +46,7 @@ function firstWord(){
 }
 
 // Initialize a Room
-function initializeRoom(roomId, settings = {minLength: 3, hideLetter: false, type: "false"}) {
+function initializeRoom(roomId, settings = {minLength: 3, hideLetter: false, type: false, time: 30}) {
     const rando = Math.floor(Math.random() * 10000); // Random number between 0 and 999999
     const seed = parseInt(roomId, 10) || roomId.length || 0; // Fallback to roomId length if not numeric
     const roomSeed = seed - rando || `${roomId}-${rando}`;
@@ -55,6 +60,7 @@ function initializeRoom(roomId, settings = {minLength: 3, hideLetter: false, typ
       firstWord: firstWord(),
       gameStarted: false, 
       type: settings.type,
+      time: settings.time,
     };
 }
 
@@ -80,6 +86,7 @@ function getPlayerState(playerId) {
       nextLetter: "",
       timerValue: DEFAULT_TIMER_VALUE,
       minWordLength: DEFAULT_MIN_WORD_LENGTH,
+      initiated: false
     };
   }
   return playerStates[playerId];
@@ -96,6 +103,7 @@ function resetPlayerState(playerId, roomId) {
   state.curLetter = getNextLetter(roomId);
   state.nextLetter = getNextLetter(roomId);
   state.timerValue = DEFAULT_TIMER_VALUE;
+  state.initiated = false;
 }
 
 function setRoomId(roomId, players) {
@@ -177,6 +185,17 @@ function getGameStarted(roomId) {
     return false;
 }
 
+function setInitiated(playerId) {
+  const state = getPlayerState(playerId);
+  state.initiated = true;
+  console.log("Initiated:", state.initiated);
+}
+
+function getInitiated(playerId, roomId) {
+  const state = getPlayerState(playerId);
+  return state.initiated;
+}
+
 function getSortedScores(roomId) {
     const playersInRoom = roomToPlayers[roomId];
   if (!playersInRoom || playersInRoom.length === 0) {
@@ -205,6 +224,8 @@ module.exports = {
   getSortedScores,
   setGameStarted,
   getGameStarted,
+  setInitiated,
+  getInitiated,
   setRoomId
 };
 

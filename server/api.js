@@ -48,13 +48,6 @@ router.get("/room/:roomCode", (req, res) => {
   }
 });
 
-router.get("/room/:roomCode/playerStats", (req, res) => {
-  const roomCode = req.params.roomCode;
-  const socketId = req.query.socketId;
-  console.log(`Received request for roomCode: ${roomCode} and socketId: ${socketId}`);
-  res.send(socketManager.getPlayerStats(socketId));
-});
-
 // Route: Check game status
 router.get("/game/status/:roomCode", (req, res) => {
   const roomCode = req.params.roomCode;
@@ -105,6 +98,7 @@ router.post("/startGame/:roomCode", (req, res) => {
   try {
     // Extract gameDetails directly from req.body
     const gameDetails = req.body;
+    console.log("THIS" + gameDetails.hardMode);
     socketManager.startGame(gameDetails.roomCode, gameDetails);
     // Validate that gameDetails is provided
     if (!gameDetails) {
@@ -169,7 +163,7 @@ router.post("/initializeRoom", (req, res) => {
 });
 
 router.get("/getNextLetter/:roomId", (req, res) => {
-  const { roomId } = req.params;
+  const { roomId } = req.params.roomId;
   try {
     const letter = game.getNextLetter(roomId);
     res.status(200).json({ letter });
@@ -178,6 +172,21 @@ router.get("/getNextLetter/:roomId", (req, res) => {
   }
 });
 
+router.get("/getInitiated/:roomId", (req, res) => {
+  const roomId = req.params.roomId;
+  const userId = req.query.userId.slice(0,-1);
+  console.timeLog(roomId, userId);
+  const initiated = socketManager.initiated(userId, roomId);
+  console.log(initiated);
+  res.send(initiated);
+});
+
+router.post("/setInitiated/:roomId", (req, res) => {
+  const roomId = req.params.roomId;
+  const userId = req.query.userId;
+  socketManager.setInitiated(userId, roomId);
+  res.status(200).send({ msg: "Initiated set successfully" });
+});
 // Catch-all for undefined routes
 router.all("*", (req, res) => {
   console.log(`API route not found: ${req.method} ${req.url}`);

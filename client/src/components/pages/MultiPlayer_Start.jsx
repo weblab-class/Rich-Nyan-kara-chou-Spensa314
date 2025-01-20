@@ -37,7 +37,7 @@ const MultiPlayer_Start = () => {
         socket.emit("joinRoom", {
           roomId: roomCode,
           user: res.name,
-          settings: { hideLetter, hardMode, minWordLength: minLetters },
+          settings: { hideLetter, hardMode, minWordLength: minLetters, type: "false" },
         });
       }
     });
@@ -68,7 +68,6 @@ const MultiPlayer_Start = () => {
       minWordLength: minLetters,
       gameState: "waiting",
     };
-
     // Notify the server to start the game
     post(`/api/startGame/${roomCode}`, gameDetails).then((res) => {
       console.log(res);

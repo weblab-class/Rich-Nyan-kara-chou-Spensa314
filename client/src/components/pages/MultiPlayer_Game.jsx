@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { socket } from "../../client-socket.js";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
-import { get } from "../../utilities";
+import { get , post} from "../../utilities";
 
 import "../../utilities.css";
 import "./MultiPlayer_Game.css";
@@ -42,31 +42,39 @@ const MultiPlayer_Game = () => {
   // Fetch room settings and join room
   useEffect(() => {
     const fetchRoomSettings = async () => {
-      if (!roomSettings.initiate) {
+        const r = await get('/api/whoami');
+        const userId = r._id;
+        console.log(userId);
         try {
-          const response = await get(`/api/room/${roomCode}`);
-          setRoomSettings(response.room.settings); // Save room settings (e.g., minLetters, hideLetter)          setHiddenLetter(response.room.settings.hideLetter);
-          setRandomString(response.room.randomLetters);
-          console.log(response.room.settings);
-          setGameState((prevState) => ({
-            ...prevState,
-            prevWord: response.room.firstWord,
-            words: [response.room.firstWord],
-            timerValue: response.room.settings.type === "true" ? 65 : 35,
-          }));
-          setInitialTime(response.room.settings.type === "true" ? 60 : 30);
-          joinRoom(response.room.settings); // Pass settings to the joinRoom function
-          setRoomSettings((prevState) => ({
-            ...prevState,
-            initiate: true,
-          }));
+            const response = await get(`/api/getInitiated/${roomCode}?userId=${userId}`);
+            console.log('49' + response);
+            if (!response) {
+                try {
+                const response = await get(`/api/room/${roomCode}`);
+                setRoomSettings(response.room.settings); // Save room settings (e.g., minLetters, hideLetter)          setHiddenLetter(response.room.settings.hideLetter);
+                setRandomString(response.room.randomLetters);
+                console.log(response.room.settings);
+                setGameState((prevState) => ({
+                    ...prevState,
+                    prevWord: response.room.firstWord,
+                    words: [response.room.firstWord],
+                    timerValue: parseInt(response.room.settings.time) +5,
+                }));
+                console.log(response.room.settings.type);
+                setInitialTime(response.room.settings.time);
+                joinRoom(response.room.settings); // Pass settings to the joinRoom function
+                post(`/api/setInitiated/${roomCode}?userId=${userId}`);
+                } catch (error) {
+                console.error("Error fetching room settings:", error);
+                setErrorMessage("Failed to fetch room settings.");
+                }
+            } else {
+                joinRoom(roomSettings);
+            }
         } catch (error) {
-          console.error("Error fetching room settings:", error);
-          setErrorMessage("Failed to fetch room settings.");
-        }
-      } else {
-        joinRoom(roomSettings);
-      }
+            console.error("Error fetching initiation status:", error);
+            setErrorMessage("Failed to fetch initiation status.");
+          }
     };
 
     const joinRoom = (settings) => {
