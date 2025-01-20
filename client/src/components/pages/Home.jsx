@@ -36,7 +36,7 @@ const Home = () => {
         console.log(res);
         get(`/api/getRoom/${roomCode}`).then((res) => {
           console.log(res);
-          if (res.gameStarted === true) {
+          if (res === true) {
             alert("Game already started!");
           } else {
             navigate(`/room/${roomCode}`);
