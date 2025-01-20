@@ -9,7 +9,12 @@
   justify-content: center;
   text-align: center;
   align-items: center;
-  overflow: hidden;
+  overflow-y: auto;
+  scroll-behavior: smooth;
+}
+
+.multi-score-container::-webkit-scrollbar {
+  display: none; /* This hides the scrollbar */
 }
 
 .multi-results-container {

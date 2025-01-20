@@ -8,7 +8,12 @@
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  overflow: hidden;
+  overflow-y: auto;
+  scroll-behavior: smooth;
+}
+
+.profile-container::-webkit-scrollbar {
+  display: none; /* This hides the scrollbar */
 }
 
 .profile-personal-container {

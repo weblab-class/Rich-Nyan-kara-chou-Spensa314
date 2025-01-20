@@ -1,12 +1,12 @@
 .navbar-container {
   background-color: var(--brown);
-  padding-top: var(--xs);
   padding: var(--xxs);
+
   display: flex;
   justify-content: space-between;
   text-align: center;
   align-items: center; /* Ensure vertical alignment */
-  height: 2.75vw;
+  height: 2.8vw;
 }
 
 .navbar-link {
@@ -67,6 +67,8 @@
   margin-right: var(--xs);
   padding-left: var(--xs);
   padding-right: var(--xs);
+  padding-bottom: 0.25vw;
+  padding-top: 0.1vw;
   font-size: var(--s);
   display: flex;
   align-items: center;

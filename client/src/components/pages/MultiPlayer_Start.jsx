@@ -20,10 +20,14 @@ const MultiPlayer_Start = () => {
 
   useEffect(() => {
     get("/api/whoami").then((res) => {
-        console.log(res.name);
+      console.log(res.name);
       if (res.name !== null) {
         setUsername(res.name);
-        socket.emit("joinRoom", { roomId: roomCode, user: res.name, settings: { hideLetter, hardMode, minWordLength: minLetters} });
+        socket.emit("joinRoom", {
+          roomId: roomCode,
+          user: res.name,
+          settings: { hideLetter, hardMode, minWordLength: minLetters },
+        });
       }
     });
     if (!username) {
@@ -31,7 +35,6 @@ const MultiPlayer_Start = () => {
       return;
     }
 
-   
     // Listen for updates to the player list
     socket.on("updatePlayers", (updatedPlayers) => {
       setPlayers(updatedPlayers);
@@ -81,23 +84,23 @@ const MultiPlayer_Start = () => {
       // Update game state or navigate to the game page
       get("/api/room/${roomCode}").then((res) => {
         navigate(`/game/${roomCode}`, {
-            state: {
+          state: {
             roomId: roomCode,
             userId: socket.id,
             userName: username,
             minLetters: res.minWordLength,
             hideLetter: res.hideLetter,
             hardMode: res.hardMode,
-        },
+          },
+        });
       });
     });
-    });
-  
+
     return () => {
       socket.off("gameStarted");
     };
   }, [navigate]);
-  
+
   const onSettingsClick = () => {
     setIsModalOpen(true);
   };
@@ -125,8 +128,6 @@ const MultiPlayer_Start = () => {
   const onSliderChange = (event) => {
     setMinLetters(event.target.value);
   };
-
-
 
   return (
     <>

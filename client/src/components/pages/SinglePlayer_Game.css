@@ -8,7 +8,12 @@
   flex-direction: column;
   justify-content: top;
   align-items: center;
-  overflow: hidden;
+  overflow-y: auto;
+  scroll-behavior: smooth;
+}
+
+.game-container::-webkit-scrollbar {
+  display: none; /* This hides the scrollbar */
 }
 
 /* Scoreboard */
@@ -113,7 +118,7 @@
 .currword-container {
   width: 63vw;
   font-size: var(--ml);
-  color: var(--brown);
+  color: var(--dark--brown);
 
   display: flex;
   flex-direction: row;

@@ -7,7 +7,12 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  overflow: hidden;
+  overflow-y: auto;
+  scroll-behavior: smooth;
+}
+
+.multiplayer-container::-webkit-scrollbar {
+  display: none; /* This hides the scrollbar */
 }
 
 .mp-page-button {

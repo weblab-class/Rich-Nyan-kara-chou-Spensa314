@@ -39,14 +39,12 @@ const MultiPlayer_Game = () => {
           const response = await get(`/api/room/${roomCode}`);
           setRoomSettings(response.room.settings); // Save room settings (e.g., minLetters, hideLetter)
           setRandomString(response.room.randomLetters);
-          setGameState(
-            (prevState) => ({
-              ...prevState,
-              prevWord: response.room.firstWord,
-              words: [response.room.firstWord],
-              timerValue: response.room.settings.type === "regular" ? 30 : 60,
-            })
-            );
+          setGameState((prevState) => ({
+            ...prevState,
+            prevWord: response.room.firstWord,
+            words: [response.room.firstWord],
+            timerValue: response.room.settings.type === "regular" ? 30 : 60,
+          }));
           joinRoom(response.room.settings); // Pass settings to the joinRoom function
         } catch (error) {
           console.error("Error fetching room settings:", error);
@@ -58,14 +56,15 @@ const MultiPlayer_Game = () => {
     };
 
     const joinRoom = (settings) => {
-        get("/api/whoami").then((res) => {
-            console.log(res);
-          if (res.name !== null) {
-            setUsername(res.name);
-            setId(res._id);
-            socket.emit("joinRoom", { roomId: roomCode, user: res.name, settings });
-          }});
-      
+      get("/api/whoami").then((res) => {
+        console.log(res);
+        if (res.name !== null) {
+          setUsername(res.name);
+          setId(res._id);
+          socket.emit("joinRoom", { roomId: roomCode, user: res.name, settings });
+        }
+      });
+
       socket.on("updateGameState", (gameState) => {
         setGameState((prevState) => ({
           ...prevState,
@@ -73,7 +72,7 @@ const MultiPlayer_Game = () => {
           nextLetter: randomString[index + 1],
         }));
       });
-      
+
       socket.on("updatePlayers", (players) => {
         console.log("Players in room:", players);
       });
@@ -116,7 +115,7 @@ const MultiPlayer_Game = () => {
     console.log(index);
     const currentWord = `${gameState.curLetter}${query}`;
     const queryText = `${gameState.prevWord} ${currentWord}`;
-    
+
     setQuery("");
     socket.emit("submitQuery", { roomId: roomCode, query: queryText });
     setGameState((prevState) => ({
@@ -129,14 +128,13 @@ const MultiPlayer_Game = () => {
         ...prevState,
         score: parseInt(prevState.score) + parseInt(gameState.totalResults),
         prevWord: currentWord,
-        curLetter: randomString[index % randomString.length], 
+        curLetter: randomString[index % randomString.length],
         nextLetter: randomString[(index + 1) % randomString.length],
         curScore: parseInt(gameState.totalResults),
         curQuery: queryText,
       }));
     });
   };
-  
 
   // Timer logic
   useEffect(() => {
@@ -163,7 +161,7 @@ const MultiPlayer_Game = () => {
     <>
       <div className="game-container">
         {/* Scoreboard */}
-        <div className="score-container">
+        <div className="mp-score-container">
           <span className="score-label">Score: </span>
           <span className="score-value">{gameState.score}</span>
         </div>
@@ -183,7 +181,7 @@ const MultiPlayer_Game = () => {
         {/* Input */}
 
         <div className="currword-container">
-        {gameState.curLetter}
+          {gameState.curLetter}
           <input
             type="text"
             id="searchQuery"
@@ -207,21 +205,19 @@ const MultiPlayer_Game = () => {
         </div>
 
         <div className="scoreboard-container">
-        <h3>Scoreboard</h3>
-        <ul>
+          <h3>Scoreboard</h3>
+          <ul>
             {scores.map((player, index) => (
-            <li key={index}>
+              <li key={index}>
                 {player.playerName}: {parseInt(player.score)}
-            </li>
+              </li>
             ))}
-        </ul>
+          </ul>
         </div>
 
         {/* Timer */}
         <div className="time-container">{gameState.timerValue}s</div>
       </div>
-      
-
     </>
   );
 };

@@ -103,29 +103,31 @@ const Home = () => {
         {isInfoModalOpen && (
           <div className="room-modal-overlay">
             <div className="info-modal-container">
-              <div onClick={onInfoExitClick} className="room-button close-button">
+              <div className="info-text-container">
+                <div className="info-title">How to Play</div>
+                <div className="info-text">
+                  <span className="info-text-title">Objective: </span> Score the highest points by
+                  entering the trendiest search terms.
+                </div>
+                <div className="info-text">
+                  <span className="info-text-title">Game Mechanics: </span> You're given a starting
+                  word and the starting letter for the following word in the phrase. You are to fill
+                  in the following word. Once you enter your phrase, the word you filled in will now
+                  become the starting word. This process is repeated within the given time limit.
+                </div>
+                <div className="info-text">
+                  <span className="info-text-title">Example: </span>
+                </div>
+                <div className="info-text">
+                  "Apple P": "Apple P<span className="info-text-color">ie</span>"
+                </div>
+                <div className="info-text">
+                  {" "}
+                  "Pie C": "Pie C<span className="info-text-color">hart</span>"
+                </div>
+              </div>
+              <div onClick={onInfoExitClick} className="room-button info-close-button">
                 X
-              </div>
-              <div className="info-title">How to Play</div>
-              <div className="info-text">
-                <span className="info-text-title">Objective: </span> Score the highest points by
-                entering the trendiest search terms.
-              </div>
-              <div className="info-text">
-                <span className="info-text-title">Game Mechanics: </span> You're given a starting
-                word and the starting letter for the following word in the phrase. You are to fill
-                in the following word. Once you enter your phrase, the word you filled in will now
-                become the starting word. This process is repeated within the given time limit.
-              </div>
-              <div className="info-text">
-                <span className="info-text-title">Example: </span>
-              </div>
-              <div className="info-text">
-                "Apple P": "Apple P<span className="info-text-color">ie</span>"
-              </div>
-              <div className="info-text">
-                {" "}
-                "Pie C": "Pie C<span className="info-text-color">hart</span>"
               </div>
             </div>
           </div>
