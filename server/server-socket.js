@@ -183,7 +183,7 @@ module.exports = {
           socket.emit("updateGameState", newGameState);
           notifyScores(roomId);
           // Optionally broadcast the game state to all clients in the room
-          io.to(roomId).emit("updateGameState", newGameState);
+          // io.to(roomId).emit("updateGameState", newGameState);
           
         } catch (error) {
           console.error(`Error processing query: ${error.message}`);

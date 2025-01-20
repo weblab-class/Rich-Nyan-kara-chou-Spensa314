@@ -17,7 +17,7 @@ const MultiPlayer_Game = () => {
     nextLetter: "",
     score: 0,
     prevWord: "",
-    timerValue: 30,
+    timerValue: 33,
     curScore: 0,
     curQuery: "",
     words: [],
@@ -44,7 +44,7 @@ const MultiPlayer_Game = () => {
               ...prevState,
               prevWord: response.room.firstWord,
               words: [response.room.firstWord],
-              timerValue: response.room.settings.type === "regular" ? 30 : 60,
+              timerValue: response.room.settings.type === "regular" ? 33 : 63,
             })
             );
           joinRoom(response.room.settings); // Pass settings to the joinRoom function
@@ -123,17 +123,17 @@ const MultiPlayer_Game = () => {
       ...prevState,
       words: prevState.words.concat(currentWord),
     }));
-    socket.on("updateGameState", (gameState) => {
-      console.log(gameState);
+    socket.on("updateGameState", (getGameState) => {
       setGameState((prevState) => ({
         ...prevState,
-        score: parseInt(prevState.score) + parseInt(gameState.totalResults),
+        score: parseInt(getGameState.gameState.score),
         prevWord: currentWord,
         curLetter: randomString[index % randomString.length], 
         nextLetter: randomString[(index + 1) % randomString.length],
-        curScore: parseInt(gameState.totalResults),
+        curScore: parseInt(getGameState.gameState.curScore),
         curQuery: queryText,
       }));
+      console.log(gameState);
     });
   };
   

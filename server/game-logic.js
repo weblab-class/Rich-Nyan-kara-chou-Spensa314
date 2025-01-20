@@ -70,6 +70,7 @@ function getPlayerState(playerId) {
   if (!playerStates[playerId]) {
     playerStates[playerId] = {
       score: 0,
+      curScore: 0,
       highScore: 0,
       prevWord: "apple",
       curLetter: "",
@@ -88,6 +89,7 @@ function resetPlayerState(playerId, roomId) {
 
   state.score = 0;
   state.prevWord = "";
+  state.curScore = 0;
   state.curLetter = getNextLetter(roomId);
   state.nextLetter = getNextLetter(roomId);
   state.timerValue = DEFAULT_TIMER_VALUE;
@@ -112,6 +114,7 @@ async function handlePlayerSearch(playerId, roomId, query) {
     const data = await response.json();
     const totalResults = data.searchInformation.totalResults || 0;
     state.score += parseInt(totalResults);
+    state.curScore = parseInt(totalResults);
     state.prevWord = query;
     state.curLetter = state.nextLetter;
     state.nextLetter = getNextLetter(roomId);
