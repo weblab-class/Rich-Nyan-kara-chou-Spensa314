@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from "react";
 import "../../utilities.css";
 import NavBar from "../modules/NavBar";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import "./Settings.css";
 import "./MultiPlayer_Start.css";
 import { post, get } from "../../utilities";
 import { socket } from "../../client-socket"; // Import Socket.IO client
 
 const MultiPlayer_Start = () => {
+  const location = useLocation();
+  const { host } = location.state || {};
   const { roomCode } = useParams(); // Get room code from URL
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [minLetters, setMinLetters] = useState(3);
@@ -132,12 +134,19 @@ const MultiPlayer_Start = () => {
     <>
       <NavBar />
       <div className="multiplayer-container">
+        {host && (
         <div onClick={onSettingsClick} className="mp-settings-button mp-page-button">
           Game Settings
         </div>
-        <div onClick={onStartClick} className="mp-start-button mp-page-button">
+        )}
+        {host &&<div onClick={onStartClick} className="mp-start-button mp-page-button">
           Start Game
         </div>
+        }
+        {!host &&<div className="mp-start-button mp-page-button">
+          Start Game
+        </div>
+        }
         <div className="mp-players-title">Players</div>
         <div className="mp-players-list">
           {players.map((player) => (

@@ -10,8 +10,8 @@ const DEFAULT_MIN_WORD_LENGTH = 3;
 const ROOM_EXPIRATION_TIME = 300000; // 5 minutes in milliseconds
 
 const letters = {
-  regular: "aaaaaaaabbccccddddeeeeeeeeeeeffggghhhiiiiiiiiijkllllllmmmnnnnnnnnooooooopppqrrrrrrrrssssssssstttttttuuuuvwxyyz",
-  hard: "abcdefghijklmnopqrstuvwxyz",
+  false: "aaaaaaaabbccccddddeeeeeeeeeeeffggghhhiiiiiiiiijkllllllmmmnnnnnnnnooooooopppqrrrrrrrrssssssssstttttttuuuuvwxyyz",
+  true: "abcdefghijklmnopqrstuvwxyz",
 };
 
 // State Maps
@@ -20,8 +20,8 @@ const playerStates = {};
 const startedRooms = [];
 const roomToPlayers = {};
 // Helper: Generate Seeded Random Sequence
-function generateSeededSequence(seed, length = DEFAULT_SEQUENCE_LENGTH, type = "regular") {
-  const charSet = letters[type] || letters.regular;
+function generateSeededSequence(seed, length = DEFAULT_SEQUENCE_LENGTH, type = "false") {
+  const charSet = letters[type] || letters.false;
   const rng = seedrandom(seed);
   return Array.from({ length }, () => charSet[Math.floor(rng() * charSet.length)]);
 }
@@ -41,7 +41,7 @@ function firstWord(){
 }
 
 // Initialize a Room
-function initializeRoom(roomId, settings = {minLength: 3, hideLetter: false, type: "regular"}) {
+function initializeRoom(roomId, settings = {minLength: 3, hideLetter: false, type: "false"}) {
     const rando = Math.floor(Math.random() * 10000); // Random number between 0 and 999999
     const seed = parseInt(roomId, 10) || roomId.length || 0; // Fallback to roomId length if not numeric
     const roomSeed = seed - rando || `${roomId}-${rando}`;
@@ -53,7 +53,8 @@ function initializeRoom(roomId, settings = {minLength: 3, hideLetter: false, typ
       seed: roomSeed,
       settings: { ...settings },
       firstWord: firstWord(),
-      gameStarted: false
+      gameStarted: false, 
+      type: settings.type,
     };
 }
 
@@ -177,7 +178,6 @@ function getGameStarted(roomId) {
 }
 
 function getSortedScores(roomId) {
-    console.log(roomToPlayers);
     const playersInRoom = roomToPlayers[roomId];
   if (!playersInRoom || playersInRoom.length === 0) {
     throw new Error(`No players found for room ${roomId}.`);

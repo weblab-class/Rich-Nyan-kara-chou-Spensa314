@@ -31,6 +31,7 @@ const MultiPlayer_Game = () => {
   const [username, setUsername] = useState(null);
   const [id, setId] = useState(null);
   const [scores, setScores] = useState([]);
+  const [hiddenLetter, setHiddenLetter] = useState(false);
   // Fetch room settings and join room
   useEffect(() => {
     const fetchRoomSettings = async () => {
@@ -38,13 +39,14 @@ const MultiPlayer_Game = () => {
         try {
           const response = await get(`/api/room/${roomCode}`);
           setRoomSettings(response.room.settings); // Save room settings (e.g., minLetters, hideLetter)
+          setHiddenLetter(response.room.settings.hideLetter);
           setRandomString(response.room.randomLetters);
           setGameState(
             (prevState) => ({
               ...prevState,
               prevWord: response.room.firstWord,
-              words: [response.room.firstWord],
-              timerValue: response.room.settings.type === "regular" ? 33 : 63,
+            words: [response.room.firstWord],
+            timerValue: response.room.settings.type ? 63 : 33,
             })
             );
           joinRoom(response.room.settings); // Pass settings to the joinRoom function
@@ -142,7 +144,7 @@ const MultiPlayer_Game = () => {
   useEffect(() => {
     const timer = setInterval(() => {
       setGameState((prevState) => {
-        const newTimerValue = prevState.timerValue - 1;
+        const newTimerValue = prevState.timerValue - 0.1;
         if (newTimerValue <= 0) {
           clearInterval(timer);
           alert(`Game Over! Final Score: ${prevState.score}`);
@@ -150,7 +152,7 @@ const MultiPlayer_Game = () => {
         }
         return { ...prevState, timerValue: newTimerValue };
       });
-    }, 1000);
+    }, 100);
 
     return () => clearInterval(timer);
   }, []);
@@ -195,9 +197,9 @@ const MultiPlayer_Game = () => {
         <hr className="currword-line" />
 
         {/* Next Letter */}
-        <div className="random-next-letter">
+        {!hiddenLetter && <div className="random-next-letter">
           <span id="nextLetter">Next Letter: {gameState.nextLetter}</span>
-        </div>
+        </div>}
 
         {/* Query History */}
         <div className="results-list-container">
@@ -218,7 +220,7 @@ const MultiPlayer_Game = () => {
         </div>
 
         {/* Timer */}
-        <div className="time-container">{gameState.timerValue}s</div>
+        <div className="time-container">{Math.max(0, gameState.timerValue.toFixed(1))}</div>
       </div>
       
 

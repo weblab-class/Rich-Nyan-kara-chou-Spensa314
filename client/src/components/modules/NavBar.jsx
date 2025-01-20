@@ -13,7 +13,6 @@ const NavBar = () => {
   const [username, setUsername] = useState("");
   useEffect(() => {
     get("/api/whoami").then((res) => {
-      console.log(res.name);
       if (res.name !== null) {
         setUsername(res.name);
       }
