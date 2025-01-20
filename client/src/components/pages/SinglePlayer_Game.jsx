@@ -176,7 +176,7 @@ const SinglePlayer_Game = () => {
             placeholder=""
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && onEnterKeyPress(e)}
-            className={isError ? "error" : ""}
+            className={`${isError ? "error" : ""}`}
             style={{
               width: `${query.length + 1}ch`,
             }}

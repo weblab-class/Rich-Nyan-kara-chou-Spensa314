@@ -7,7 +7,12 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  overflow: hidden;
+  overflow-y: auto;
+  scroll-behavior: smooth;
+}
+
+.home-container::-webkit-scrollbar {
+  display: none; /* This hides the scrollbar */
 }
 
 .center-container {
@@ -82,6 +87,15 @@
   box-shadow: 0 0 var(--xs) rgba(0, 0, 0, 0.3);
   width: 30vw; /* Set the width of the modal */
   height: 25vw;
+  position: relative;
+}
+
+.info-modal-container::-webkit-scrollbar {
+  display: none; /* This hides the scrollbar */
+}
+
+.info-text-container {
+  height: 100%;
   display: flex;
   flex-direction: column; /* Change to column to stack elements vertically */
   justify-content: top;
@@ -91,8 +105,7 @@
   overflow-y: auto;
   scroll-behavior: smooth;
 }
-
-.info-modal-container::-webkit-scrollbar {
+.info-text-container::-webkit-scrollbar {
   display: none; /* This hides the scrollbar */
 }
 
@@ -118,6 +131,26 @@
 .info-text-title {
   color: var(--dark--brown);
   text-shadow: 0 0 0.1vw rgba(0, 0, 0, 0.503); /* Horizontal, Vertical, Blur radius, Color */
+}
+
+.info-close-button {
+  font-size: 1.5vw;
+  position: absolute;
+  top: var(--xs);
+  right: var(--xs);
+  background-color: var(--light--beige);
+  height: var(--s);
+  width: var(--s);
+  box-shadow: 0 0 var(--xs) rgba(0, 0, 0, 0.3);
+
+  display: flex;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  color: var(--dark--brown);
 }
 
 /* MODAL FOR MULTIPLAYER GAME */
@@ -163,6 +196,8 @@
 .close-button {
   font-size: 1.5vw;
   position: absolute;
+  top: var(--xs);
+  right: var(--xs);
   background-color: var(--light--beige);
   height: var(--s);
   width: var(--s);
@@ -175,8 +210,6 @@
 
   border-radius: 50%;
 
-  top: var(--xs);
-  right: var(--xs);
   color: var(--dark--brown);
 }
 

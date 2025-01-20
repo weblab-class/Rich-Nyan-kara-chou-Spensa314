@@ -8,7 +8,12 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  overflow: hidden;
+  overflow-y: auto;
+  scroll-behavior: smooth;
+}
+
+.soloscore-container::-webkit-scrollbar {
+  display: none; /* This hides the scrollbar */
 }
 
 .score-title {

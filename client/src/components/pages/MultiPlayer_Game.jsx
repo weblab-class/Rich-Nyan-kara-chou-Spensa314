@@ -60,14 +60,15 @@ const MultiPlayer_Game = () => {
     };
 
     const joinRoom = (settings) => {
-        get("/api/whoami").then((res) => {
-            console.log(res);
-          if (res.name !== null) {
-            setUsername(res.name);
-            setId(res._id);
-            socket.emit("joinRoom", { roomId: roomCode, user: res.name, settings });
-          }});
-      
+      get("/api/whoami").then((res) => {
+        console.log(res);
+        if (res.name !== null) {
+          setUsername(res.name);
+          setId(res._id);
+          socket.emit("joinRoom", { roomId: roomCode, user: res.name, settings });
+        }
+      });
+
       socket.on("updateGameState", (gameState) => {
         setGameState((prevState) => ({
           ...prevState,
@@ -75,7 +76,7 @@ const MultiPlayer_Game = () => {
           nextLetter: randomString[index + 1],
         }));
       });
-      
+
       socket.on("updatePlayers", (players) => {
         console.log("Players in room:", players);
       });
@@ -118,7 +119,7 @@ const MultiPlayer_Game = () => {
     console.log(index);
     const currentWord = `${gameState.curLetter}${query}`;
     const queryText = `${gameState.prevWord} ${currentWord}`;
-    
+
     setQuery("");
     socket.emit("submitQuery", { roomId: roomCode, query: queryText });
     setGameState((prevState) => ({
@@ -130,7 +131,7 @@ const MultiPlayer_Game = () => {
         ...prevState,
         score: parseInt(getGameState.gameState.score),
         prevWord: currentWord,
-        curLetter: randomString[index % randomString.length], 
+        curLetter: randomString[index % randomString.length],
         nextLetter: randomString[(index + 1) % randomString.length],
         curScore: parseInt(getGameState.gameState.curScore),
         curQuery: queryText,
@@ -138,7 +139,6 @@ const MultiPlayer_Game = () => {
       console.log(gameState);
     });
   };
-  
 
   // Timer logic
   useEffect(() => {
@@ -165,7 +165,7 @@ const MultiPlayer_Game = () => {
     <>
       <div className="game-container">
         {/* Scoreboard */}
-        <div className="score-container">
+        <div className="mp-score-container">
           <span className="score-label">Score: </span>
           <span className="score-value">{gameState.score}</span>
         </div>
@@ -185,7 +185,7 @@ const MultiPlayer_Game = () => {
         {/* Input */}
 
         <div className="currword-container">
-        {gameState.curLetter}
+          {gameState.curLetter}
           <input
             type="text"
             id="searchQuery"
@@ -209,21 +209,19 @@ const MultiPlayer_Game = () => {
         </div>
 
         <div className="scoreboard-container">
-        <h3>Scoreboard</h3>
-        <ul>
+          <h3>Scoreboard</h3>
+          <ul>
             {scores.map((player, index) => (
-            <li key={index}>
+              <li key={index}>
                 {player.playerName}: {parseInt(player.score)}
-            </li>
+              </li>
             ))}
-        </ul>
+          </ul>
         </div>
 
         {/* Timer */}
         <div className="time-container">{Math.max(0, gameState.timerValue.toFixed(1))}</div>
       </div>
-      
-
     </>
   );
 };

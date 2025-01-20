@@ -9,7 +9,12 @@
   justify-items: center;
   justify-content: center;
   align-items: center;
-  overflow: hidden;
+  overflow-y: auto;
+  scroll-behavior: smooth;
+}
+
+.singleplayer-container::-webkit-scrollbar {
+  display: none; /* This hides the scrollbar */
 }
 
 .sp-page-button {
