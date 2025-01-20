@@ -23,6 +23,10 @@ const NavBar = () => {
     navigate("/leaderboard");
   };
 
+  const handleProfileClick = () => {
+    navigate("/profile");
+  };
+
   return (
     <div className="navbar-container">
       <div onClick={handleHomeClick} className="navigate-home-container navbar-link">
@@ -31,6 +35,10 @@ const NavBar = () => {
       </div>
 
       <div className="right-container">
+        <div onClick={handleProfileClick} className="navbar-link nav-profile">
+          Name {/* put in actual name */}
+        </div>
+
         <div onClick={handleLeaderboardClick} className="navbar-link">
           <img src="../../../crown.png" alt="Crown" className="leaderboard" />
         </div>

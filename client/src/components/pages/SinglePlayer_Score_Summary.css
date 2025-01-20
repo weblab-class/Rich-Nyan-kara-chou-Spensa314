@@ -1,0 +1,104 @@
+.soloscore-container {
+  height: 100vh;
+  width: 100vw;
+  background-color: var(--light--brown);
+  box-shadow: inset 0 0 var(--xs) rgba(0, 0, 0, 0.3); /* Adjust as needed */
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.score-title {
+  margin: 0;
+  font-size: var(--xl);
+  color: var(--dark--brown);
+  text-shadow:
+    var(--outline) var(--outline) 0 var(--beige),
+    var(---outline) var(---outline) 0 var(--beige),
+    var(--outline) var(---outline) 0 var(--beige),
+    var(---outline) var(--outline) 0 var(--beige),
+    /* Outline effect */ var(--xxs) var(--xxs) var(--xxs) rgba(0, 0, 0, 0.7); /* Black shadow */
+}
+
+.score-list-container {
+  background-color: var(--off--beige);
+  border-radius: var(--s);
+  width: 60vw;
+  box-shadow: 0 0 var(--xxs) rgba(0, 0, 0, 0.5); /* Adjust as needed */
+  margin-bottom: var(--xs);
+  display: flex;
+  flex-direction: column;
+  padding: var(--s);
+  overflow-y: auto;
+  scroll-behavior: smooth;
+}
+
+.score-list-container::-webkit-scrollbar {
+  display: none; /* This hides the scrollbar */
+}
+
+.score-result-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: top;
+  background-color: var(--beige);
+  box-shadow: 0 0.1vw 0.2vw rgba(0, 0, 0, 0.5); /* Adjust as needed */
+  margin: var(--xxs);
+  padding: var(--xxs) var(--xs);
+  margin-bottom: var(--xs);
+  border-radius: var(--s);
+  color: var(--dark--brown);
+  font-size: 2.5vw;
+
+  display: flex;
+  align-items: center;
+}
+
+.score-result-term {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-right: var(--xxs);
+}
+
+.score-result-query {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-right: var(--xxs);
+  padding: var(--xxs) var(--xs);
+  color: var(--brown);
+}
+
+.total-points-title {
+  margin-bottom: var(--l);
+  margin-top: 0;
+  font-size: var(--ml);
+  color: var(--beige);
+  text-shadow:
+    var(--outline) var(--outline) 0 var(--brown),
+    var(---outline) var(---outline) 0 var(--brown),
+    var(--outline) var(---outline) 0 var(--brown),
+    var(---outline) var(--outline) 0 var(--brown),
+    /* Outline effect */ var(--xxs) var(--xxs) var(--xxs) rgba(0, 0, 0, 0.7); /* Black shadow */
+}
+
+.next-leaderboard {
+  height: var(--m);
+  width: var(--m);
+  position: absolute;
+  bottom: var(--s);
+  right: var(--s);
+
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    opacity 0.2s ease; /* Smooth transition */
+}
+
+.next-leaderboard:hover {
+  opacity: 0.6;
+}

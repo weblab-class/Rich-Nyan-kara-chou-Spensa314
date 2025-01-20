@@ -1,9 +1,10 @@
 .navbar-container {
-  background-color: var(--light--brown);
-
+  background-color: var(--brown);
+  padding-top: var(--xs);
   padding: var(--xxs);
   display: flex;
   justify-content: space-between;
+  text-align: center;
   align-items: center; /* Ensure vertical alignment */
   height: 2.75vw;
 }
@@ -45,7 +46,7 @@
 .leaderboard {
   height: var(--s);
   width: var(--sm);
-  margin-right: var(--s);
+  margin-right: var(--xs);
   display: flex;
   align-items: center;
 }
@@ -56,4 +57,21 @@
   margin-right: var(--xs);
   display: flex;
   align-items: center;
+}
+
+.nav-profile {
+  color: var(--beige);
+  height: var(--s);
+  background-color: var(--dark--brown);
+  border-radius: var(--s);
+  margin-right: var(--xs);
+  padding-left: var(--xs);
+  padding-right: var(--xs);
+  font-size: var(--s);
+  display: flex;
+  align-items: center;
+  text-align: center;
+  justify-content: center;
+
+  box-shadow: 0.05vw 0.05vw 0.1vw rgba(0, 0, 0, 0.5);
 }
