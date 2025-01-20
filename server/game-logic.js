@@ -168,8 +168,6 @@ function setGameStarted(roomId) {
   console.log("Started rooms:", startedRooms);
 }
 function getGameStarted(roomId) {
-    console.log(roomId);
-    console.log(startedRooms);
     for (let i = 0; i < startedRooms.length; i++) {
       if (startedRooms[i] === parseInt(roomId)) {
         return true;
@@ -179,6 +177,7 @@ function getGameStarted(roomId) {
 }
 
 function getSortedScores(roomId) {
+    console.log(roomToPlayers);
     const playersInRoom = roomToPlayers[roomId];
   if (!playersInRoom || playersInRoom.length === 0) {
     throw new Error(`No players found for room ${roomId}.`);

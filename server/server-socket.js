@@ -70,7 +70,6 @@ const joinRoom = (roomId, user, socket, settings) => {
   // Emit the updated player list to everyone in the room
   console.log(`Updated players list for room ${roomId}:`, room.players);
   io.to(roomId).emit("updatePlayers", room.players);
-  gameLogic.setRoomId(roomId, room.players);
   // Emit the initial game state to everyone in the room
   const initialGameState = gameLogic.getNextLetter(roomId);
   io.to(roomId).emit("updateGameState", { gameState: initialGameState });
@@ -105,6 +104,7 @@ const startGame = (roomId, gameDetails) => {
   // set gameStarted to true
   gameLogic.initializeRoom(roomId, { minLength: gameDetails.minWordLength, hideLetter: gameDetails.hideLetter, type: gameDetails.hardMode });
   gameLogic.setGameStarted(roomId);
+  gameLogic.setRoomId(roomId, rooms[roomId].players);
   // Emit to everyone that the game has started in this room
   io.to(roomId).emit("gameStarted", {
     roomId,
@@ -143,7 +143,6 @@ const notifyScores = (roomId) => {
     const userName = userIDtoNameMap[scoreEntry.playerName];
     return { playerName: userName, score: scoreEntry.score };
 });
-console.log(sortedScores);
   io.to(roomId).emit("updateScores", { scores: sortedScores });
 };
 
