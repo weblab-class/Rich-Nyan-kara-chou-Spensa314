@@ -1,0 +1,43 @@
+.not-found-container {
+  height: 100vh;
+  width: 100vw;
+  background-color: var(--light--brown);
+  box-shadow: inset 0 0 var(--xs) rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  overflow-y: auto;
+  scroll-behavior: smooth;
+}
+
+.not-found-container::-webkit-scrollbar {
+  display: none; /* This hides the scrollbar */
+}
+
+.not-found-title {
+  color: var(--beige);
+  font-size: var(--m);
+}
+
+.not-found-text {
+  color: white;
+  font-size: var(--s);
+}
+
+.login-button {
+  color: var(--dark--brown);
+  background-color: var(--beige);
+  box-shadow: 0.05vw 0.05vw 0.1vw rgba(0, 0, 0, 0.5);
+  border-radius: var(--s);
+  font-size: var(--s);
+  padding: var(--xs) var(--s);
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    opacity 0.2s ease; /* Smooth transition */
+}
+
+.login-button:hover {
+  opacity: 0.65;
+}

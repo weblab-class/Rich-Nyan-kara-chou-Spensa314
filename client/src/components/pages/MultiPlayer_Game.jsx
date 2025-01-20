@@ -178,17 +178,50 @@ const MultiPlayer_Game = () => {
   {
     /* loading page */
   }
+
+  const [countdown, setCountdown] = useState(5); // 5 seconds countdown
+  useEffect(() => {
+    if (isLoading && countdown > 1) {
+      // Set an interval to decrease the countdown every second
+      const timer = setInterval(() => {
+        setCountdown((prevCountdown) => prevCountdown - 1);
+      }, 1000);
+
+      // Cleanup the interval once countdown reaches 0 or when component unmounts
+      return () => clearInterval(timer);
+    }
+  }, [countdown]);
+
   if (isLoading) {
     return (
       <>
         <div className="loading-container">
+          <div className="countdown-timer">{countdown}</div>
+
           <div className="settings-summary-container">
-            Room Settings: Minimum Length: {roomSettings.minLength}
-            {roomSettings.hideLetter && <div>Hide Letter: True</div>}
-            {!roomSettings.hideLetter && <div>Hide Letter: False</div>}
-            {!roomSettings.type && <div>Regular Mode</div>}
-            {!roomSettings.hideLetter && <div>Hard Mode</div>}
-            Game Timer: {initialTime}
+            <div className="settings-title">Room Settings</div>
+            Minimum Length: <span className="white">{roomSettings.minLength}</span>
+            {roomSettings.hideLetter && (
+              <div>
+                Hide Letter: <span className="green">True</span>
+              </div>
+            )}
+            {!roomSettings.hideLetter && (
+              <div>
+                Hide Letter: <span className="red">False</span>
+              </div>
+            )}
+            {!roomSettings.type && (
+              <div>
+                Mode: <span className="white">Regular</span>
+              </div>
+            )}
+            {roomSettings.type && (
+              <div>
+                Mode: <span className="red">Hard</span>
+              </div>
+            )}
+            Game Timer: <span className="white">{initialTime}</span>
           </div>
         </div>
       </>
