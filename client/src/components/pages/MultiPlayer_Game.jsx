@@ -41,14 +41,12 @@ const MultiPlayer_Game = () => {
           setRoomSettings(response.room.settings); // Save room settings (e.g., minLetters, hideLetter)
           setHiddenLetter(response.room.settings.hideLetter);
           setRandomString(response.room.randomLetters);
-          setGameState(
-            (prevState) => ({
-              ...prevState,
-              prevWord: response.room.firstWord,
+          setGameState((prevState) => ({
+            ...prevState,
+            prevWord: response.room.firstWord,
             words: [response.room.firstWord],
             timerValue: response.room.settings.type ? 63 : 33,
-            })
-            );
+          }));
           joinRoom(response.room.settings); // Pass settings to the joinRoom function
         } catch (error) {
           console.error("Error fetching room settings:", error);
@@ -163,64 +161,69 @@ const MultiPlayer_Game = () => {
 
   return (
     <>
-      <div className="game-container">
-        {/* Scoreboard */}
-        <div className="mp-score-container">
-          <span className="score-label">Score: </span>
-          <span className="score-value">{gameState.score}</span>
-        </div>
+      <div className="mp-game-container">
+        <div className="individual-game-container">
+          {/* Scoreboard */}
+          <div className="mp-score-container">
+            <span className="mp-score-label">Score: </span>
+            <span className="mp-score-value">{gameState.score}</span>
+          </div>
 
-        {/* Results */}
-        <div className="result-container">
-          <span className="result-count">{gameState.curScore}</span> Results for "
-          <span className="result-word">{gameState.curQuery}</span>"
-        </div>
+          {/* Results */}
+          <div className="mp-result-container">
+            <span className="mp-result-count">{gameState.curScore}</span> Results for "
+            <span className="mp-result-word">{gameState.curQuery}</span>"
+          </div>
 
-        {/* Prev Word */}
-        <span className="prevword-container">
-          <img src="../../../logo.png" className="logo-prevword" />
-          <div className="prevword-text">{gameState.prevWord}</div>
-        </span>
+          {/* Prev Word */}
+          <span className="mp-prevword-container">
+            <img src="../../../logo.png" className="mp-logo-prevword" />
+            <div className="mp-prevword-text">{gameState.prevWord}</div>
+          </span>
 
-        {/* Input */}
+          {/* Input */}
 
-        <div className="currword-container">
-          {gameState.curLetter}
-          <input
-            type="text"
-            id="searchQuery"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-          />
-        </div>
-        <hr className="currword-line" />
+          <div className="mp-currword-container">
+            {gameState.curLetter}
+            <input
+              type="text"
+              id="searchQuery"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+            />
+          </div>
+          <hr className="mp-currword-line" />
 
-        {/* Next Letter */}
-        {!hiddenLetter && <div className="random-next-letter">
-          <span id="nextLetter">Next Letter: {gameState.nextLetter}</span>
-        </div>}
+          {/* Next Letter */}
+          {!hiddenLetter && (
+            <div className="mp-random-next-letter">
+              <span id="nextLetter">Next Letter: {gameState.nextLetter}</span>
+            </div>
+          )}
 
-        {/* Query History */}
-        <div className="results-list-container">
-          {gameState.words.map((word, index) => (
-            <span key={index}>{word} - </span>
-          ))}
-        </div>
-
-        <div className="scoreboard-container">
-          <h3>Scoreboard</h3>
-          <ul>
-            {scores.map((player, index) => (
-              <li key={index}>
-                {player.playerName}: {parseInt(player.score)}
-              </li>
+          {/* Query History */}
+          <div className="mp-results-list-container">
+            {gameState.words.map((word, index) => (
+              <span key={index}>{word} - </span>
             ))}
-          </ul>
+          </div>
+
+          {/* Timer */}
+          <div className="mp-time-container">{Math.max(0, gameState.timerValue.toFixed(1))}</div>
         </div>
 
-        {/* Timer */}
-        <div className="time-container">{Math.max(0, gameState.timerValue.toFixed(1))}</div>
+        {/* Scoreboard */}
+        <div className="scoreboard-container">
+          <h1 className="mp-scoreboard-text">Scoreboard</h1>
+          <div className="mp-scoreboard-values">
+            {scores.map((player, index) => (
+              <div key={index}>
+                {player.playerName}: {parseInt(player.score)}
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </>
   );

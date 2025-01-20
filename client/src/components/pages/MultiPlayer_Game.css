@@ -1,19 +1,30 @@
 /* General Container */
-.game-container {
+.mp-game-container {
   height: 100vh;
   width: 100vw;
   background-color: var(--light--brown);
   box-shadow: inset 0 0 var(--xs) rgba(0, 0, 0, 0.3);
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   justify-content: top;
   align-items: center;
   overflow-y: auto;
   scroll-behavior: smooth;
 }
 
-.game-container::-webkit-scrollbar {
+.mp-game-container::-webkit-scrollbar {
   display: none; /* This hides the scrollbar */
+}
+
+.individual-game-container {
+  height: 100vh;
+  width: 60vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 2.5vw;
+  padding-bottom: var(--s);
 }
 
 /* Scoreboard */
@@ -38,31 +49,31 @@
   margin-top: var(--s);
 }
 
-.score-label {
+.mp-score-label {
   color: var(--dark--brown);
   margin-right: var(--xs);
 }
 
-.score-value {
+.mp-score-value {
   color: var(--beige);
 }
 
 /* Results */
-.result-container {
+.mp-result-container {
   font-size: 2.4vw;
   color: var(--beige);
   display: flex;
   align-items: center;
 }
 
-.result-count {
+.mp-result-count {
   color: var(--white);
   margin-right: var(--xxs);
 }
 
-.result-word {
+.mp-result-word {
   color: var(--white);
-  max-width: 60vw;
+  max-width: 38vw;
   display: inline-block;
   white-space: nowrap;
   overflow: hidden;
@@ -70,7 +81,7 @@
 }
 
 /* Previous Word */
-.prevword-container {
+.mp-prevword-container {
   display: flex;
   align-items: center; /* Vertically centers the text */
   justify-items: center;
@@ -78,7 +89,7 @@
   position: relative;
 
   margin: var(--xs);
-  width: 80vw;
+  width: 55vw;
   padding: var(--xs);
 
   background-color: var(--brown);
@@ -95,7 +106,7 @@
   scroll-behavior: smooth;
 }
 
-.prevword-text {
+.mp-prevword-text {
   margin-left: 7vw;
   flex-grow: 1;
   white-space: nowrap; /* Prevent the text from wrapping */
@@ -103,11 +114,11 @@
   overflow: hidden; /* Hide any overflowing text */
 }
 
-.prevword-container::-webkit-scrollbar {
+.mp-prevword-container::-webkit-scrollbar {
   display: none; /* This hides the scrollbar */
 }
 
-.logo-prevword {
+.mp-logo-prevword {
   height: var(--m);
   width: var(--m);
   position: absolute;
@@ -116,8 +127,8 @@
 
 /* Current Word */
 
-.currword-container {
-  width: 63vw;
+.mp-currword-container {
+  width: 38vw;
   font-size: var(--ml);
   color: var(--dark--brown);
 
@@ -128,13 +139,13 @@
   scroll-behavior: smooth;
 }
 
-.currword-container::-webkit-scrollbar {
+.mp-currword-container::-webkit-scrollbar {
   display: none; /* This hides the scrollbar */
 }
 
-.currword-line {
+.mp-currword-line {
   margin-top: 0;
-  width: 75vw; /* Adjust this width to your preference */
+  width: 55vw; /* Adjust this width to your preference */
   border: 0.1vw solid var(--dark--brown);
   border-radius: var(--s); /* Adjust the radius value as needed */
 }
@@ -156,7 +167,7 @@
 }
 
 /* Next Letter */
-.random-next-letter {
+.mp-random-next-letter {
   font-size: 2.4vw;
   color: var(--dark--brown);
   margin-top: var(--xs);
@@ -164,13 +175,13 @@
 
 /* Query History */
 
-.results-list-container {
+.mp-results-list-container {
   gap: var(--xxs);
   color: var(--brown);
   display: flex;
   font-size: var(--s);
   text-align: left;
-  width: 90vw;
+  width: 55vw;
   white-space: nowrap;
   overflow: auto;
   margin-top: var(--xs);
@@ -180,12 +191,12 @@
   box-shadow: 0 0.1vw var(--xxs) rgba(0, 0, 0, 0.55); /* Horizontal, vertical, blur radius, shadow color */
 }
 
-.results-list-container::-webkit-scrollbar {
+.mp-results-list-container::-webkit-scrollbar {
   display: none; /* This hides the scrollbar */
 }
 
 /* Timer */
-.time-container {
+.mp-time-container {
   background-color: var(--dull--beige);
   border-radius: 50%;
   height: var(--l);
@@ -203,4 +214,40 @@
   position: absolute;
   top: var(--s);
   left: var(--s);
+}
+
+.scoreboard-container {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  justify-content: top;
+  align-items: center;
+
+  background-color: var(--brown);
+  box-shadow: 0 0.1vw 0.25vw rgba(0, 0, 0, 0.75); /* Horizontal, vertical, blur radius, shadow color */
+  border-radius: var(--s);
+  width: 30vw;
+  margin: 2.5vw;
+  margin-top: var(--ml);
+  height: 35vw;
+
+  border: 0.2vw solid var(--dark--brown);
+}
+
+.mp-scoreboard-text {
+  color: var(--beige);
+  font-size: var(--sm);
+  font-weight: normal;
+  padding: var(--xxs);
+  box-shadow: 0 0.1vw 0.25vw rgba(0, 0, 0, 0.75); /* Horizontal, vertical, blur radius, shadow color */
+
+  background-color: var(--dark--brown);
+  border-radius: var(--s);
+  width: 25vw;
+}
+
+.mp-scoreboard-values {
+  color: white;
+  font-size: var(--s);
+  width: 25vw;
 }

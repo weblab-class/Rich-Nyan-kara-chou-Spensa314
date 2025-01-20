@@ -3,7 +3,7 @@ import "../../utilities.css";
 import NavBar from "../modules/NavBar";
 import { useNavigate } from "react-router-dom";
 import { get } from "../../utilities";
-
+import "./Info.css";
 import "./Home.css";
 
 const Home = () => {
@@ -26,7 +26,7 @@ const Home = () => {
     const newRoomCode = Math.floor(Math.random() * 10000).toString();
     setRoomCode(newRoomCode);
     console.log(newRoomCode);
-    navigate(`/room/${newRoomCode}`, {state:{host: true}});
+    navigate(`/room/${newRoomCode}`, { state: { host: true } });
   };
 
   const onJoinRoomClick = () => {
@@ -39,7 +39,7 @@ const Home = () => {
           if (res === true) {
             alert("Game already started!");
           } else {
-            navigate(`/room/${roomCode}`, {state:{host: false}} );
+            navigate(`/room/${roomCode}`, { state: { host: false } });
           }
         });
       } else {

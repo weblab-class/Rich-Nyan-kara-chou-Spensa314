@@ -3,7 +3,7 @@ import "../../utilities.css";
 import NavBar from "../modules/NavBar";
 import { useNavigate, useParams } from "react-router-dom";
 import "./Settings.css";
-
+import "./Info.css";
 import "./SinglePlayer_Start.css";
 
 const SinglePlayer_Start = () => {
@@ -15,16 +15,25 @@ const SinglePlayer_Start = () => {
   const [player, setPlayer] = useState(["Player 1"]); //tesp
   const navigate = useNavigate();
 
+  const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
+  const onInfoButtonClick = () => {
+    setIsInfoModalOpen(true);
+  };
+
+  const onInfoExitClick = () => {
+    setIsInfoModalOpen(false);
+  };
+
   const onStartClick = () => {
     navigate(`/game/solo`, {
-        state: {
-          minLetters,
-          activeTime,
-          hideLetter,
-          hardMode,
-          player
-        },
-      });
+      state: {
+        minLetters,
+        activeTime,
+        hideLetter,
+        hardMode,
+        player,
+      },
+    });
   };
 
   const onSettingsClick = () => {
@@ -60,6 +69,43 @@ const SinglePlayer_Start = () => {
         <div onClick={onStartClick} className="sp-start-button sp-page-button">
           Start Game
         </div>
+
+        <div onClick={onInfoButtonClick} className="info-button">
+          ?
+        </div>
+
+        {isInfoModalOpen && (
+          <div className="room-modal-overlay">
+            <div className="info-modal-container">
+              <div className="info-text-container">
+                <div className="info-title">How to Play</div>
+                <div className="info-text">
+                  <span className="info-text-title">Objective: </span> Score the highest points by
+                  entering the trendiest search terms.
+                </div>
+                <div className="info-text">
+                  <span className="info-text-title">Game Mechanics: </span> You're given a starting
+                  word and the starting letter for the following word in the phrase. You are to fill
+                  in the following word. Once you enter your phrase, the word you filled in will now
+                  become the starting word. This process is repeated within the given time limit.
+                </div>
+                <div className="info-text">
+                  <span className="info-text-title">Example: </span>
+                </div>
+                <div className="info-text">
+                  "Apple P": "Apple P<span className="info-text-color">ie</span>"
+                </div>
+                <div className="info-text">
+                  {" "}
+                  "Pie C": "Pie C<span className="info-text-color">hart</span>"
+                </div>
+              </div>
+              <div onClick={onInfoExitClick} className="room-button info-close-button">
+                X
+              </div>
+            </div>
+          </div>
+        )}
 
         {isModalOpen && (
           <div className="settings-modal">
