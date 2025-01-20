@@ -1,0 +1,24 @@
+.loading-container {
+  height: 100vh;
+  width: 100vw;
+  background-color: var(--light--brown);
+  box-shadow: inset 0 0 var(--xs) rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  justify-content: top;
+  align-items: center;
+  text-align: center;
+  overflow-y: auto;
+  scroll-behavior: smooth;
+}
+
+.loading-container::-webkit-scrollbar {
+  display: none; /* This hides the scrollbar */
+}
+
+.settings-summary-container {
+  background-color: var(--beige);
+  border-radius: var(--s);
+  height: 30vw;
+  width: 50vw;
+}
