@@ -37,10 +37,11 @@ const socketManager = require("./server-socket");
 // Server configuration below
 // TODO change connection URL after setting up your team database
 const mongoConnectionURL = process.env.MONGO_SRV;
-const databaseName = "ChainReaction.users";
+const databaseName = "ChainReaction";
 
 // mongoose 7 warning
 mongoose.set("strictQuery", false);
+mongoose.set("debug", true);
 
 // connect to mongodb
 mongoose

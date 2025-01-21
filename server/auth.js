@@ -17,32 +17,34 @@ function verify(token) {
     .then((ticket) => ticket.getPayload());
 }
 
+// gets user from DB, or makes a new account if it doesn't exist yet
 function getOrCreateUser(user) {
+  // the "sub" field means "subject", which is a unique identifier for each user
   return User.findOne({ googleid: user.sub })
     .then((existingUser) => {
       if (existingUser) {
-        return existingUser;
-      }
+        // any changed updates
+        existingUser.name = user.name;
+        existingUser.email = user.email;
+        existingUser.profilePicture = user.picture;
 
-      const newUser = new User({
-        name: user.name,
-        googleid: user.sub,
-      });
-      console.log("Creating new user:", newUser);
-      return newUser
-        .save()
-        .then((savedUser) => {
-          console.log("New user saved:", savedUser);
-          return savedUser;
-        })
-        .catch((err) => {
-          console.error("Error saving new user:", err);
-          throw new Error("Error saving new user: " + err.message);
+        // Save the updated user
+        return existingUser.save();
+      } else {
+        // If the user doesn't exist, create a new user
+        const newUser = new User({
+          name: user.name,
+          googleid: user.sub,
+          email: user.email,
+          profilePicture: user.picture,
         });
+
+        return newUser.save(); // Save the new user to the database
+      }
     })
     .catch((err) => {
-      console.error("Error finding user:", err);
-      throw new Error("Error finding user: " + err.message);
+      console.error("Error finding or saving user:", err);
+      throw new Error("Error finding or saving user: " + err.message);
     });
 }
 
@@ -63,47 +65,6 @@ function login(req, res) {
       res.status(500).send({ err: err.message || err });
     });
 }
-// gets user from DB, or makes a new account if it doesn't exist yet
-// function getOrCreateUser(user) {
-//   // the "sub" field means "subject", which is a unique identifier for each user
-//   return User.findOne({ googleid: user.sub }).then((existingUser) => {
-//     if (existingUser) return existingUser;
-
-//     const newUser = new User({
-//       name: user.name,
-//       googleid: user.sub,
-//     });
-//     console.log("Creating new user:", newUser);
-//     return newUser
-//       .save()
-//       .then((savedUser) => {
-//         console.log("New user saved:", savedUser);
-//         return savedUser;
-//       })
-//       .catch((err) => {
-//         console.error("Error saving new user:", err);
-//         throw err; // Ensure we throw an error if saving fails
-//       });
-//   });
-// }
-
-// function login(req, res) {
-//   console.log("Login attempt with token:", req.body.token); // Log the token received
-//   verify(req.body.token)
-//     .then((user) => {
-//       console.log("Verified user:", user); // Log the verified user data
-//       return getOrCreateUser(user);
-//     })
-//     .then((user) => {
-//       console.log("User retrieved or created:", user); // Log the user data
-//       req.session.user = user; // Store user in session
-//       res.send(user); // Send response
-//     })
-//     .catch((err) => {
-//       console.log("Login error:", err); // Log any errors that occur
-//       res.status(500).send({ err });
-//     });
-// }
 
 function logout(req, res) {
   req.session.user = null;

@@ -8,14 +8,34 @@ import "./Profile.css";
 
 const Profile = () => {
   const [username, setUsername] = useState("");
+  const [loading, setLoading] = useState(true); // Track loading state
+  const [error, setError] = useState(null); // Track error state
+
   useEffect(() => {
-    get("/api/whoami").then((res) => {
-      console.log(res.name);
-      if (res.name !== null) {
-        setUsername(res.name);
-      }
-    });
+    get("/api/whoami")
+      .then((res) => {
+        if (res?.name) {
+          setUsername(res.name);
+        } else {
+          console.log("User is not logged in or name is not available");
+        }
+      })
+      .catch((err) => {
+        console.error("Error fetching user info:", err);
+        setError("Failed to fetch user information");
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   }, []);
+
+  if (loading) {
+    return <div>Loading profile...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
 
   return (
     <>
