@@ -38,7 +38,6 @@ const MultiPlayer_Game = () => {
   const [username, setUsername] = useState(null);
   const [id, setId] = useState(null);
   const [scores, setScores] = useState([]);
-  const [hiddenLetter, setHiddenLetter] = useState(false);
   // Fetch room settings and join room
   useEffect(() => {
     const fetchRoomSettings = async () => {
@@ -110,7 +109,7 @@ const MultiPlayer_Game = () => {
           score: parseInt(gameState.playerStates.score),
           curLetter: gameState.playerStates.curLetter,
           nextLetter: gameState.playerStates.nextLetter,
-          timerValue: parseInt(gameState.roomState.time),
+          timerValue: gameState.roomState.time.toFixed(1),
           words: gameState.playerStates.words,
         }));
         setScores(gameState.roomScores);
@@ -226,6 +225,7 @@ const MultiPlayer_Game = () => {
             <input
               type="text"
               id="searchQuery"
+              autoFocus= {true}
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleSearch()}
@@ -234,7 +234,7 @@ const MultiPlayer_Game = () => {
           <hr className="mp-currword-line" />
 
           {/* Next Letter */}
-          {!hiddenLetter && (
+          {!roomSettings.hideLetter && (
             <div className="mp-random-next-letter">
               <span id="nextLetter">Next Letter: {gameState.nextLetter}</span>
             </div>
@@ -248,7 +248,7 @@ const MultiPlayer_Game = () => {
           </div>
 
           {/* Timer */}
-          <div className="mp-time-container">{Math.max(0, gameState.timerValue.toFixed(1))}</div>
+          <div className="mp-time-container">{gameState.timerValue}</div>
         </div>
 
         {/* Scoreboard */}

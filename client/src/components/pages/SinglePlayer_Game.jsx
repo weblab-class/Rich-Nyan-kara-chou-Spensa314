@@ -8,6 +8,7 @@ import seedrandom from "seedrandom";
 import "./Loading.css";
 
 const SinglePlayer_Game = () => {
+  const navigate = useNavigate();
   const location = useLocation();
   const { minLetters, activeTime, hideLetter, hardMode, player } = location.state || {};
   const [isWaiting, setIsWaiting] = useState(true); // Flag for waiting state
@@ -117,7 +118,9 @@ const SinglePlayer_Game = () => {
         const newTimerValue = prevState.timerValue - 0.1;
         if (newTimerValue <= 0) {
           clearInterval(timer);
-          alert(`Game Over! Final Score: ${prevState.score}`);
+          navigate(`/results/solo`, {
+            gameState: gameState
+          });
           return { ...prevState, timerValue: 0 }; // Stop timer at 0
         }
         return { ...prevState, timerValue: newTimerValue };
@@ -218,6 +221,7 @@ const SinglePlayer_Game = () => {
           <input
             type="text"
             id="searchQuery"
+            autoFocus= {true}
             value={query}
             placeholder=""
             onChange={(e) => setQuery(e.target.value)}
