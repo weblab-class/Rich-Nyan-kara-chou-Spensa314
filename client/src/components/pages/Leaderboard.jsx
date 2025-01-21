@@ -14,6 +14,37 @@ const Leaderboard = () => {
     { name: "Player 5", score: "600,000", place: "5" },
   ]);
 
+  {
+    /**settings adjustments */
+  }
+  const [minLetters, setMinLetters] = useState(3);
+  const onMinLettersClick = () => {
+    if (minLetters === 6) {
+      setMinLetters(3);
+    } else {
+      setMinLetters(minLetters + 1);
+    }
+  };
+
+  const [time, setTime] = useState(30);
+  const onTimeClick = () => {
+    if (time === 30) {
+      setTime(60);
+    } else {
+      setTime(30);
+    }
+  };
+
+  const [isHardMode, setIsHardMode] = useState(false);
+  const onHardModeClick = () => {
+    setIsHardMode(!isHardMode);
+  };
+
+  const [isLetterHidden, setIsLetterHidden] = useState(false);
+  const onNextLetterClick = () => {
+    setIsLetterHidden(!isLetterHidden);
+  };
+
   return (
     <>
       <NavBar />
@@ -36,6 +67,20 @@ const Leaderboard = () => {
               </div>
             </div>
           ))}
+        </div>
+        <div className="leaderboard-settings-container">
+          <div className="leaderboard-dropdown-container" onClick={onMinLettersClick}>
+            Min Letters: {minLetters}
+          </div>
+          <div className="leaderboard-dropdown-container" onClick={onTimeClick}>
+            Time: {time}
+          </div>
+          <div className="leaderboard-dropdown-container" onClick={onHardModeClick}>
+            {isHardMode ? "Hard Mode" : "Normal Mode"}
+          </div>
+          <div className="leaderboard-dropdown-container" onClick={onNextLetterClick}>
+            {isLetterHidden ? "Next Letter: Hidden" : "Next Letter: Shown"}
+          </div>
         </div>
       </div>
       ;

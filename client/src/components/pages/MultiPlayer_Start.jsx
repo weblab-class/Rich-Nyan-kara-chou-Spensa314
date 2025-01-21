@@ -148,20 +148,21 @@ const MultiPlayer_Start = () => {
             Game Settings
           </div>
         )}
-        {host && (
-          <div onClick={onStartClick} className="mp-start-button mp-page-button">
-            Start Game
-          </div>
-        )}
-        {!host && <div className="mp-start-button mp-page-button">Start Game</div>}
-        <div className="mp-players-title">Players</div>
-        <div className="mp-players-list">
-          {players.map((player) => (
-            <div key={player.id} className="mp-players-item">
-              <img src="../../../default.png" alt="default" className="mp-player-logo" />
-              <div className="mp-player-name">{player.name}</div>
+        <div className="center-players">
+          {host && (
+            <div onClick={onStartClick} className="mp-start-button mp-page-button">
+              Start Game
             </div>
-          ))}
+          )}
+          <div className="mp-players-title">Players</div>
+          <div className="mp-players-list">
+            {players.map((player) => (
+              <div key={player.id} className="mp-players-item">
+                <img src="/images/default.png" alt="default" className="mp-player-logo" />
+                <div className="mp-player-name">{player.name}</div>
+              </div>
+            ))}
+          </div>
         </div>
 
         <div className="mp-room-code">Room Code: {roomCode}</div>

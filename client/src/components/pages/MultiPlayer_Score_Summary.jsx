@@ -3,7 +3,6 @@ import "../../utilities.css";
 import NavBar from "../modules/NavBar";
 import { useNavigate } from "react-router-dom";
 import { get } from "../../utilities";
-
 import "./MultiPlayer_Score_Summary.css";
 
 const MultiPlayer_Score_Summary = () => {
@@ -15,6 +14,15 @@ const MultiPlayer_Score_Summary = () => {
 
   const total_points = "1,000,000";
 
+  const navigate = useNavigate();
+
+  const handleNextClick = () => {
+    navigate(`/room/${roomCode}`);
+    {
+      /* insert info ab room code: ryan */
+    }
+  };
+
   return (
     <>
       <NavBar />
@@ -25,11 +33,11 @@ const MultiPlayer_Score_Summary = () => {
             <div className="multi-individual-title">Personal Score</div>
             <div className="multi-individual-content">
               {results.map((result) => (
-                <div key={result} className="score-result-container">
-                  <div key={result} className="score-result-term">
+                <div key={result} className="mp-score-result-container">
+                  <div key={result} className="mp-score-result-term">
                     "{result.term}"
                   </div>
-                  :<div className="score-result-query">{result.query}</div>
+                  :<div className="mp-score-result-query">{result.query}</div>
                 </div>
               ))}
             </div>
@@ -39,16 +47,19 @@ const MultiPlayer_Score_Summary = () => {
             <div className="multi-individual-title">Opponent Score</div>
             <div className="multi-individual-content">
               {results.map((result) => (
-                <div key={result} className="score-result-container">
-                  <div key={result} className="score-result-term">
+                <div key={result} className="mp-score-result-container">
+                  <div key={result} className="mp-score-result-term">
                     "{result.term}"
                   </div>
-                  :<div className="score-result-query">{result.query}</div>
+                  :<div className="mp-score-result-query">{result.query}</div>
                 </div>
               ))}
             </div>
             <div className="multi-total-points">Total Points: {total_points}</div>
           </div>
+        </div>
+        <div onClick={handleNextClick}>
+          <img src="/images/next.png" alt="Next" className="mp-return-room" />
         </div>
       </div>
     </>

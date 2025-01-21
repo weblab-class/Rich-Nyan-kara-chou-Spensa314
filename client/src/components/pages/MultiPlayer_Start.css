@@ -15,6 +15,14 @@
   display: none; /* This hides the scrollbar */
 }
 
+.center-players {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+  text-align: center;
+}
+
 .mp-page-button {
   cursor: pointer;
   transition: transform 0.2s;
