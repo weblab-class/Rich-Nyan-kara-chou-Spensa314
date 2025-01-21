@@ -70,9 +70,7 @@ const joinRoom = (roomId, user, socket, settings) => {
   // Emit the updated player list to everyone in the room
   console.log(`Updated players list for room ${roomId}:`, room.players);
   io.to(roomId).emit("updatePlayers", room.players);
-  // Emit the initial game state to everyone in the room
-  const initialGameState = gameLogic.getNextLetter(roomId);
-  io.to(roomId).emit("updateGameState", { gameState: initialGameState });
+ 
 };
 
 const leaveRoom = (roomId, socket) => {
@@ -185,7 +183,7 @@ const startGameLoop = (roomId, playerId) => {
         return;
       }
 
-  }, 1000 / 30); // Emit 30 times per second (adjust frequency as needed)
+  }, 1000 / 30);
 }
 
 module.exports = {

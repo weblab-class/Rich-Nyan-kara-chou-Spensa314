@@ -54,14 +54,12 @@ const MultiPlayer_Game = () => {
                 console.log(response);
                 setRoomSettings(response.room.settings); // Save room settings (e.g., minLetters, hideLetter)          setHiddenLetter(response.room.settings.hideLetter);
                 setRandomString(response.room.randomLetters);
-                console.log(response.room.settings);
                 setGameState((prevState) => ({
                     ...prevState,
                     prevWord: response.room.firstWord,
                     words: [response.room.firstWord],
                     timerValue: parseInt(response.room.settings.time) +5,
                 }));
-                console.log(response.room.settings.type);
                 setInitialTime(response.room.settings.time);
                 joinRoom(response.room.settings); // Pass settings to the joinRoom function
                 post(`/api/setInitiated/${roomCode}?userId=${userId}`);
@@ -102,11 +100,11 @@ const MultiPlayer_Game = () => {
         console.log(gameState);
         setGameState((prevState) => ({
           ...prevState,
-          curLetter:gameState.playerStates.curLetter,
           prevWord: gameState.playerStates.prevWord,
           curQuery: gameState.playerStates.curQuery,
           curScore: parseInt(gameState.playerStates.curScore),
           score: parseInt(gameState.playerStates.score),
+          curLetter:gameState.playerStates.curLetter,
           nextLetter: gameState.playerStates.nextLetter,
           timerValue: parseInt(gameState.roomState.time),
           words: gameState.playerStates.words,

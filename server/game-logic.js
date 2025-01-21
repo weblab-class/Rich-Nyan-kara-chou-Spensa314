@@ -50,10 +50,8 @@ function initializeRoom(roomId, settings = {minLength: 3, hideLetter: false, typ
     const rando = Math.floor(Math.random() * 10000); // Random number between 0 and 999999
     const seed = parseInt(roomId, 10) || roomId.length || 0; // Fallback to roomId length if not numeric
     const roomSeed = seed - rando || `${roomId}-${rando}`;
-
     roomStates[roomId] = {
       randomLetters: generateSeededSequence(roomSeed, DEFAULT_SEQUENCE_LENGTH, settings.type),
-      currentIndex: 0,
       createdAt: Date.now(),
       seed: roomSeed,
       settings: { ...settings },
@@ -64,9 +62,8 @@ function initializeRoom(roomId, settings = {minLength: 3, hideLetter: false, typ
       type: settings.type,
       time: settings.time,
     };
-    console.log('HELLO' , roomStates[roomId].firstWord);
     for (const playerId in roomToPlayers[roomId]) {
-        console.log(playerId);
+        resetPlayerState(playerId, roomId);
     }
     startTimer(roomId);
 }
@@ -91,16 +88,6 @@ startTimer = (roomId) => {
       }
     }, 100);
   };
-// Get the Next Letter for a Room
-function getNextLetter(roomId) {
-  const roomState = roomStates[roomId];
-  if (!roomState) throw new Error(`Room ${roomId} not found.`);
-  
-  const letter = roomState.randomLetters[roomState.currentIndex];
-  roomState.currentIndex = (roomState.currentIndex + 1) % roomState.randomLetters.length;
-  return letter;
-}
-
 // Get or Initialize Player State
 function getPlayerState(playerId) {
   if (!playerStates[playerId]) {
@@ -131,8 +118,8 @@ function resetPlayerState(playerId, roomId) {
   state.index = 0;
   state.prevWord = roomStates[roomId].firstWord;
   state.curScore = 0;
-  state.curLetter = roomStates[roomId].randomLetters[0];
-  state.nextLetter = roomStates[roomId].randomLetters[1];
+  state.curLetter = roomStates[roomId].randomLetters[state.index];
+  state.nextLetter = roomStates[roomId].randomLetters[state.index + 1];
   state.timerValue = DEFAULT_TIMER_VALUE;
   state.initiated = false;
   state.curQuery = "";
@@ -162,7 +149,7 @@ async function handlePlayerSearch(playerId, roomId, query) {
   const quotedQuery = `"${queryText}"`;
   // const url = `https://www.googleapis.com/customsearch/v1?key=${apiKey}&cx=${cx}&q=${quotedQuery}`; FIX ME
   const url = `https://www.googleapis.com/customsearch/v1?key=AIzaSyBZpVCZKwRmfBNuZJjRQuBhEc2h68DYrso&cx=450f8832fcce44a27&q=${quotedQuery}`;
-
+console.log(roomStates[roomId].randomLetters);
   try {
     const response = await fetch(url);
     const data = await response.json();
@@ -241,6 +228,10 @@ function getSortedScores(roomId) {
 }
 
 function getRoomInfo(roomId, userId) {
+    playerStates[userId].curLetter = roomStates[roomId].randomLetters[playerStates[userId].index];
+    playerStates[userId].nextLetter = roomStates[roomId].randomLetters[playerStates[userId].index + 1];
+    console.log(playerStates[userId].curLetter);
+    console.log(playerStates[userId].nextLetter);
     const liveResults =  {
         roomState: roomStates[roomId],
         roomPlayers: roomToPlayers[roomId],
@@ -256,7 +247,6 @@ setInterval(expireOldRooms, 60000); // Check every minute
 // Exported Methods
 module.exports = {
   initializeRoom,
-  getNextLetter,
   getPlayerState,
   resetPlayerState,
   handlePlayerSearch,
