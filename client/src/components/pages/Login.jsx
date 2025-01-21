@@ -23,7 +23,7 @@ const Login = () => {
     <div className="login-container">
       <div className="title-container">
         <h1 className="chain">
-          <img src="../../../logo.png" className="logo-login" />
+          <img src="/images/logo.png" className="logo-login" />
           <div className="chain-text">Chain</div>
         </h1>
         <h2 className="reaction">Reaction</h2>

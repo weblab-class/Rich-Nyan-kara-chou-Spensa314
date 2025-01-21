@@ -18,7 +18,7 @@
 
 .leaderboard-title {
   margin: 0;
-  font-size: var(--xl);
+  font-size: 6.5vw;
   color: var(--dark--brown);
   font-style: bold;
   text-shadow:
@@ -35,7 +35,7 @@
   width: 60vw;
   height: 22vw;
   box-shadow: 0 0 var(--xxs) rgba(0, 0, 0, 0.5); /* Adjust as needed */
-  margin-bottom: var(--m);
+  margin-bottom: var(--xs);
   display: flex;
   flex-direction: column;
   justify-content: top;
@@ -82,6 +82,37 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.leaderboard-settings-container {
+  width: 60vw;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: var(--m);
+}
+
+.leaderboard-dropdown-container {
+  display: flex;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--brown);
+  color: var(--beige);
+  font-size: 1.7vw;
+  box-shadow: 0 0.1vw 0.2vw rgba(0, 0, 0, 0.7); /* Adjust as needed */
+  border-radius: var(--s);
+  padding: var(--xxs) var(--xs);
+  margin: 0.5vw;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.leaderboard-dropdown-container:hover {
+  background-color: var(--beige);
+  color: var(--brown);
 }
 
 .top-player-1 {

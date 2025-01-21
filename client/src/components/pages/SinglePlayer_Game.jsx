@@ -190,7 +190,7 @@ const SinglePlayer_Game = () => {
       <div className="game-container">
         {/* Scoreboard */}
         <div className="highscore-container">
-          <img src="../../../crown.png" alt="Crown" className="highscore-crown" />
+          <img src="/images/crown.png" alt="Crown" className="highscore-crown" />
           {gameState.highScore}
         </div>
 
@@ -207,7 +207,7 @@ const SinglePlayer_Game = () => {
 
         {/* Prev Word */}
         <span className="prevword-container">
-          <img src="../../../logo.png" className="logo-prevword" />
+          <img src="/images/logo.png" className="logo-prevword" />
           <div className="prevword-text">{gameState.prevWord}</div>
         </span>
 

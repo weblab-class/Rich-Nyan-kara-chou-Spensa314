@@ -36,7 +36,7 @@
 }
 
 .multi-individual-title {
-  font-size: var(--m);
+  font-size: var(--sm);
   color: var(--dark--brown);
 }
 
@@ -44,7 +44,7 @@
   background-color: var(--off--beige);
   border-radius: var(--s);
   width: 40vw;
-  height: 20vw;
+  height: 16vw;
   box-shadow: 0 0 var(--xxs) rgba(0, 0, 0, 0.5); /* Adjust as needed */
   margin-bottom: var(--xs);
   display: flex;
@@ -60,13 +60,66 @@
 
 .multi-total-points {
   margin: 0;
+  margin-bottom: var(--xs);
   font-size: var(--sm);
   color: var(--beige);
   text-shadow: 0.1vw 0.1vw var(--xxs) rgba(0, 0, 0, 0.7); /* Black shadow */
 }
 
+/* BOX ITSELF */
+
+.mp-score-result-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: top;
+  background-color: var(--beige);
+  box-shadow: 0 0.1vw 0.2vw rgba(0, 0, 0, 0.5); /* Adjust as needed */
+  margin: 0.3vw;
+  padding: 0.3vw var(--xs);
+  margin-bottom: var(--xs);
+  border-radius: var(--s);
+  color: var(--dark--brown);
+  font-size: var(--s);
+
+  display: flex;
+  align-items: center;
+}
+
+.mp-score-result-term {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-right: var(--xxs);
+}
+
+.mp-score-result-query {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-right: var(--xxs);
+  padding: var(--xxs) var(--xs);
+  color: var(--brown);
+}
+
 .multi-winner-container {
-  font-size: var(--l);
+  font-size: var(--ml);
   color: var(--gold);
   margin: 0;
+}
+
+.mp-return-room {
+  height: var(--sm);
+  width: var(--sm);
+  position: absolute;
+  bottom: var(--xs);
+  right: var(--xs);
+
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    opacity 0.2s ease; /* Smooth transition */
+}
+
+.mp-return-room:hover {
+  opacity: 0.6;
 }
