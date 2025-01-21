@@ -6,7 +6,7 @@
   box-shadow: inset 0 0 var(--xs) rgba(0, 0, 0, 0.3);
   display: flex;
   flex-direction: column;
-  justify-content: top;
+  justify-content: center;
   align-items: center;
   overflow-y: auto;
   scroll-behavior: smooth;
