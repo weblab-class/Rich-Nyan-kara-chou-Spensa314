@@ -11,19 +11,17 @@
 
 .navbar-link {
   cursor: pointer;
-  transition:
-    transform 0.2s ease,
-    opacity 0.2s ease; /* Smooth transition */
-}
-
-.navbar-link:hover {
-  opacity: 0.65; /* Slight transparency when hovered */
 }
 
 .navigate-home-container {
   margin-left: var(--xs);
   display: flex;
   align-items: center;
+  transition: transform 0.2s ease; /* Smooth transition */
+}
+
+.navigate-home-container:hover {
+  transform: scale(1.05);
 }
 
 .logo {
@@ -36,6 +34,11 @@
   margin-left: var(--xs);
   font-size: var(--s);
   text-decoration: none;
+  transition: color 0.2s ease; /* Smooth transition */
+}
+
+.title-text:hover {
+  color: var(--light--brown);
 }
 
 .right-container {
@@ -49,6 +52,11 @@
   margin-right: var(--xs);
   display: flex;
   align-items: center;
+  transition: transform 0.2s ease; /* Smooth transition */
+}
+
+.leaderboard:hover {
+  transform: scale(1.1);
 }
 
 .logout {
@@ -57,6 +65,12 @@
   margin-right: var(--xs);
   display: flex;
   align-items: center;
+
+  transition: transform 0.2s ease; /* Smooth transition */
+}
+
+.logout:hover {
+  transform: scale(1.1);
 }
 
 .nav-profile {
@@ -76,4 +90,15 @@
   justify-content: center;
 
   box-shadow: 0.05vw 0.05vw 0.1vw rgba(0, 0, 0, 0.5);
+
+  transition:
+    color 0.2s ease,
+    transform 0.2s ease,
+    background-color 0.2s ease; /* Smooth transition */
+}
+
+.nav-profile:hover {
+  color: var(--dark--brown);
+  background-color: var(--beige);
+  transform: scale(1.05);
 }

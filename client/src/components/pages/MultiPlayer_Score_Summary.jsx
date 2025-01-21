@@ -23,6 +23,15 @@ const MultiPlayer_Score_Summary = () => {
     }
   };
 
+  const opponents = ["Ryan", "Neha", "Miranda"];
+
+  const [opponent, setOpponent] = useState(opponents[0]);
+  const onOpponentClick = () => {
+    const currentIndex = opponents.indexOf(opponent);
+    const nextIndex = (currentIndex + 1) % opponents.length; // this will loop back to the first opponent after the last
+    setOpponent(opponents[nextIndex]);
+  };
+
   return (
     <>
       <NavBar />
@@ -30,7 +39,7 @@ const MultiPlayer_Score_Summary = () => {
         <div className="multi-winner-container">Winner: Ryan</div> {/**put actual winner in */}
         <div className="multi-results-container">
           <div className="multi-individual-results-container">
-            <div className="multi-individual-title">Personal Score</div>
+            <div className="multi-personal-title">Personal Score</div>
             <div className="multi-individual-content">
               {results.map((result) => (
                 <div key={result} className="mp-score-result-container">
@@ -44,7 +53,9 @@ const MultiPlayer_Score_Summary = () => {
             <div className="multi-total-points">Total Points: {total_points}</div>
           </div>
           <div className="multi-individual-results-container">
-            <div className="multi-individual-title">Opponent Score</div>
+            <div className="multi-opponent-title" onClick={onOpponentClick}>
+              {opponent}'s Score
+            </div>
             <div className="multi-individual-content">
               {results.map((result) => (
                 <div key={result} className="mp-score-result-container">
