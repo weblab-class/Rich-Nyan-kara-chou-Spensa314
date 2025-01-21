@@ -20,29 +20,49 @@ function verify(token) {
 // gets user from DB, or makes a new account if it doesn't exist yet
 function getOrCreateUser(user) {
   // the "sub" field means "subject", which is a unique identifier for each user
-  return User.findOne({ googleid: user.sub }).then((existingUser) => {
-    if (existingUser) return existingUser;
+  return User.findOne({ googleid: user.sub })
+    .then((existingUser) => {
+      if (existingUser) {
+        // any changed updates
+        existingUser.name = user.name;
+        existingUser.email = user.email;
+        existingUser.profilePicture = user.picture;
 
-    const newUser = new User({
-      name: user.name,
-      googleid: user.sub,
+        // Save the updated user
+        return existingUser.save();
+      } else {
+        // If the user doesn't exist, create a new user
+        const newUser = new User({
+          name: user.name,
+          googleid: user.sub,
+          email: user.email,
+          profilePicture: user.picture,
+        });
+
+        return newUser.save(); // Save the new user to the database
+      }
+    })
+    .catch((err) => {
+      console.error("Error finding or saving user:", err);
+      throw new Error("Error finding or saving user: " + err.message);
     });
-    console.log("newUser", newUser);
-    return newUser.save();
-  });
 }
 
 function login(req, res) {
+  console.log("Login attempt with token:", req.body.token);
   verify(req.body.token)
-    .then((user) => getOrCreateUser(user))
     .then((user) => {
-      // persist user in the session
+      console.log("Verified user:", user);
+      return getOrCreateUser(user);
+    })
+    .then((user) => {
+      console.log("User retrieved or created:", user);
       req.session.user = user;
       res.send(user);
     })
     .catch((err) => {
-      console.log(`Failed to log in: ${err}`);
-      res.status(401).send({ err });
+      console.error("Login error:", err.message || err); // Log the detailed error
+      res.status(500).send({ err: err.message || err });
     });
 }
 

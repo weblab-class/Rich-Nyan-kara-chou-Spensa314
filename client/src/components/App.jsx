@@ -16,12 +16,15 @@ export const UserContext = createContext(null);
  */
 const App = () => {
   const [userId, setUserId] = useState(undefined);
+  const [username, setUsername] = useState("");
 
   useEffect(() => {
     get("/api/whoami").then((user) => {
       if (user._id) {
-        // they are registed in the database, and currently logged in.
         setUserId(user._id);
+        if (user.name) {
+          setUsername(user.name);
+        }
       }
     });
   }, []);
@@ -32,17 +35,22 @@ const App = () => {
     console.log(`Logged in as ${decodedCredential.name}`);
     post("/api/login", { token: userToken }).then((user) => {
       setUserId(user._id);
+      if (user.name) {
+        setUsername(user.name);
+      }
       post("/api/initsocket", { socketid: socket.id });
     });
   };
 
   const handleLogout = () => {
     setUserId(undefined);
+    setUsername("");
     post("/api/logout");
   };
 
   const authContextValue = {
     userId,
+    username,
     handleLogin,
     handleLogout,
   };

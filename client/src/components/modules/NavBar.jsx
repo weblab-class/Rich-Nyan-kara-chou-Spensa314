@@ -8,16 +8,9 @@ import { useEffect, useState } from "react";
 import { get } from "../../utilities";
 
 const NavBar = () => {
-  const { userId, handleLogout } = useContext(UserContext);
+  const { userId, username, handleLogout } = useContext(UserContext);
   const navigate = useNavigate();
-  const [username, setUsername] = useState("");
-  useEffect(() => {
-    get("/api/whoami").then((res) => {
-      if (res.name !== null) {
-        setUsername(res.name);
-      }
-    });
-  }, []);
+
   const handleLogoutClick = () => {
     googleLogout();
     handleLogout();
@@ -45,7 +38,7 @@ const NavBar = () => {
 
       <div className="right-container">
         <div onClick={handleProfileClick} className="navbar-link nav-profile">
-          {username} {/* put in actual name */}
+          {username || "Guest"} {/* put in actual name */}
         </div>
 
         <div onClick={handleLeaderboardClick} className="navbar-link">

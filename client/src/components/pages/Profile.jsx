@@ -1,21 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import "../../utilities.css";
 import NavBar from "../modules/NavBar";
 import { useNavigate } from "react-router-dom";
 import { get } from "../../utilities";
+import { UserContext } from "../App";
 
 import "./Profile.css";
 
 const Profile = () => {
-  const [username, setUsername] = useState("");
-  useEffect(() => {
-    get("/api/whoami").then((res) => {
-      console.log(res.name);
-      if (res.name !== null) {
-        setUsername(res.name);
-      }
-    });
-  }, []);
+  const { username } = useContext(UserContext);
 
   return (
     <>
@@ -23,7 +16,7 @@ const Profile = () => {
       <div className="profile-container">
         <div className="profile-personal-container">
           <img src="/images/default.png" alt="profilepicture" className="profile-picture" />
-          <div className="profile-username">{username}</div>
+          <div className="profile-username">{username || "Guest"}</div>
         </div>
 
         <div className="profile-statistics-container">

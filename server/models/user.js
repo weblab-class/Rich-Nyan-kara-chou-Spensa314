@@ -1,9 +1,25 @@
+// models/user.js
 const mongoose = require("mongoose");
 
-const UserSchema = new mongoose.Schema({
-  name: String,
-  googleid: String,
+const userSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+  },
+  googleid: {
+    type: String,
+    required: true,
+    unique: true, // Ensure that googleid is unique
+  },
+  email: {
+    type: String,
+    required: true,
+  },
+  profilePicture: {
+    type: String, // Store the profile picture URL
+  },
 });
 
-// compile model from schema
-module.exports = mongoose.model("user", UserSchema);
+const User = mongoose.model("User", userSchema);
+
+module.exports = User;
