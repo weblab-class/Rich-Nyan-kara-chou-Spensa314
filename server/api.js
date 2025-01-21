@@ -21,6 +21,7 @@ const games = {}; // In-memory store for game states
 
 router.post("/login", auth.login);
 router.post("/logout", auth.logout);
+
 router.get("/whoami", (req, res) => {
   if (!req.user) {
     return res.send({});
@@ -122,7 +123,7 @@ router.post("/startGame/:roomCode", (req, res) => {
 
 router.get("/getRoom/:roomCode", async (req, res) => {
   const roomCode = req.params.roomCode;
-  console.log('HUHUHU', socketManager.gameStarted(roomCode));
+  console.log("HUHUHU", socketManager.gameStarted(roomCode));
   res.send(socketManager.gameStarted(roomCode));
 });
 // Route: Search
@@ -174,7 +175,7 @@ router.get("/getNextLetter/:roomId", (req, res) => {
 
 router.get("/getInitiated/:roomId", (req, res) => {
   const roomId = req.params.roomId;
-  const userId = req.query.userId.slice(0,-1);
+  const userId = req.query.userId.slice(0, -1);
   console.timeLog(roomId, userId);
   const initiated = socketManager.initiated(userId, roomId);
   console.log(initiated);
