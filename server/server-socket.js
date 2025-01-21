@@ -15,7 +15,7 @@ const getSocketFromSocketID = (socketid) => io.sockets.sockets.get(socketid);
 const getIDFromSocketID = (socket) => socketToIDMap[socket.id];
 const getNameFromUserID = (userid) => userIDtoNameMap[userid];
 const addUser = (user, socket) => {
-  
+  console.log('wtf', user._id);
   if (!user || !user._id) {
     console.log(user);
     console.error("Invalid user object provided to addUser");
@@ -159,7 +159,34 @@ const initiated = (userId, roomId) => {
   const initiated = gameLogic.getInitiated(userId, roomId);
   return initiated;
 }
+const startGameLoop = (roomId, playerId) => {
+  const roomState = rooms[roomId];
+  if (!roomState) return;
 
+  const playerSocket = userToSocketMap[playerId];
+  if (!playerSocket) return;
+
+  const intervalId = setInterval(() => {
+    const instanceState = gameLogic.getRoomInfo(roomId, playerId);
+      const sortedScores = gameLogic.getSortedScores(roomId).map((scoreEntry) => {
+        const userName = userIDtoNameMap[scoreEntry.playerName];
+        return { playerName: userName, score: scoreEntry.score };
+    });
+      
+      // Emit current room state to all clients in the room
+      playerSocket.emit("updateGameState", {
+        roomState: instanceState.roomState,
+        roomPlayers: instanceState.roomPlayers,
+        playerStates: instanceState.playerStates,
+        roomScores: sortedScores
+      });
+      if (instanceState.roomState.gameEnded) {
+        clearInterval(intervalId);
+        return;
+      }
+
+  }, 1000 / 30); // Emit 30 times per second (adjust frequency as needed)
+}
 
 module.exports = {
   init: (http) => {
@@ -192,10 +219,10 @@ module.exports = {
 
         try {
           // Process the query and get the updated game state
-          const newGameState = await gameLogic.handlePlayerSearch(user._id, roomId, query);
+          gameLogic.handlePlayerSearch(user._id, roomId, query);
           // Send the updated game state back to the specific user
-          socket.emit("updateGameState", newGameState);
-          notifyScores(roomId);
+          // socket.emit("updateGameState", newGameState);
+          // notifyScores(roomId);
           // Optionally broadcast the game state to all clients in the room
           // io.to(roomId).emit("updateGameState", newGameState);
           
@@ -204,6 +231,7 @@ module.exports = {
           socket.emit("errorMessage", error.message);
         }
       });
+
 
 
       socket.on("firstWord", ({ roomId, gameDetails }) => {
@@ -244,5 +272,6 @@ module.exports = {
   notifyScores: notifyScores,
   gameStarted: gameStarted, 
   initiated: initiated, 
-  setInitiated: setInitiated
+  setInitiated: setInitiated,
+  startGameLoop: startGameLoop
 };

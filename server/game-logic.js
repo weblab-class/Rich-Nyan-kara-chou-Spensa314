@@ -59,11 +59,38 @@ function initializeRoom(roomId, settings = {minLength: 3, hideLetter: false, typ
       settings: { ...settings },
       firstWord: firstWord(),
       gameStarted: false, 
+      loading: true,
+      gameEnded: false,
       type: settings.type,
       time: settings.time,
     };
+    console.log('HELLO' , roomStates[roomId].firstWord);
+    for (const playerId in roomToPlayers[roomId]) {
+        console.log(playerId);
+    }
+    startTimer(roomId);
 }
-
+startTimer = (roomId) => {
+    const roomState = roomStates[roomId];
+    if (!roomState) throw new Error(`Room ${roomId} not found.`);
+    
+    let val = roomState.time + 5; // Add 5 seconds to the initial time.
+    const barrier = val - 5;
+    roomState.loading = true; // Set loading state to true initially.
+    console.log(val, roomState.time);
+    const timerInterval = setInterval(() => { 
+      val-=0.1;
+      roomState.time = val;
+      if (val <= barrier) { // When the timer has run for 5 seconds.
+        roomState.loading = false;
+      }
+  
+      if (val <= 0) {
+        clearInterval(timerInterval);
+        roomState.gameEnded = true; // Mark the game as ended.
+      }
+    }, 100);
+  };
 // Get the Next Letter for a Room
 function getNextLetter(roomId) {
   const roomState = roomStates[roomId];
@@ -81,12 +108,15 @@ function getPlayerState(playerId) {
       score: 0,
       curScore: 0,
       highScore: 0,
+      index: 0,
       prevWord: "apple",
       curLetter: "",
       nextLetter: "",
       timerValue: DEFAULT_TIMER_VALUE,
       minWordLength: DEFAULT_MIN_WORD_LENGTH,
-      initiated: false
+      initiated: false,
+      queries: [],
+      words: [],
     };
   }
   return playerStates[playerId];
@@ -98,12 +128,16 @@ function resetPlayerState(playerId, roomId) {
   if (state.score > state.highScore) state.highScore = state.score;
 
   state.score = 0;
-  state.prevWord = "";
+  state.index = 0;
+  state.prevWord = roomStates[roomId].firstWord;
   state.curScore = 0;
-  state.curLetter = getNextLetter(roomId);
-  state.nextLetter = getNextLetter(roomId);
+  state.curLetter = roomStates[roomId].randomLetters[0];
+  state.nextLetter = roomStates[roomId].randomLetters[1];
   state.timerValue = DEFAULT_TIMER_VALUE;
   state.initiated = false;
+  state.curQuery = "";
+  state.queries = [];
+  state.words = [roomStates[roomId].firstWord];
 }
 
 function setRoomId(roomId, players) {
@@ -123,13 +157,9 @@ function setRoomId(roomId, players) {
 async function handlePlayerSearch(playerId, roomId, query) {
   const state = getPlayerState(playerId);
   const roomState = roomStates[roomId];
-  if (!roomState) throw new Error(`Room ${roomId} not initialized.`);
-
-  if (!query || query.length < state.minWordLength) {
-    throw new Error(`Word must be at least ${state.minWordLength} letters long.`);
-  }
-
-  const quotedQuery = `"${query}"`;
+  const currentWord = `${state.curLetter}${query}`;
+  const queryText = `${state.prevWord} ${currentWord}`;
+  const quotedQuery = `"${queryText}"`;
   // const url = `https://www.googleapis.com/customsearch/v1?key=${apiKey}&cx=${cx}&q=${quotedQuery}`; FIX ME
   const url = `https://www.googleapis.com/customsearch/v1?key=AIzaSyBZpVCZKwRmfBNuZJjRQuBhEc2h68DYrso&cx=450f8832fcce44a27&q=${quotedQuery}`;
 
@@ -137,17 +167,17 @@ async function handlePlayerSearch(playerId, roomId, query) {
     const response = await fetch(url);
     const data = await response.json();
     const totalResults = data.searchInformation.totalResults || 0;
+    
     state.score += parseInt(totalResults);
     state.curScore = parseInt(totalResults);
-    state.prevWord = query;
-    state.curLetter = state.nextLetter;
-    state.nextLetter = getNextLetter(roomId);
+    state.prevWord = currentWord;
+    state.index += 1;
+    state.curLetter = roomState.randomLetters[state.index];
+    state.nextLetter = roomState.randomLetters[state.index + 1];
+    state.curQuery = queryText;
+    state.queries.push([queryText, totalResults]);
+    state.words.push(currentWord);
 
-    return {
-      phrase: query,
-      totalResults,
-      gameState: state,
-    };
   } catch (error) {
     console.error("Error during Google API search:", error.message);
     throw new Error("Failed to fetch search results.");
@@ -209,6 +239,17 @@ function getSortedScores(roomId) {
     })
     .sort((a, b) => b.score - a.score); // Sort in descending order of scores
 }
+
+function getRoomInfo(roomId, userId) {
+    const liveResults =  {
+        roomState: roomStates[roomId],
+        roomPlayers: roomToPlayers[roomId],
+        playerStates: playerStates[userId],
+        roomScores: getSortedScores(roomId)
+    }
+    return liveResults;
+}
+
 // Periodically Check for Expired Rooms
 setInterval(expireOldRooms, 60000); // Check every minute
 
@@ -226,6 +267,7 @@ module.exports = {
   getGameStarted,
   setInitiated,
   getInitiated,
-  setRoomId
+  setRoomId,
+  getRoomInfo
 };
 

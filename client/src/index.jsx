@@ -35,9 +35,9 @@ const router = createBrowserRouter(
       <Route path="/leaderboard" element={<Leaderboard />} />
       <Route path="/room/solo" element={<SinglePlayer_Start />} />
       <Route path="/game/:roomCode" element={<MultiPlayer_Game />} />
-      <Route path="/multiscore" element={<MultiPlayer_Score_Summary />} />
+      <Route path="/results/:roomCode" element={<MultiPlayer_Score_Summary />} />
       <Route path="/game/solo" element={<SinglePlayer_Game />} />
-      <Route path="/soloscore" element={<SinglePlayer_Score_Summary />} />
+      <Route path="/results/solo" element={<SinglePlayer_Score_Summary />} />
       <Route path="/profile" element={<Profile />} />
     </Route>
   )

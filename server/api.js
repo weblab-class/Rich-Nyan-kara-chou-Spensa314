@@ -187,6 +187,14 @@ router.post("/setInitiated/:roomId", (req, res) => {
   socketManager.setInitiated(userId, roomId);
   res.status(200).send({ msg: "Initiated set successfully" });
 });
+
+router.post("/startGameLoop/:roomId", (req, res) => {
+  const roomId = req.params.roomId;
+  const userId = req.query.userId;
+  socketManager.startGameLoop(roomId, userId);
+  res.status(200).send({ msg: "Game started successfully" });
+});
+
 // Catch-all for undefined routes
 router.all("*", (req, res) => {
   console.log(`API route not found: ${req.method} ${req.url}`);

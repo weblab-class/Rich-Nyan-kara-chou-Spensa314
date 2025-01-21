@@ -45,12 +45,13 @@ const MultiPlayer_Game = () => {
         const r = await get('/api/whoami');
         const userId = r._id;
         console.log(userId);
+        post(`/api/startGameLoop/${roomCode}?userId=${userId}`);
         try {
             const response = await get(`/api/getInitiated/${roomCode}?userId=${userId}`);
-            console.log('49' + response);
             if (!response) {
                 try {
                 const response = await get(`/api/room/${roomCode}`);
+                console.log(response);
                 setRoomSettings(response.room.settings); // Save room settings (e.g., minLetters, hideLetter)          setHiddenLetter(response.room.settings.hideLetter);
                 setRandomString(response.room.randomLetters);
                 console.log(response.room.settings);
@@ -88,11 +89,29 @@ const MultiPlayer_Game = () => {
       });
 
       socket.on("updateGameState", (gameState) => {
+        console.log(gameState);
+        if (!gameState.roomState.loading){
+            setIsLoading(false);
+        }
+
+        if (gameState.roomState.gameEnded) {
+          console.log("Game ended!");
+          navigate(`/results/${roomCode}`, {standings: gameState.roomScores, players: gameState.roomPlayers, state:gameState.roomState});
+          return;
+        }
+        console.log(gameState);
         setGameState((prevState) => ({
           ...prevState,
-          curLetter: randomString[index],
-          nextLetter: randomString[index + 1],
+          curLetter:gameState.playerStates.curLetter,
+          prevWord: gameState.playerStates.prevWord,
+          curQuery: gameState.playerStates.curQuery,
+          curScore: parseInt(gameState.playerStates.curScore),
+          score: parseInt(gameState.playerStates.score),
+          nextLetter: gameState.playerStates.nextLetter,
+          timerValue: parseInt(gameState.roomState.time),
+          words: gameState.playerStates.words,
         }));
+        setScores(gameState.roomScores);
       });
 
       socket.on("updatePlayers", (players) => {
@@ -102,10 +121,6 @@ const MultiPlayer_Game = () => {
       socket.on("errorMessage", (message) => {
         setErrorMessage(message);
         setTimeout(() => setErrorMessage(null), 2000);
-      });
-
-      socket.on("updateScores", ({ scores }) => {
-        setScores(scores);
       });
 
       return () => {
@@ -119,65 +134,18 @@ const MultiPlayer_Game = () => {
 
     fetchRoomSettings();
 
-    // Add 3-second delay before setting loading to false
-    const loadingTimer = setTimeout(() => setIsLoading(false), 5000);
-    console.log(gameState);
-
-    return () => clearTimeout(loadingTimer);
   }, [roomCode, roomSettings, location.state]);
 
-  // Handle player search
+//   // Handle player search
   const handleSearch = () => {
     if (!query || query.length < (roomSettings.minLength - 1 || 2)) {
       setErrorMessage(`Word must be at least ${roomSettings.minLength || 3} letters long.`);
       setTimeout(() => setErrorMessage(null), 2000);
       return;
     }
-    setIndex((prevIndex) => prevIndex + 1);
-    console.log(index);
-    const currentWord = `${gameState.curLetter}${query}`;
-    const queryText = `${gameState.prevWord} ${currentWord}`;
-
     setQuery("");
-    socket.emit("submitQuery", { roomId: roomCode, query: queryText });
-    setGameState((prevState) => ({
-      ...prevState,
-      words: prevState.words.concat(currentWord),
-    }));
-    socket.on("updateGameState", (getGameState) => {
-      setGameState((prevState) => ({
-        ...prevState,
-        score: parseInt(getGameState.gameState.score),
-        prevWord: currentWord,
-        curLetter: randomString[index % randomString.length],
-        nextLetter: randomString[(index + 1) % randomString.length],
-        curScore: parseInt(getGameState.gameState.curScore),
-        curQuery: queryText,
-      }));
-      console.log(gameState);
-    });
+    socket.emit("submitQuery", { roomId: roomCode, query: query });
   };
-
-  // Timer logic
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setGameState((prevState) => {
-        const newTimerValue = prevState.timerValue - 0.1;
-        if (newTimerValue <= 0) {
-          clearInterval(timer);
-          alert(`Game Over! Final Score: ${prevState.score}`);
-          return { ...prevState, timerValue: 0 };
-        }
-        return { ...prevState, timerValue: newTimerValue };
-      });
-    }, 100);
-
-    return () => clearInterval(timer);
-  }, []);
-
-  {
-    /* loading page */
-  }
 
   const [countdown, setCountdown] = useState(5); // 5 seconds countdown
   useEffect(() => {
