@@ -8,6 +8,7 @@ import seedrandom from "seedrandom";
 import "./Loading.css";
 
 const SinglePlayer_Game = () => {
+  const navigate = useNavigate();
   const location = useLocation();
   const { minLetters, activeTime, hideLetter, hardMode, player } = location.state || {};
   const [isWaiting, setIsWaiting] = useState(true); // Flag for waiting state
@@ -117,7 +118,9 @@ const SinglePlayer_Game = () => {
         const newTimerValue = prevState.timerValue - 0.1;
         if (newTimerValue <= 0) {
           clearInterval(timer);
-          alert(`Game Over! Final Score: ${prevState.score}`);
+          navigate(`/results/solo`, {
+            gameState: gameState,
+          });
           return { ...prevState, timerValue: 0 }; // Stop timer at 0
         }
         return { ...prevState, timerValue: newTimerValue };
@@ -190,24 +193,24 @@ const SinglePlayer_Game = () => {
       <div className="game-container">
         {/* Scoreboard */}
         <div className="highscore-container">
-          <img src="../../../crown.png" alt="Crown" className="highscore-crown" />
+          <img src="/images/crown.png" alt="Crown" className="highscore-crown" />
           {gameState.highScore}
         </div>
 
         <div className="score-container">
           <span className="score-label">Score: </span>
-          <span className="score-value">{gameState.score}</span>
+          <span className="score-value">{gameState.score.toLocaleString()}</span>
         </div>
 
         {/* Results */}
         <div className="result-container">
-          <span className="result-count">{gameState.curScore}</span> Results for "
+          <span className="result-count">{gameState.curScore.toLocaleString()}</span> Results for "
           <span className="result-word">{gameState.curQuery}</span>"
         </div>
 
         {/* Prev Word */}
         <span className="prevword-container">
-          <img src="../../../logo.png" className="logo-prevword" />
+          <img src="/images/logo.png" className="logo-prevword" />
           <div className="prevword-text">{gameState.prevWord}</div>
         </span>
 
@@ -218,11 +221,13 @@ const SinglePlayer_Game = () => {
           <input
             type="text"
             id="searchQuery"
+            autoFocus={true}
             value={query}
             placeholder=""
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && onEnterKeyPress(e)}
             className={`${isError ? "error" : ""}`}
+            autocomplete="off"
             style={{
               width: `${query.length + 1}ch`,
             }}

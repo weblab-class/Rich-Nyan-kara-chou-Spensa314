@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { socket } from "../../client-socket.js";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
-import { get , post} from "../../utilities";
+import { get, post } from "../../utilities";
 
 import "../../utilities.css";
 import "./MultiPlayer_Game.css";
@@ -38,42 +38,41 @@ const MultiPlayer_Game = () => {
   const [username, setUsername] = useState(null);
   const [id, setId] = useState(null);
   const [scores, setScores] = useState([]);
-  const [hiddenLetter, setHiddenLetter] = useState(false);
   // Fetch room settings and join room
   useEffect(() => {
     const fetchRoomSettings = async () => {
-        const r = await get('/api/whoami');
-        const userId = r._id;
-        console.log(userId);
-        post(`/api/startGameLoop/${roomCode}?userId=${userId}`);
-        try {
-            const response = await get(`/api/getInitiated/${roomCode}?userId=${userId}`);
-            if (!response) {
-                try {
-                const response = await get(`/api/room/${roomCode}`);
-                console.log(response);
-                setRoomSettings(response.room.settings); // Save room settings (e.g., minLetters, hideLetter)          setHiddenLetter(response.room.settings.hideLetter);
-                setRandomString(response.room.randomLetters);
-                setGameState((prevState) => ({
-                    ...prevState,
-                    prevWord: response.room.firstWord,
-                    words: [response.room.firstWord],
-                    timerValue: parseInt(response.room.settings.time) +5,
-                }));
-                setInitialTime(response.room.settings.time);
-                joinRoom(response.room.settings); // Pass settings to the joinRoom function
-                post(`/api/setInitiated/${roomCode}?userId=${userId}`);
-                } catch (error) {
-                console.error("Error fetching room settings:", error);
-                setErrorMessage("Failed to fetch room settings.");
-                }
-            } else {
-                joinRoom(roomSettings);
-            }
-        } catch (error) {
-            console.error("Error fetching initiation status:", error);
-            setErrorMessage("Failed to fetch initiation status.");
+      const r = await get("/api/whoami");
+      const userId = r._id;
+      console.log(userId);
+      post(`/api/startGameLoop/${roomCode}?userId=${userId}`);
+      try {
+        const response = await get(`/api/getInitiated/${roomCode}?userId=${userId}`);
+        if (!response) {
+          try {
+            const response = await get(`/api/room/${roomCode}`);
+            console.log(response);
+            setRoomSettings(response.room.settings); // Save room settings (e.g., minLetters, hideLetter)          setHiddenLetter(response.room.settings.hideLetter);
+            setRandomString(response.room.randomLetters);
+            setGameState((prevState) => ({
+              ...prevState,
+              prevWord: response.room.firstWord,
+              words: [response.room.firstWord],
+              timerValue: parseInt(response.room.settings.time) + 5,
+            }));
+            setInitialTime(response.room.settings.time);
+            joinRoom(response.room.settings); // Pass settings to the joinRoom function
+            post(`/api/setInitiated/${roomCode}?userId=${userId}`);
+          } catch (error) {
+            console.error("Error fetching room settings:", error);
+            setErrorMessage("Failed to fetch room settings.");
           }
+        } else {
+          joinRoom(roomSettings);
+        }
+      } catch (error) {
+        console.error("Error fetching initiation status:", error);
+        setErrorMessage("Failed to fetch initiation status.");
+      }
     };
 
     const joinRoom = (settings) => {
@@ -88,13 +87,17 @@ const MultiPlayer_Game = () => {
 
       socket.on("updateGameState", (gameState) => {
         console.log(gameState);
-        if (!gameState.roomState.loading){
-            setIsLoading(false);
+        if (!gameState.roomState.loading) {
+          setIsLoading(false);
         }
 
         if (gameState.roomState.gameEnded) {
           console.log("Game ended!");
-          navigate(`/results/${roomCode}`, {standings: gameState.roomScores, players: gameState.roomPlayers, state:gameState.roomState});
+          navigate(`/results/${roomCode}`, {
+            standings: gameState.roomScores,
+            players: gameState.roomPlayers,
+            state: gameState.roomState,
+          });
           return;
         }
         console.log(gameState);
@@ -104,9 +107,9 @@ const MultiPlayer_Game = () => {
           curQuery: gameState.playerStates.curQuery,
           curScore: parseInt(gameState.playerStates.curScore),
           score: parseInt(gameState.playerStates.score),
-          curLetter:gameState.playerStates.curLetter,
+          curLetter: gameState.playerStates.curLetter,
           nextLetter: gameState.playerStates.nextLetter,
-          timerValue: parseInt(gameState.roomState.time),
+          timerValue: gameState.roomState.time.toFixed(1),
           words: gameState.playerStates.words,
         }));
         setScores(gameState.roomScores);
@@ -131,10 +134,9 @@ const MultiPlayer_Game = () => {
     };
 
     fetchRoomSettings();
-
   }, [roomCode, roomSettings, location.state]);
 
-//   // Handle player search
+  //   // Handle player search
   const handleSearch = () => {
     if (!query || query.length < (roomSettings.minLength - 1 || 2)) {
       setErrorMessage(`Word must be at least ${roomSettings.minLength || 3} letters long.`);
@@ -201,18 +203,18 @@ const MultiPlayer_Game = () => {
           {/* Scoreboard */}
           <div className="mp-score-container">
             <span className="mp-score-label">Score: </span>
-            <span className="mp-score-value">{gameState.score}</span>
+            <span className="mp-score-value">{gameState.score.toLocaleString()}</span>
           </div>
 
           {/* Results */}
           <div className="mp-result-container">
-            <span className="mp-result-count">{gameState.curScore}</span> Results for "
-            <span className="mp-result-word">{gameState.curQuery}</span>"
+            <span className="mp-result-count">{gameState.curScore.toLocaleString()}</span> Results
+            for "<span className="mp-result-word">{gameState.curQuery}</span>"
           </div>
 
           {/* Prev Word */}
           <span className="mp-prevword-container">
-            <img src="../../../logo.png" className="mp-logo-prevword" />
+            <img src="/images/logo.png" className="mp-logo-prevword" />
             <div className="mp-prevword-text">{gameState.prevWord}</div>
           </span>
 
@@ -223,15 +225,17 @@ const MultiPlayer_Game = () => {
             <input
               type="text"
               id="searchQuery"
+              autoFocus={true}
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+              autocomplete="off"
             />
           </div>
           <hr className="mp-currword-line" />
 
           {/* Next Letter */}
-          {!hiddenLetter && (
+          {!roomSettings.hideLetter && (
             <div className="mp-random-next-letter">
               <span id="nextLetter">Next Letter: {gameState.nextLetter}</span>
             </div>
@@ -245,7 +249,7 @@ const MultiPlayer_Game = () => {
           </div>
 
           {/* Timer */}
-          <div className="mp-time-container">{Math.max(0, gameState.timerValue.toFixed(1))}</div>
+          <div className="mp-time-container">{gameState.timerValue}</div>
         </div>
 
         {/* Scoreboard */}
@@ -254,7 +258,7 @@ const MultiPlayer_Game = () => {
           <div className="mp-scoreboard-values">
             {scores.map((player, index) => (
               <div key={index}>
-                {player.playerName}: {parseInt(player.score)}
+                {player.playerName}: {parseInt(player.score).toLocaleString()}
               </div>
             ))}
           </div>

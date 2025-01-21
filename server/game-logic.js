@@ -74,14 +74,12 @@ startTimer = (roomId) => {
     let val = roomState.time + 5; // Add 5 seconds to the initial time.
     const barrier = val - 5;
     roomState.loading = true; // Set loading state to true initially.
-    console.log(val, roomState.time);
     const timerInterval = setInterval(() => { 
       val-=0.1;
       roomState.time = val;
       if (val <= barrier) { // When the timer has run for 5 seconds.
         roomState.loading = false;
       }
-  
       if (val <= 0) {
         clearInterval(timerInterval);
         roomState.gameEnded = true; // Mark the game as ended.

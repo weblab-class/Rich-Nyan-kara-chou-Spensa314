@@ -38,7 +38,7 @@ const SinglePlayer_Score_Summary = () => {
         <h2 className="total-points-title">Total Points: {total_points}</h2>
 
         <div onClick={handleNextClick}>
-          <img src="../../../next.png" alt="Next" className="next-leaderboard" />
+          <img src="/images/next.png" alt="Next" className="next-leaderboard" />
         </div>
       </div>
     </>

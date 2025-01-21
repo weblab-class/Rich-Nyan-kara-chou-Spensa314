@@ -32,7 +32,7 @@ const NavBar = () => {
   return (
     <div className="navbar-container">
       <div onClick={handleHomeClick} className="navigate-home-container navbar-link">
-        <img src="../../../logo.png" alt="Logo" className="logo" />
+        <img src="/images/logo.png" alt="Logo" className="logo" />
         <div className="title-text">Chain Reaction</div>
       </div>
 
@@ -42,10 +42,10 @@ const NavBar = () => {
         </div>
 
         <div onClick={handleLeaderboardClick} className="navbar-link">
-          <img src="../../../crown.png" alt="Crown" className="leaderboard" />
+          <img src="/images/crown.png" alt="Crown" className="leaderboard" />
         </div>
         <div onClick={handleLogoutClick} className="navbar-link">
-          <img src="../../../logout.png" alt="Logout" className="logout" />
+          <img src="/images/logout.png" alt="Logout" className="logout" />
         </div>
       </div>
     </div>

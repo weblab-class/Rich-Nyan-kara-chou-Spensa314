@@ -15,7 +15,7 @@ const Profile = () => {
       <NavBar />
       <div className="profile-container">
         <div className="profile-personal-container">
-          <img src="../../../default.png" alt="profilepicture" className="profile-picture" />
+          <img src="/images/default.png" alt="profilepicture" className="profile-picture" />
           <div className="profile-username">{username || "Guest"}</div>
         </div>
 
