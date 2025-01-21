@@ -53,6 +53,7 @@
   border-radius: var(--s);
   margin-bottom: var(--xs);
   box-shadow: 0 0 0.2vw rgba(0, 0, 0, 0.5); /* Adjust as needed */
+  cursor: pointer;
   transition:
     background-color 0.2s ease,
     color 0.2s ease;

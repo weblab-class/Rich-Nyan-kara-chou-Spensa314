@@ -33,11 +33,9 @@
   font-size: var(--s);
   padding: var(--xs) var(--s);
   cursor: pointer;
-  transition:
-    transform 0.2s ease,
-    opacity 0.2s ease; /* Smooth transition */
+  transition: transform 0.2s ease; /* Smooth transition */
 }
 
 .login-button:hover {
-  opacity: 0.65;
+  transform: scale(1.05);
 }

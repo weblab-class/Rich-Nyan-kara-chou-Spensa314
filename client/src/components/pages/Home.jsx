@@ -87,6 +87,7 @@ const Home = () => {
                   value={roomCode}
                   onChange={(e) => setRoomCode(e.target.value)}
                   placeholder="Room Code"
+                  autocomplete="off"
                 />
 
                 <div onClick={onJoinRoomClick} className="room-button join-room-button">

@@ -49,14 +49,14 @@
 .leaderboard {
   height: var(--s);
   width: var(--sm);
-  margin-right: var(--xs);
+  margin-right: var(--s);
   display: flex;
   align-items: center;
   transition: transform 0.2s ease; /* Smooth transition */
 }
 
 .leaderboard:hover {
-  transform: scale(1.1);
+  transform: scale(1.2);
 }
 
 .logout {
@@ -70,7 +70,7 @@
 }
 
 .logout:hover {
-  transform: scale(1.1);
+  transform: scale(1.2);
 }
 
 .nav-profile {
@@ -78,7 +78,7 @@
   height: var(--s);
   background-color: var(--dark--brown);
   border-radius: var(--s);
-  margin-right: var(--xs);
+  margin-right: var(--s);
   padding-left: var(--xs);
   padding-right: var(--xs);
   padding-bottom: 0.25vw;

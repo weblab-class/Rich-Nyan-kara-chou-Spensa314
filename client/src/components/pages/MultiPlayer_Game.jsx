@@ -203,13 +203,13 @@ const MultiPlayer_Game = () => {
           {/* Scoreboard */}
           <div className="mp-score-container">
             <span className="mp-score-label">Score: </span>
-            <span className="mp-score-value">{gameState.score}</span>
+            <span className="mp-score-value">{gameState.score.toLocaleString()}</span>
           </div>
 
           {/* Results */}
           <div className="mp-result-container">
-            <span className="mp-result-count">{gameState.curScore}</span> Results for "
-            <span className="mp-result-word">{gameState.curQuery}</span>"
+            <span className="mp-result-count">{gameState.curScore.toLocaleString()}</span> Results
+            for "<span className="mp-result-word">{gameState.curQuery}</span>"
           </div>
 
           {/* Prev Word */}
@@ -225,10 +225,11 @@ const MultiPlayer_Game = () => {
             <input
               type="text"
               id="searchQuery"
-              autoFocus= {true}
+              autoFocus={true}
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+              autocomplete="off"
             />
           </div>
           <hr className="mp-currword-line" />
@@ -257,7 +258,7 @@ const MultiPlayer_Game = () => {
           <div className="mp-scoreboard-values">
             {scores.map((player, index) => (
               <div key={index}>
-                {player.playerName}: {parseInt(player.score)}
+                {player.playerName}: {parseInt(player.score).toLocaleString()}
               </div>
             ))}
           </div>

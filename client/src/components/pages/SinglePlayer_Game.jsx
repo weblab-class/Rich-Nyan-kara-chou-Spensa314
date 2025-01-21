@@ -119,7 +119,7 @@ const SinglePlayer_Game = () => {
         if (newTimerValue <= 0) {
           clearInterval(timer);
           navigate(`/results/solo`, {
-            gameState: gameState
+            gameState: gameState,
           });
           return { ...prevState, timerValue: 0 }; // Stop timer at 0
         }
@@ -199,12 +199,12 @@ const SinglePlayer_Game = () => {
 
         <div className="score-container">
           <span className="score-label">Score: </span>
-          <span className="score-value">{gameState.score}</span>
+          <span className="score-value">{gameState.score.toLocaleString()}</span>
         </div>
 
         {/* Results */}
         <div className="result-container">
-          <span className="result-count">{gameState.curScore}</span> Results for "
+          <span className="result-count">{gameState.curScore.toLocaleString()}</span> Results for "
           <span className="result-word">{gameState.curQuery}</span>"
         </div>
 
@@ -221,12 +221,13 @@ const SinglePlayer_Game = () => {
           <input
             type="text"
             id="searchQuery"
-            autoFocus= {true}
+            autoFocus={true}
             value={query}
             placeholder=""
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && onEnterKeyPress(e)}
             className={`${isError ? "error" : ""}`}
+            autocomplete="off"
             style={{
               width: `${query.length + 1}ch`,
             }}
