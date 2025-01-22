@@ -8,14 +8,18 @@ import { UserContext } from "../App";
 import "./Profile.css";
 
 const Profile = () => {
-  const { username } = useContext(UserContext);
+  const { username, profilepicture } = useContext(UserContext);
 
   return (
     <>
       <NavBar />
       <div className="profile-container">
         <div className="profile-personal-container">
-          <img src="/images/default.png" alt="profilepicture" className="profile-picture" />
+          <img
+            src={profilepicture || "/images/default.png"}
+            alt="profilepicture"
+            className="profile-picture"
+          />
           <div className="profile-username">{username || "Guest"}</div>
         </div>
 

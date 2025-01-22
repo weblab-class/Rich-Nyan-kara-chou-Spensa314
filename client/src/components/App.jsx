@@ -17,6 +17,7 @@ export const UserContext = createContext(null);
 const App = () => {
   const [userId, setUserId] = useState(undefined);
   const [username, setUsername] = useState("");
+  const [profilepicture, setProfilePicture] = useState("");
 
   useEffect(() => {
     get("/api/whoami").then((user) => {
@@ -24,6 +25,9 @@ const App = () => {
         setUserId(user._id);
         if (user.name) {
           setUsername(user.name);
+        }
+        if (user.profilePicture) {
+          setProfilePicture(user.profilePicture);
         }
       }
     });
@@ -38,6 +42,7 @@ const App = () => {
       if (user.name) {
         setUsername(user.name);
       }
+      setProfilePicture(user.profilePicture);
       post("/api/initsocket", { socketid: socket.id });
     });
   };
@@ -51,6 +56,7 @@ const App = () => {
   const authContextValue = {
     userId,
     username,
+    profilepicture,
     handleLogin,
     handleLogout,
   };
