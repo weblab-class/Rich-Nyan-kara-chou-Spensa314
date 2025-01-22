@@ -11,6 +11,11 @@ const Profile = () => {
   const { username, profilepicture, userId } = useContext(UserContext);
   const [currentPicture, setCurrentPicture] = useState(profilepicture);
 
+  const navigate = useNavigate();
+  const wins = 0;
+  const losses = 0;
+  const high_score = 1000000;
+  const average_score = 1000;
   // const handleFileChange = async (e) => {
   //   const file = e.target.files[0];
   //   if (!file) return;
