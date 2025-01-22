@@ -90,7 +90,8 @@
   position: absolute;
   top: var(--xs);
   right: var(--xs);
-  background-color: var(--light--beige);
+  background-color: var(--dark--brown);
+  color: var(--beige);
   height: var(--s);
   width: var(--s);
   box-shadow: 0 0 var(--xs) rgba(0, 0, 0, 0.3);
@@ -102,15 +103,9 @@
 
   border-radius: 50%;
 
-  color: var(--dark--brown);
   transition:
     color 0.2s ease,
     background-color 0.2 ease;
-}
-
-.info-close-button:hover {
-  background-color: var(--dark--brown);
-  color: var(--beige);
 }
 
 .room-button {
@@ -121,8 +116,8 @@
 }
 
 .room-button:hover {
-  color: var(--beige);
-  background-color: var(--dark--brown);
+  color: var(--dark--brown);
+  background-color: var(--beige);
 }
 
 .room-modal-overlay {

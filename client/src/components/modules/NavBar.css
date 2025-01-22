@@ -85,11 +85,11 @@
 
 .nav-profile {
   color: var(--beige);
-  height: var(--s);
+  height: 2.5vw;
   background-color: var(--dark--brown);
   border-radius: var(--s);
   margin-right: var(--s);
-  padding-left: var(--xs);
+  padding-left: 0.6vw;
   padding-right: var(--xs);
   padding-bottom: 0.25vw;
   padding-top: 0.1vw;
@@ -111,4 +111,14 @@
   color: var(--dark--brown);
   background-color: var(--beige);
   transform: scale(1.05);
+}
+
+.nav-profile-picture {
+  padding: 0.1vw;
+  margin-left: 0;
+  margin-right: 0.6vw;
+  width: 2vw;
+  height: 2vw;
+  border-radius: 50%;
+  box-shadow: 0.05vw 0.05vw 0.1vw rgba(0, 0, 0, 0.7); /* Adjust as needed */
 }

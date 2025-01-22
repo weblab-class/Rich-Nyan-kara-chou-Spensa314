@@ -168,7 +168,7 @@
 /* Next Letter */
 .mp-random-next-letter {
   font-size: 2.4vw;
-  color: var(--dark--brown);
+  color: var(--beige);
   margin-top: var(--xs);
 }
 
@@ -176,11 +176,14 @@
 
 .mp-results-list-container {
   gap: var(--xxs);
-  color: var(--brown);
+  color: var(--dark--brown);
+  text-shadow: none;
+  padding: 0 var(--xs);
+
   display: flex;
   font-size: var(--s);
   text-align: left;
-  width: 55vw;
+  width: 53vw;
   white-space: nowrap;
   overflow: auto;
   margin-top: var(--xs);
@@ -246,7 +249,7 @@
 }
 
 .mp-scoreboard-values {
-  color: white;
+  color: var(--light--beige);
   font-size: var(--s);
   width: 25vw;
 }
