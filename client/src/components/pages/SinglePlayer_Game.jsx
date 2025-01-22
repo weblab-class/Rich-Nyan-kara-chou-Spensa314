@@ -193,7 +193,7 @@ const SinglePlayer_Game = () => {
         {/* Scoreboard */}
         <div className="highscore-container">
           <img src="/images/crown.png" alt="Crown" className="highscore-crown" />
-          {gameState.highScore}
+          {parseInt(gameState.highScore).toLocaleString}
         </div>
 
         <div className="score-container">

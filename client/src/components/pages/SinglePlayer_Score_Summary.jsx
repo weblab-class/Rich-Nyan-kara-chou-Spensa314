@@ -7,12 +7,12 @@ import "./SinglePlayer_Score_Summary.css";
 
 const SinglePlayer_Score_Summary = () => {
   const [results, setResults] = useState([
-    { term: "Apple Pie", query: "1,000,000,000,000" },
-    { term: "Pie Chart", query: "900,000" },
-    { term: "Chart Rank", query: "800,000" },
+    { term: "Apple Pie", query: 100000000 },
+    { term: "Pie Chart", query: 900000 },
+    { term: "Chart Rank", query: 800000 },
   ]); /**placeholder */
 
-  const total_points = "100,000,000";
+  const total_points = 10000000;
 
   const navigate = useNavigate();
 
@@ -31,11 +31,11 @@ const SinglePlayer_Score_Summary = () => {
               <div key={result} className="score-result-term">
                 "{result.term}"
               </div>
-              :<div className="score-result-query">{result.query}</div>
+              :<div className="score-result-query">{parseInt(result.query).toLocaleString()}</div>
             </div>
           ))}
         </div>
-        <h2 className="total-points-title">Total Points: {total_points}</h2>
+        <h2 className="total-points-title">Total Points: {total_points.toLocaleString()}</h2>
 
         <div onClick={handleNextClick}>
           <img src="/images/next.png" alt="Next" className="next-leaderboard" />
