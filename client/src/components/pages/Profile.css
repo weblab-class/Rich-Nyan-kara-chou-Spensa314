@@ -46,6 +46,12 @@
   text-transform: uppercase; /* Ensure initials are always uppercase */
 }
 
+.profile-username-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
 .profile-username {
   font-size: var(--sm);
   color: black;
@@ -56,11 +62,22 @@
   box-shadow: 0.05vw 0.05vw 0.3vw rgba(0, 0, 0, 0.4); /* Adjust as needed */
   margin-bottom: var(--m);
   margin-top: var(--m);
-
   display: flex;
-  text-align: center;
-  align-items: center;
-  justify-content: center;
+  align-items: center; /* Vertically center the text and icon */
+  justify-content: space-between; /* Pushes the icon to the right */
+}
+
+.profile-username span {
+  text-align: left; /* Align username text to the left */
+  flex-grow: 1; /* Allow the text to take up remaining space */
+}
+
+.profile-edit-icon {
+  width: 2.5vw; /* Slightly smaller icon */
+  height: 2.5vw; /* Ensure it's square */
+  aspect-ratio: 1/1;
+  object-fit: contain;
+  cursor: pointer; /* Make the icon clickable */
 }
 
 .profile-statistics-container {

@@ -22,11 +22,19 @@ const games = {}; // In-memory store for game states
 router.post("/login", auth.login);
 router.post("/logout", auth.logout);
 
-router.get("/whoami", (req, res) => {
+//making them async so we get the right info first
+router.get("/whoami", async (req, res) => {
   if (!req.user) {
     return res.send({});
   }
-  res.send(req.user);
+  // trying to have new session data
+  try {
+    const user = await User.findById(req.user._id); // Ensure latest DB fetch
+    res.send(user);
+  } catch (err) {
+    console.error("Error fetching user:", err);
+    res.status(500).send({ msg: "Error fetching user data." });
+  }
 });
 
 // Route to handle profile picture upload
@@ -50,6 +58,41 @@ router.post("/upload-profile-picture", auth.ensureLoggedIn, async (req, res) => 
     res.status(200).send({ success: true, profilePicture: user.profilePicture });
   } catch (err) {
     console.error("Error uploading profile picture:", err);
+    res.status(500).send({ msg: "Internal server error" });
+  }
+});
+
+router.post("/update-username", auth.ensureLoggedIn, async (req, res) => {
+  const { userId, newUsername } = req.body;
+
+  if (!userId || !newUsername || !newUsername.trim()) {
+    return res.status(400).send({ msg: "Invalid input. UserId and newUsername are required." });
+  }
+
+  try {
+    // Find the user in the database
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).send({ msg: "User not found" });
+    }
+
+    console.log("updating user.name with ", newUsername);
+    // Update user's username
+    user.name = newUsername.trim();
+    await user.save();
+
+    console.log("newUsername saved successfully");
+
+    // refresh session so we get the new name
+    // req.login(user, (err) => {
+    //   if (err) {
+    //     return res.status(500).send({ msg: "Session refresh error" });
+    //   }
+    //   res.status(200).send({ success: true, username: user.name });
+    // });
+    res.status(200).send({ success: true, username: user.name });
+  } catch (err) {
+    console.error("Error updating username:", err);
     res.status(500).send({ msg: "Internal server error" });
   }
 });

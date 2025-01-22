@@ -39,10 +39,15 @@ const App = () => {
     console.log(`Logged in as ${decodedCredential.name}`);
     post("/api/login", { token: userToken }).then((user) => {
       setUserId(user._id);
-      if (user.name) {
-        setUsername(user.name);
-      }
+      // if (user.name) {
+      setUsername(user.name); //should be required
+      // }
       setProfilePicture(user.profilePicture);
+      get("/api/whoami").then((updatedUser) => {
+        // setUserId(updatedUser._id); //this should never change tho-
+        setUsername(updatedUser.name); // fetching the right one
+        setProfilePicture(updatedUser.profilePicture);
+      });
       post("/api/initsocket", { socketid: socket.id });
     });
   };
@@ -57,6 +62,7 @@ const App = () => {
     userId,
     username,
     profilepicture,
+    setUsername,
     handleLogin,
     handleLogout,
   };
