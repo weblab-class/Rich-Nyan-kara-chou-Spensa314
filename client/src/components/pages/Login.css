@@ -6,9 +6,6 @@
   height: 100vh;
   width: 100vw;
   padding: 0 var(--xs); /* Add padding for responsiveness */
-
-  background-color: var(--light--brown);
-
   border: var(--xs) solid var(--beige); /* **Added Border** */
   box-sizing: border-box; /* Ensures padding and border don't affect the layout */
 
@@ -77,6 +74,10 @@
   animation:
     typeEraseLoop 6s steps(15) infinite,
     blinking 6s step-end infinite;
+}
+
+.first-letter {
+  color: var(--dark--brown);
 }
 
 /* The typing effect */
