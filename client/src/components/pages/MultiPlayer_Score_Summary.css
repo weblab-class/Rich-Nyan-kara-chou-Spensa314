@@ -106,7 +106,7 @@
   padding: 0.3vw var(--xs);
   margin-bottom: var(--xs);
   border-radius: var(--s);
-  color: var(--white);
+  color: var(--light--beige);
   font-size: var(--s);
 
   display: flex;
@@ -126,7 +126,7 @@
   white-space: nowrap;
   margin-right: var(--xxs);
   padding: var(--xxs) var(--xs);
-  color: var(--beige);
+  color: var(--dark--beige);
 }
 
 .multi-winner-container {

@@ -75,6 +75,9 @@
 .mp-player-logo {
   height: var(--ml);
   width: var(--ml);
+  border-radius: 50%;
+  box-shadow: 0 0.1vw var(--xxs) rgba(0, 0, 0, 0.4);
+  margin-bottom: 0.1vw;
 }
 
 .mp-player-name {
@@ -92,4 +95,8 @@
   margin-top: auto;
   margin-bottom: var(--ml);
   box-shadow: 0 0.25vw 0.3vw rgba(0, 0, 0, 0.3);
+}
+
+.mp-player-name.s-host {
+    color: var(--dark--brown);
 }

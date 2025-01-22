@@ -167,7 +167,6 @@ router.post("/startGame/:roomCode", (req, res) => {
   try {
     // Extract gameDetails directly from req.body
     const gameDetails = req.body;
-    console.log("THIS" + gameDetails.hardMode);
     socketManager.startGame(gameDetails.roomCode, gameDetails);
     // Validate that gameDetails is provided
     if (!gameDetails) {
@@ -189,9 +188,14 @@ router.post("/startGame/:roomCode", (req, res) => {
   }
 });
 
+router.post("/endGame/:roomCode", (req, res) => {
+  const roomCode = req.params.roomCode;
+  socketManager.endGame(roomCode);
+  res.status(200).send({ msg: "Game ended successfully" });
+});
+
 router.get("/getRoom/:roomCode", async (req, res) => {
   const roomCode = req.params.roomCode;
-  console.log("HUHUHU", socketManager.gameStarted(roomCode));
   res.send(socketManager.gameStarted(roomCode));
 });
 // Route: Search

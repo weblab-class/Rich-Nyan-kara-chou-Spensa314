@@ -10,7 +10,8 @@ import { socket } from "../../client-socket"; // Import Socket.IO client
 
 const MultiPlayer_Start = () => {
   const location = useLocation();
-  const { host } = location.state || {};
+  const [host, setHost] = useState("");
+  const [isHost, setIsHost] = useState(false);
   const { roomCode } = useParams(); // Get room code from URL
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [minLetters, setMinLetters] = useState(3);
@@ -19,6 +20,8 @@ const MultiPlayer_Start = () => {
   const [hardMode, setHardMode] = useState(false);
   const [players, setPlayers] = useState([]); // Player list from the server
   const [username, setUsername] = useState(null);
+  const [id, setId] = useState(null);
+  const [started, setStarted] = useState(false);
   const navigate = useNavigate();
   const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
   const onInfoButtonClick = () => {
@@ -34,6 +37,7 @@ const MultiPlayer_Start = () => {
       console.log(res.name);
       if (res.name !== null) {
         setUsername(res.name);
+        setId(res._id);
         socket.emit("joinRoom", {
           roomId: roomCode,
           user: res.name,
@@ -51,12 +55,38 @@ const MultiPlayer_Start = () => {
       setPlayers(updatedPlayers);
     });
 
-    // Cleanup when the component unmounts
-    return () => {
-      socket.emit("leaveRoom", roomCode);
-      socket.off("updatePlayers");
-    };
-  }, [roomCode, username]);
+    socket.on("updateHost", (updatedHost) => {
+      setHost(updatedHost);
+      if(updatedHost === id) {
+        setIsHost(true);
+      }
+      console.log("WTF", (updatedHost === id));
+    });
+
+    const handleBeforeUnload = () => {
+        if (!started) {
+          socket.emit("leaveRoom", roomCode);
+        }
+      };
+    
+      window.addEventListener("beforeunload", handleBeforeUnload);
+    
+      const handleNavBarClick = (event) => {
+        const target = event.target.closest(".navbar-link"); // Check for navbar-link class
+        if (target && !started) {
+          socket.emit("leaveRoom", roomCode);
+        }
+      };
+    
+      const navBar = document.querySelector(".navbar-container");
+      navBar?.addEventListener("click", handleNavBarClick);
+      return () => {
+        window.removeEventListener("beforeunload", handleBeforeUnload);
+        socket.off("updatePlayers");
+        socket.off("updateHost");
+        navBar?.removeEventListener("click", handleNavBarClick);
+      };
+  }, [roomCode, username, id, started]);
 
   const onStartClick = () => {
     const gameDetails = {
@@ -90,7 +120,9 @@ const MultiPlayer_Start = () => {
 
   useEffect(() => {
     socket.on("gameStarted", ({ message, gameState }) => {
-      console.log(message); // Debug message
+      console.log(message);
+      setStarted(true);
+      // Debug message
       // Update game state or navigate to the game page
       get("/api/room/${roomCode}").then((res) => {
         navigate(`/game/${roomCode}`, {
@@ -143,13 +175,13 @@ const MultiPlayer_Start = () => {
     <>
       <NavBar />
       <div className="multiplayer-container">
-        {host && (
+        {isHost && (
           <div onClick={onSettingsClick} className="mp-settings-button mp-page-button">
             Game Settings
           </div>
         )}
         <div className="center-players">
-          {host && (
+          {isHost && (
             <div onClick={onStartClick} className="mp-start-button mp-page-button">
               Start Game
             </div>
@@ -157,9 +189,9 @@ const MultiPlayer_Start = () => {
           <div className="mp-players-title">Players</div>
           <div className="mp-players-list">
             {players.map((player) => (
-              <div key={player.id} className="mp-players-item">
+              <div key={player.id} className={`mp-players-item`} >
                 <img src="/images/default.png" alt="default" className="mp-player-logo" />
-                <div className="mp-player-name">{player.name}</div>
+                <div className={`mp-player-name ${(player.userId === host) ? "s-host" : "s-not-host"}`}>{player.name}</div>
               </div>
             ))}
           </div>

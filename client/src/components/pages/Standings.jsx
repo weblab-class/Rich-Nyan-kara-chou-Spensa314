@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import "../../utilities.css";
 import NavBar from "../modules/NavBar";
 import { useNavigate , useLocation, useParams} from "react-router-dom";
-import { get } from "../../utilities";
+import { get, post } from "../../utilities";
 import "./Standings.css";
 
 const Standings = () => {
@@ -40,6 +40,13 @@ const Standings = () => {
   const navigate = useNavigate();
 
   const handleNextClick = () => {
+    post(`/api/endGame/${roomCode}`).then((res) => {
+      console.log(res);
+      if (res.error) {
+        alert(res.error);
+        return;
+      }
+    })
     navigate(`/results/${roomCode}`, {state: {
       standings: standings,
       players: players,

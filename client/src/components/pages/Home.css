@@ -55,7 +55,6 @@
 /* MODAL FOR MULTIPLAYER GAME */
 
 .room-modal-container {
-  background-color: var(--brown);
   padding: var(--xs);
   border-radius: var(--xxs);
   box-shadow: 0 0 var(--xs) rgba(0, 0, 0, 0.3);
@@ -67,6 +66,12 @@
 
   align-items: center; /* Center elements horizontally */
   position: relative; /* To position the close button */
+  background-image: linear-gradient(
+    45deg,
+    var(--off--light--brown),
+    var(--light--brown),
+    var(--off--light--brown)
+  );
 }
 
 .close-button {
@@ -74,7 +79,8 @@
   position: absolute;
   top: var(--xs);
   right: var(--xs);
-  background-color: var(--light--beige);
+  background-color: var(--dark--brown);
+  color: var(--beige);
   height: var(--s);
   width: var(--s);
   box-shadow: 0 0 var(--xs) rgba(0, 0, 0, 0.3);
@@ -85,8 +91,6 @@
   justify-content: center;
 
   border-radius: 50%;
-
-  color: var(--dark--brown);
 }
 
 .join-room-container {
@@ -122,17 +126,27 @@
 }
 
 .join-room-button {
-  background-color: var(--beige);
+  background-color: var(--dark--brown);
+  color: var(--beige);
   padding: var(--xxs) var(--xs);
-  color: var(--brown);
   font-size: var(--s);
   border-radius: var(--xxs);
   box-shadow: 0 0 var(--xxs) rgba(0, 0, 0, 0.5);
 }
 
 .create-room-button {
-  background-color: var(--beige);
-  color: var(--brown);
+  background-color: var(--off--beige);
+  color: var(--dark--brown);
+  font-size: var(--sm);
+  border-radius: var(--xxs);
+  box-shadow: 0 0 var(--xxs) rgba(0, 0, 0, 0.5);
+  margin-top: var(--s);
+  padding: var(--xs) var(--s);
+}
+
+.create-room-button:hover {
+  background-color: var(--dark--brown);
+  color: var(--beige);
   font-size: var(--sm);
   border-radius: var(--xxs);
   box-shadow: 0 0 var(--xxs) rgba(0, 0, 0, 0.5);

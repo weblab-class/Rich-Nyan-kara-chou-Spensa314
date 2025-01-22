@@ -50,7 +50,7 @@
   padding: var(--xxs) var(--xs);
   margin-bottom: var(--xs);
   border-radius: var(--s);
-  color: white;
+  color: var(--beige);
   font-size: 2.5vw;
 
   display: flex;
@@ -70,7 +70,7 @@
   white-space: nowrap;
   margin-right: var(--xxs);
   padding: var(--xxs) var(--xs);
-  color: var(--beige);
+  color: var(--dark--beige);
 }
 
 .total-points-title {
