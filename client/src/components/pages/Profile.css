@@ -48,9 +48,9 @@
 
 .profile-username {
   font-size: var(--sm);
-  color: black;
+  color: var(--beige);
   width: 20vw;
-  background-color: var(--beige);
+  background-color: var(--dark--brown);
   padding: var(--xxs) var(--s);
   border-radius: var(--m);
   box-shadow: 0.05vw 0.05vw 0.3vw rgba(0, 0, 0, 0.4); /* Adjust as needed */
@@ -61,6 +61,7 @@
   text-align: center;
   align-items: center;
   justify-content: center;
+  text-shadow: none;
 }
 
 .profile-statistics-container {
@@ -111,8 +112,13 @@
 
 .profile-statistics-category-title {
   font-size: var(--s);
-  color: var(--dark--brown);
+  color: var(--off--brown);
   margin-top: var(--xs);
+  background-color: var(--beige);
+  border-radius: var(--s);
+  padding: 0.3vw var(--xs);
+  box-shadow: 0.05vw 0.05vw 0.2vw rgba(0, 0, 0, 0.6); /* Adjust as needed */
+  text-shadow: none;
 }
 
 .profile-statistics-category-category {

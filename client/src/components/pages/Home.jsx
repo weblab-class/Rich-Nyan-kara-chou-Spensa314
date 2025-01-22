@@ -61,7 +61,7 @@ const Home = () => {
       <NavBar />
       <div className="home-container">
         <div className="center-container">
-          <div onClick={onMultiplayerClick} className="shine player-button">
+          <div onClick={onMultiplayerClick} className="player-button">
             Multiplayer
           </div>
           <div onClick={onSingleplayerClick} className="player-button">
@@ -88,6 +88,12 @@ const Home = () => {
                   onChange={(e) => setRoomCode(e.target.value)}
                   placeholder="Room Code"
                   autocomplete="off"
+                  autoFocus
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      onJoinRoomClick(); // Trigger the join room click when Enter is pressed
+                    }
+                  }}
                 />
 
                 <div onClick={onJoinRoomClick} className="room-button join-room-button">

@@ -19,6 +19,7 @@ const MultiPlayer_Start = () => {
   const [hardMode, setHardMode] = useState(false);
   const [players, setPlayers] = useState([]); // Player list from the server
   const [username, setUsername] = useState(null);
+
   const navigate = useNavigate();
   const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
   const onInfoButtonClick = () => {

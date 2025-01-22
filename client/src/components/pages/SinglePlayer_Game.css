@@ -156,7 +156,7 @@
 /* Next Letter */
 .random-next-letter {
   font-size: 2.4vw;
-  color: var(--dark--brown);
+  color: var(--beige);
   margin-top: var(--xs);
 }
 
@@ -164,11 +164,13 @@
 
 .results-list-container {
   gap: var(--xxs);
-  color: var(--brown);
+  color: var(--dark--brown);
+  text-shadow: none;
+  padding: 0 var(--xs);
   display: flex;
   font-size: var(--s);
   text-align: left;
-  width: 90vw;
+  width: 88vw;
   white-space: nowrap;
   overflow: auto;
   margin-top: var(--xs);
