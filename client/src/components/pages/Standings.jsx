@@ -49,7 +49,6 @@ const Standings = () => {
     }});
     return;
   };
-
   return (
     <>
       <NavBar />
@@ -68,7 +67,7 @@ const Standings = () => {
                 {index + 1}{" "}
               </div>
               <div className="standings-player">
-                {player.playerName}: {player.score}
+                {player.playerName}: {parseInt(player.score).toLocaleString()}
               </div>
             </div>
           ))}

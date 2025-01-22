@@ -1,7 +1,6 @@
 .loading-container {
   height: 100vh;
   width: 100vw;
-  background-color: var(--light--brown);
   box-shadow: inset 0 0 var(--xs) rgba(0, 0, 0, 0.3);
   display: flex;
   flex-direction: column;
@@ -18,50 +17,65 @@
 
 .settings-summary-container {
   margin-top: var(--m);
-  padding: var(--s);
-  background-color: var(--brown);
+  padding: var(--xs);
+  background-color: var(--dark--beige);
   justify-content: center;
   align-items: center;
   text-align: center;
-
+  text-shadow: none;
   border-radius: var(--s);
   box-shadow: 0.05vw 0.05vw 0.2vw rgba(0, 0, 0, 0.3);
-  height: 15vw;
-  width: 35vw;
-  color: var(--beige);
-  font-size: var(--s);
+  height: 12vw;
+  width: 20vw;
+  color: var(--dark--brown);
+  font-size: var(--xss);
+  border: 0.5vw solid var(--dark--brown);
 }
 
 .settings-title {
-  font-size: var(--sm);
-  color: var(--dark--brown);
+  margin-top: 0;
+  font-size: var(--s);
+  color: var(--beige);
+  background-color: var(--dark--brown);
+  border-radius: var(--s);
+  padding: 0.1vw var(--xxs);
+  box-shadow: 0.05vw 0.05vw 0.2vw rgba(0, 0, 0, 0.5);
+  margin-bottom: var(--xxs);
 }
 
 .countdown-timer {
-  font-size: 12vw;
-  color: white;
-  background-color: var(--brown);
-  border: 1vw solid var(--beige);
+  font-size: 15vw;
+  color: var(--beige);
+  background-color: var(--dark--brown);
   padding-bottom: var(--xs);
   box-shadow: 0.05vw 0.05vw 0.2vw rgba(0, 0, 0, 0.3);
-  height: 13vw;
-  width: 15vw;
+  height: 16vw;
+  width: 18vw;
   border-radius: 50%;
 
   display: flex;
   text-align: center;
   justify-content: center;
   align-items: center;
+  background-image: linear-gradient(
+    45deg,
+    var(--brown),
+    var(--dark--brown),
+    var(--brown),
+    var(--dark--brown)
+  );
+  border: 1vw solid var(--beige);
 }
 
 .green {
-  color: rgb(1, 140, 1);
+  color: rgb(0, 130, 0);
 }
 
 .red {
-  color: rgb(255, 18, 18);
+  color: rgb(167, 4, 4);
 }
 
 .white {
   color: white;
+  text-shadow: 0 0 0.1vw black;
 }

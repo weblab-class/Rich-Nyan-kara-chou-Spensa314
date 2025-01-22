@@ -1,12 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import "../../utilities.css";
 import NavBar from "../modules/NavBar";
-import { useNavigate , useLocation, useParams} from "react-router-dom";
+import { useNavigate, useLocation, useParams } from "react-router-dom";
 import { get } from "../../utilities";
 import "./MultiPlayer_Score_Summary.css";
 
 const MultiPlayer_Score_Summary = () => {
-  
   const [standings, setStandings] = useState([]);
   const [players, setPlayers] = useState([]);
   const [roomState, setRoomState] = useState({});
@@ -67,11 +66,12 @@ const MultiPlayer_Score_Summary = () => {
                   <div key={query} className="mp-score-result-term">
                     "{query[0]}"
                   </div>
-                  :<div className="mp-score-result-query">{query[1]}</div>
+                  :
+                  <div className="mp-score-result-query">{parseInt(query[1]).toLocaleString()}</div>
                 </div>
               ))}
             </div>
-            <div className="multi-total-points">Total Points: {ownScore}</div>
+            <div className="multi-total-points">Total Points: {ownScore.toLocaleString()}</div>
           </div>
           <div className="multi-individual-results-container">
             <div className="multi-opponent-title" onClick={onOpponentClick}>
@@ -83,11 +83,14 @@ const MultiPlayer_Score_Summary = () => {
                   <div key={result} className="mp-score-result-term">
                     "{result[0]}"
                   </div>
-                  :<div className="mp-score-result-query">{result[1]}</div>
+                  :
+                  <div className="mp-score-result-query">
+                    {parseInt(result[1]).toLocaleString()}
+                  </div>
                 </div>
               ))}
             </div>
-            <div className="multi-total-points">Total Points: {oppScore}</div>
+            <div className="multi-total-points">Total Points: {oppScore.toLocaleString()}</div>
           </div>
         </div>
         <div onClick={handleNextClick}>

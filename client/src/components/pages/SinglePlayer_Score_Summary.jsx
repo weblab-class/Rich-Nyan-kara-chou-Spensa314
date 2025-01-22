@@ -5,7 +5,6 @@ import { useNavigate, useLocation } from "react-router-dom";
 import "./SinglePlayer_Score_Summary.css";
 
 const SinglePlayer_Score_Summary = () => {
-
   const [queries, setQueries] = useState([]);
   const [score, setScore] = useState(0);
   const [minLetters, setMinLetters] = useState(0);
@@ -43,12 +42,11 @@ const SinglePlayer_Score_Summary = () => {
               <div className="score-result-term">
                 "{q[0]}"
               </div>
-              :<div className="score-result-query">{q[1]}</div>
+              :<div className="score-result-query">{parseInt(q[1]).toLocaleString()}</div>
             </div>
           ))}
         </div>
-        <h2 className="total-points-title">Total Points: {score}</h2>
-
+        <h2 className="total-points-title">Total Points: {parseInt(score).toLocaleString()}</h2>
         <div onClick={handleNextClick}>
           <img src="/images/next.png" alt="Next" className="next-leaderboard" />
         </div>
