@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import "../../utilities.css";
 import NavBar from "../modules/NavBar";
 import { useNavigate, useLocation, useParams } from "react-router-dom";
-import { get } from "../../utilities";
+import { get , post} from "../../utilities";
 import "./MultiPlayer_Score_Summary.css";
 
 const MultiPlayer_Score_Summary = () => {
@@ -40,10 +40,22 @@ const MultiPlayer_Score_Summary = () => {
   const navigate = useNavigate();
 
   const handleNextClick = () => {
-    navigate(`/room/${roomCode}`);
-    {
-      /* insert info ab room code: ryan */
-    }
+    get(`/api/room/${roomCode}`).then((res) => {
+      console.log(res);
+      if (res.exists === true) {
+        console.log(res);
+        get(`/api/getRoom/${roomCode}`).then((res) => {
+          console.log(res);
+          if (res === true) {
+            alert("Game already started!");
+          } else {
+            navigate(`/room/${roomCode}`);
+          }
+        });
+      } else {
+        alert("Room does not exist!");
+      }
+    });
   };
   const onOpponentClick = () => {
     setIndex((index + 1) % standings.length);
