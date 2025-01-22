@@ -82,11 +82,10 @@ const SinglePlayer_Game = () => {
       }
       const queryText = `${gameState.prevWord} ${gameState.curLetter}${event.target.value}`;
       console.log("Search Query:", queryText);
-
+      setQuery("");
       get("/api/search", { query: queryText })
         .then((res) => {
           // Update index and state in a controlled manner
-          setQuery("");
           setIndex((prevIndex) => prevIndex + 1);
           setGameState((prevState) => {
             const newLetter = generateRandomLetter(deriveSeed(prevState.seed, index)); // Generate new letter using seed

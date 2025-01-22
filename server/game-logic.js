@@ -220,7 +220,7 @@ function getSortedScores(roomId) {
     .map((playerId) => {
       const state = playerStates[playerId];
       if (!state) throw new Error(`Player state not found for playerId ${playerId}.`);
-      return { playerName: playerId, score: state.score };
+      return { playerName: playerId, score: state.score, playerState: playerStates[playerId] };
     })
     .sort((a, b) => b.score - a.score); // Sort in descending order of scores
 }
@@ -228,8 +228,6 @@ function getSortedScores(roomId) {
 function getRoomInfo(roomId, userId) {
     playerStates[userId].curLetter = roomStates[roomId].randomLetters[playerStates[userId].index];
     playerStates[userId].nextLetter = roomStates[roomId].randomLetters[playerStates[userId].index + 1];
-    console.log(playerStates[userId].curLetter);
-    console.log(playerStates[userId].nextLetter);
     const liveResults =  {
         roomState: roomStates[roomId],
         roomPlayers: roomToPlayers[roomId],

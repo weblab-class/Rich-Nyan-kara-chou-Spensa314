@@ -1,18 +1,52 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "../../utilities.css";
 import NavBar from "../modules/NavBar";
-import { useNavigate } from "react-router-dom";
+import { useNavigate , useLocation, useParams} from "react-router-dom";
 import { get } from "../../utilities";
 import "./MultiPlayer_Score_Summary.css";
 
 const MultiPlayer_Score_Summary = () => {
-  const [results, setResults] = useState([
-    { term: "Apple Pie", query: "1,000,000,000,000" },
-    { term: "Pie Chart", query: "900,000" },
-    { term: "Chart Rank", query: "800,000" },
-  ]); /**placeholder */
+  
+  const [standings, setStandings] = useState([]);
+  const [players, setPlayers] = useState([]);
+  const [roomState, setRoomState] = useState({});
+  const [queries, setQueries] = useState([]);
+  const [ownScore, setOwnScore] = useState(0);
+  const [index, setIndex] = useState(0);
+  const [oppQueries, setOppQueries] = useState([]);
+  const [oppScore, setOppScore] = useState(0);
+  const [oppName, setOppName] = useState("");
+  const [winner, setWinner] = useState("");
 
-  const total_points = "1,000,000";
+  const location = useLocation();
+  useEffect(() => {
+    if (location.state) {
+      setStandings(location.state.standings || []);
+      setPlayers(location.state.players || []);
+      setRoomState(location.state.state || {});
+      setQueries(location.state.queries || []);
+      setOwnScore(location.state.score || 0);
+
+      // Default opponent setup
+      const initialIndex = 0; // Start with the first opponent
+      setIndex(initialIndex);
+      setOppQueries(location.state.standings?.[index]?.playerState?.queries || []);
+      setOppScore(location.state.standings?.[index]?.playerState?.score || 0);
+      setOppName(location.state.standings?.[index]?.playerName || "");
+      setWinner(location.state.standings?.[0]?.playerName || "Unknown");
+
+      console.log(standings);
+      console.log(players);
+      console.log(roomState);
+      console.log(queries);
+      console.log(ownScore);
+      console.log(index);
+      console.log(oppQueries);
+      console.log(oppScore);
+      console.log(oppName);
+      console.log(winner);
+    }
+  }, [location.state]);
 
   const navigate = useNavigate();
 
@@ -22,51 +56,48 @@ const MultiPlayer_Score_Summary = () => {
       /* insert info ab room code: ryan */
     }
   };
-
-  const opponents = ["Ryan", "Neha", "Miranda"];
-
-  const [opponent, setOpponent] = useState(opponents[0]);
   const onOpponentClick = () => {
-    const currentIndex = opponents.indexOf(opponent);
-    const nextIndex = (currentIndex + 1) % opponents.length; // this will loop back to the first opponent after the last
-    setOpponent(opponents[nextIndex]);
+    setIndex((index + 1) % standings.length);
+    setOppQueries(standings[index].playerState.queries);
+    setOppScore(standings[index].playerState.score);
+    setOppName(standings[index].playerName);
   };
 
   return (
     <>
       <NavBar />
       <div className="multi-score-container">
-        <div className="multi-winner-container">Winner: Ryan</div> {/**put actual winner in */}
+        <div className="multi-winner-container">Winner: {winner}</div>
         <div className="multi-results-container">
           <div className="multi-individual-results-container">
             <div className="multi-personal-title">Personal Score</div>
             <div className="multi-individual-content">
-              {results.map((result) => (
-                <div key={result} className="mp-score-result-container">
-                  <div key={result} className="mp-score-result-term">
-                    "{result.term}"
+              {queries.map((query) => (
+                <div key={query} className="mp-score-result-container">
+                  <div key={query} className="mp-score-result-term">
+                    "{query[0]}"
                   </div>
-                  :<div className="mp-score-result-query">{result.query}</div>
+                  :<div className="mp-score-result-query">{query[1]}</div>
                 </div>
               ))}
             </div>
-            <div className="multi-total-points">Total Points: {total_points}</div>
+            <div className="multi-total-points">Total Points: {ownScore}</div>
           </div>
           <div className="multi-individual-results-container">
             <div className="multi-opponent-title" onClick={onOpponentClick}>
-              {opponent}'s Score
+              {oppName}'s Score
             </div>
             <div className="multi-individual-content">
-              {results.map((result) => (
+              {oppQueries.map((result) => (
                 <div key={result} className="mp-score-result-container">
                   <div key={result} className="mp-score-result-term">
-                    "{result.term}"
+                    "{result[0]}"
                   </div>
-                  :<div className="mp-score-result-query">{result.query}</div>
+                  :<div className="mp-score-result-query">{result[1]}</div>
                 </div>
               ))}
             </div>
-            <div className="multi-total-points">Total Points: {total_points}</div>
+            <div className="multi-total-points">Total Points: {oppScore}</div>
           </div>
         </div>
         <div onClick={handleNextClick}>
