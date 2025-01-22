@@ -1,48 +1,73 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "../../utilities.css";
 import NavBar from "../modules/NavBar";
-import { useNavigate } from "react-router-dom";
+import { useNavigate , useLocation, useParams} from "react-router-dom";
+import { get } from "../../utilities";
 import "./Standings.css";
 
 const Standings = () => {
-  const navigate = useNavigate();
-  const handleNextClick = () => {
-    navigate(`/results/${roomCode}`);
-    {
-      /**ryan: insert info ab room code */
+  const [standings, setStandings] = useState([]);
+  const [players, setPlayers] = useState([]);
+  const [roomState, setRoomState] = useState({});
+  const [queries, setQueries] = useState([]);
+  const [ownScore, setOwnScore] = useState(0);
+  const [index, setIndex] = useState(0);
+  const [oppQueries, setOppQueries] = useState([]);
+  const [oppScore, setOppScore] = useState(0);
+  const [oppName, setOppName] = useState("");
+  const [winner, setWinner] = useState("");
+
+  const location = useLocation();
+  const { roomCode } = useParams();
+  useEffect(() => {
+    if (location.state) {
+      setStandings(location.state.standings || []);
+      setPlayers(location.state.players || []);
+      setRoomState(location.state.state || {});
+      setQueries(location.state.queries || []);
+      setOwnScore(location.state.score || 0);
+
+      // Default opponent setup
+      const initialIndex = 0; // Start with the first opponent
+      setIndex(initialIndex);
+      setOppQueries(location.state.standings?.[index]?.playerState?.queries || []);
+      setOppScore(location.state.standings?.[index]?.playerState?.score || 0);
+      setOppName(location.state.standings?.[index]?.playerName || "");
+      setWinner(location.state.standings?.[0]?.playerName || "Unknown");
     }
+  }, [location.state]);
+
+  const navigate = useNavigate();
+
+  const handleNextClick = () => {
+    navigate(`/results/${roomCode}`, {state: {
+      standings: standings,
+      players: players,
+      state: roomState,
+      queries: queries,
+      score: ownScore,
+    }});
+    return;
   };
-
-  const [players, setPlayers] = useState([
-    { name: "Player 1", score: 10000000, place: "1" },
-    { name: "Player 2", score: 900000, place: "2" },
-    { name: "Player 3", score: 800000, place: "3" },
-    { name: "Player 4", score: 700000, place: "4" },
-    { name: "Player 5", score: 600000, place: "5" },
-  ]);
-  {
-    /* dummy variables */
-  }
-
   return (
     <>
       <NavBar />
       <div className="standings-container">
         <h1 className="standings-title">Standings</h1>
         <div className="standings-list-container">
-          {players.map((player) => (
+          {standings.map((player, index) => (
             <div
               key={player}
-              className={`standings-player-container ${player.place === "1" ? "s-top-player-1" : player.place === "2" ? "s-top-player-2" : player.place === "3" ? "s-top-player-3" : ""}`}
+              className={`standings-player-container ${(index + 1) === 1 ? "s-top-player-1" : (index + 1) === 2 ? "s-top-player-2" : (index + 1) === 3 ? "s-top-player-3" : ""}`}
             >
               <div
                 key={player}
-                className={`standings-place ${player.place === "1" ? "s-top-player-1-place" : player.place === "2" ? "s-top-player-2-place" : player.place === "3" ? "s-top-player-3-place" : ""}`}
+                className={`standings-place ${(index + 1) === 1 ? "s-top-player-1-place" : (index + 1) === 2 ? "s-top-player-2-place" : (index + 1) === 3 ? "s-top-player-3-place" : ""}`}
               >
-                {player.place}{" "}
+                {index + 1}{" "}
               </div>
               <div className="standings-player">
-                {player.name}: {parseInt(player.score).toLocaleString()}
+                {player.playerName}: {parseInt(player.score).toLocaleString()}
               </div>
             </div>
           ))}

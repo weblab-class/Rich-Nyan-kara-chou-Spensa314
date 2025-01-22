@@ -1,18 +1,29 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../../utilities.css";
 import NavBar from "../modules/NavBar";
-import { useNavigate } from "react-router-dom";
-
+import { useNavigate, useLocation } from "react-router-dom";
 import "./SinglePlayer_Score_Summary.css";
 
 const SinglePlayer_Score_Summary = () => {
-  const [results, setResults] = useState([
-    { term: "Apple Pie", query: 100000000 },
-    { term: "Pie Chart", query: 900000 },
-    { term: "Chart Rank", query: 800000 },
-  ]); /**placeholder */
+  const [queries, setQueries] = useState([]);
+  const [score, setScore] = useState(0);
+  const [minLetters, setMinLetters] = useState(0);
+  const [activeTime, setActiveTime] = useState(0);
+  const [hideLetter, setHideLetter] = useState(false);
+  const [hardMode, setHardMode] = useState(false);
 
-  const total_points = 10000000;
+  const location = useLocation();
+  useEffect(() => {
+    if (location.state) {
+      setQueries(location.state.queries || []);
+      setScore(location.state.score || 0);
+      setMinLetters(location.state.minLetters || 0);
+      setActiveTime(location.state.activeTime || 0);
+      setHideLetter(location.state.hideLetter || false);
+      setHardMode(location.state.hardMode || false);
+      console.log(location.state);
+    }
+  }, [location.state]);
 
   const navigate = useNavigate();
 
@@ -26,17 +37,16 @@ const SinglePlayer_Score_Summary = () => {
       <div className="soloscore-container">
         <h1 className="score-title">Score</h1>
         <div className="score-list-container">
-          {results.map((result) => (
-            <div key={result} className="score-result-container">
-              <div key={result} className="score-result-term">
-                "{result.term}"
+          {queries.map((q) => (
+            <div className="score-result-container">
+              <div className="score-result-term">
+                "{q[0]}"
               </div>
-              :<div className="score-result-query">{parseInt(result.query).toLocaleString()}</div>
+              :<div className="score-result-query">{parseInt(q[1]).toLocaleString()}</div>
             </div>
           ))}
         </div>
-        <h2 className="total-points-title">Total Points: {total_points.toLocaleString()}</h2>
-
+        <h2 className="total-points-title">Total Points: {parseInt(score).toLocaleString()}</h2>
         <div onClick={handleNextClick}>
           <img src="/images/next.png" alt="Next" className="next-leaderboard" />
         </div>
