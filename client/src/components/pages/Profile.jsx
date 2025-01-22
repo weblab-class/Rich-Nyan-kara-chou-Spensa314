@@ -11,29 +11,25 @@ const Profile = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [newUsername, setNewUsername] = useState(username);
 
-  const handleEditClick = () => {
-    setIsEditing(true);
+  const handleEditClick = () => setIsEditing(true);
+
+  const handleCancelEdit = () => {
+    setNewUsername(username); // Reset to the original username
+    setIsEditing(false);
   };
 
   const handleSaveClick = async () => {
-    if (!newUsername.trim()) {
+    const trimmedUsername = newUsername.trim();
+    if (!trimmedUsername) {
       alert("Username cannot be empty.");
       return;
     }
 
-    console.log("Updating username for:", userId, "with new username:", newUsername);
-
     try {
-      const response = await post("/api/update-username", {
-        userId,
-        newUsername,
-      });
-
-      console.log("Response from server:", response);
-
+      const response = await post("/api/update-username", { userId, newUsername: trimmedUsername });
       if (response.success) {
-        alert("Username updated successfully!");
-        setUsername(newUsername); // Update the context with the new username
+        // alert("Username updated successfully!");
+        setUsername(trimmedUsername);
         setIsEditing(false);
       } else {
         alert("Failed to update username.");
@@ -41,6 +37,14 @@ const Profile = () => {
     } catch (err) {
       console.error("Error updating username:", err);
       alert("An error occurred while updating the username.");
+    }
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      handleSaveClick();
+    } else if (e.key === "Escape") {
+      handleCancelEdit();
     }
   };
 
@@ -59,29 +63,27 @@ const Profile = () => {
               src={currentPicture || "/images/default.png"}
               alt={`${username || "Guest"}'s Profile Picture`}
               className="profile-picture"
-              onError={(e) => {
-                e.target.src = "/images/default.png";
-              }}
             />
           ) : (
             <div className="profile-placeholder">{username ? username[0].toUpperCase() : "G"}</div>
           )}
           <div className="profile-username-container">
             {isEditing ? (
-              <div className="profile-username-edit">
+              <div className="profile-username">
                 <input
                   type="text"
                   value={newUsername}
                   onChange={(e) => setNewUsername(e.target.value)}
                   className="profile-username-input"
+                  onBlur={handleCancelEdit} //we click outside of the textbox
+                  onKeyDown={handleKeyDown} //enter vs esc
+                  autoFocus //so that we type as soon as we press edit-icon
+                  maxLength={20}
                 />
-                <button onClick={handleSaveClick} className="profile-save-button">
-                  Save
-                </button>
               </div>
             ) : (
               <div className="profile-username">
-                <span>{username || "Guest"}</span>
+                <span onClick={handleEditClick}>{username || "Guest"}</span>
                 <img
                   src="/images/editicon.png"
                   alt="Edit"
