@@ -12,7 +12,7 @@ const auth = require("./auth");
 const socketManager = require("./server-socket");
 
 const router = express.Router();
-
+const User = require("./models/user");
 // Load environment variables
 const apiKey = process.env.GOOGLE_API_KEY;
 const cx = process.env.GOOGLE_CX;
@@ -27,6 +27,31 @@ router.get("/whoami", (req, res) => {
     return res.send({});
   }
   res.send(req.user);
+});
+
+// Route to handle profile picture upload
+router.post("/upload-profile-picture", auth.ensureLoggedIn, async (req, res) => {
+  const { userId, profilePicture } = req.body;
+
+  if (!userId || !profilePicture) {
+    return res.status(400).send({ msg: "Missing required fields: userId or profilePicture" });
+  }
+
+  try {
+    // Update the user's profile picture in the database
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).send({ msg: "User not found" });
+    }
+
+    user.profilePicture = profilePicture;
+    await user.save();
+
+    res.status(200).send({ success: true, profilePicture: user.profilePicture });
+  } catch (err) {
+    console.error("Error uploading profile picture:", err);
+    res.status(500).send({ msg: "Internal server error" });
+  }
 });
 
 router.post("/initsocket", (req, res) => {

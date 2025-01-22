@@ -26,8 +26,24 @@
 .profile-picture {
   height: 20vw;
   width: 20vw;
+  aspect-ratio: 1/1;
+  object-fit: cover;
   box-shadow: 0 0 var(--xs) rgba(0, 0, 0, 0.3); /* Adjust as needed */
   border-radius: 50%;
+}
+
+.profile-placeholder {
+  height: 20vw;
+  width: 20vw;
+  border-radius: 50%;
+  background-color: var(--dark--brown); /* Dark brown */
+  color: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px; /* Adjust as needed */
+  font-weight: bold;
+  text-transform: uppercase; /* Ensure initials are always uppercase */
 }
 
 .profile-username {
