@@ -1,7 +1,6 @@
 .standings-container {
   height: 100vh;
   width: 100vw;
-  background-color: var(--light--brown);
   box-shadow: inset 0 0 var(--xs) rgba(0, 0, 0, 0.3); /* Adjust as needed */
   flex-grow: 1;
   display: flex;
@@ -37,14 +36,9 @@
 .standings-title {
   margin: 0;
   font-size: 6.5vw;
-  color: var(--dark--brown);
-  font-style: bold;
-  text-shadow:
-    var(--outline) var(--outline) 0 var(--beige),
-    var(---outline) var(---outline) 0 var(--beige),
-    var(--outline) var(---outline) 0 var(--beige),
-    var(---outline) var(--outline) 0 var(--beige),
-    /* Outline effect */ var(--xxs) var(--xxs) var(--xxs) rgba(0, 0, 0, 0.7); /* Black shadow */
+  color: var(--beige);
+  font-weight: normal;
+  text-shadow: 0.1vw 0.1vw var(--xxs) rgba(0, 0, 0, 0.7); /* Black shadow */
 }
 
 .standings-list-container {
@@ -76,11 +70,12 @@
   padding: var(--xxs) var(--xs);
   margin-bottom: var(--xs);
   border-radius: var(--s);
-  color: var(--dark--brown);
+  color: white;
   font-size: 2.5vw;
 
   display: flex;
   align-items: center;
+  background-image: linear-gradient(45deg, var(--dark--beige), var(--off--beige));
 }
 
 .standings-place {
@@ -103,15 +98,15 @@
 }
 
 .s-top-player-1 {
-  background-color: var(--gold);
+  background-image: linear-gradient(45deg, var(--gold), var(--light--gold));
 }
 
 .s-top-player-2 {
-  background-color: var(--silver);
+  background-image: linear-gradient(45deg, var(--silver), var(--light--silver));
 }
 
 .s-top-player-3 {
-  background-color: var(--bronze);
+  background-image: linear-gradient(45deg, var(--bronze), var(--light--bronze));
 }
 
 .s-top-player-1-place {

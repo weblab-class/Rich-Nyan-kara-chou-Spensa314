@@ -61,7 +61,7 @@ const Home = () => {
       <NavBar />
       <div className="home-container">
         <div className="center-container">
-          <div onClick={onMultiplayerClick} className="player-button">
+          <div onClick={onMultiplayerClick} className="shine player-button">
             Multiplayer
           </div>
           <div onClick={onSingleplayerClick} className="player-button">

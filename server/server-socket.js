@@ -168,7 +168,7 @@ const startGameLoop = (roomId, playerId) => {
     const instanceState = gameLogic.getRoomInfo(roomId, playerId);
       const sortedScores = gameLogic.getSortedScores(roomId).map((scoreEntry) => {
         const userName = userIDtoNameMap[scoreEntry.playerName];
-        return { playerName: userName, score: scoreEntry.score };
+        return { playerName: userName, playerId: scoreEntry.playerName, score: scoreEntry.score, playerState: scoreEntry.playerState };
     });
       
       // Emit current room state to all clients in the room

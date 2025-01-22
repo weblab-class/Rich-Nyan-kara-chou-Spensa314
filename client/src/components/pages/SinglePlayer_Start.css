@@ -1,7 +1,6 @@
 .singleplayer-container {
   height: 100vh;
   width: 100vw;
-  background-color: var(--light--brown);
   box-shadow: inset 0 0 var(--xs) rgba(0, 0, 0, 0.3); /* Adjust as needed */
   display: flex;
   flex-direction: column;
@@ -20,7 +19,7 @@
 .sp-page-button {
   cursor: pointer;
   transition: transform 0.2s;
-  box-shadow: 0 var(--xxs) var(--xs) rgba(0, 0, 0, 0.4);
+  box-shadow: 0 0.1vw var(--xxs) rgba(0, 0, 0, 0.4);
   margin: var(--xxs);
 }
 

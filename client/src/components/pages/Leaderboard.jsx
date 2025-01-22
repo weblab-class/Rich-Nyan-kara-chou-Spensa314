@@ -63,7 +63,7 @@ const Leaderboard = () => {
                 {player.place}{" "}
               </div>
               <div className="leaderboard-player">
-                {player.name}: {player.score}
+                {player.name}: {parseInt(player.score).toLocaleString()}
               </div>
             </div>
           ))}

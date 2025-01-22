@@ -85,34 +85,41 @@ const MultiPlayer_Game = () => {
         }
       });
 
-      socket.on("updateGameState", (gameState) => {
-        console.log(gameState);
-        if (!gameState.roomState.loading) {
+      socket.on("updateGameState", (gameStates) => {
+        if (!gameStates.roomState.loading) {
           setIsLoading(false);
         }
 
-        if (gameState.roomState.gameEnded) {
+        if (gameStates.roomState.gameEnded) {
           console.log("Game ended!");
-          navigate(`/results/${roomCode}`, {
-            standings: gameState.roomScores,
-            players: gameState.roomPlayers,
-            state: gameState.roomState,
+
+          console.log({
+            standings: gameStates.roomScores,
+            players: gameStates.roomPlayers,
+            state: gameStates.roomState,
           });
+          navigate(`/standings/${roomCode}`, {state: {
+            standings: gameStates.roomScores,
+            players: gameStates.roomPlayers,
+            state: gameStates.roomState,
+            queries: gameStates.playerStates.queries,
+            score: gameStates.playerStates.score,
+          }});
           return;
         }
-        console.log(gameState);
         setGameState((prevState) => ({
           ...prevState,
-          prevWord: gameState.playerStates.prevWord,
-          curQuery: gameState.playerStates.curQuery,
-          curScore: parseInt(gameState.playerStates.curScore),
-          score: parseInt(gameState.playerStates.score),
-          curLetter: gameState.playerStates.curLetter,
-          nextLetter: gameState.playerStates.nextLetter,
-          timerValue: gameState.roomState.time.toFixed(1),
-          words: gameState.playerStates.words,
+          prevWord: gameStates.playerStates.prevWord,
+          curQuery: gameStates.playerStates.curQuery,
+          curScore: parseInt(gameStates.playerStates.curScore),
+          score: parseInt(gameStates.playerStates.score),
+          curLetter: gameStates.playerStates.curLetter,
+          nextLetter: gameStates.playerStates.nextLetter,
+          timerValue: gameStates.roomState.time.toFixed(1),
+          queries: gameStates.playerStates.queries,
+          words: gameStates.playerStates.words,
         }));
-        setScores(gameState.roomScores);
+        setScores(gameStates.roomScores);
       });
 
       socket.on("updatePlayers", (players) => {

@@ -94,19 +94,27 @@ const Profile = () => {
             <div className="profile-statistics-category-container">
               <div className="profile-statistics-category-title">Multiplayer</div>
               <div className="profile-statistics-category-category">Wins</div>
-              <div className="profile-statistics-category-spcontent">0</div>{" "}
+              <div className="profile-statistics-category-spcontent">
+                {parseInt(wins).toLocaleString()}
+              </div>{" "}
               {/**change when done */}
               <div className="profile-statistics-category-category">Losses</div>
-              <div className="profile-statistics-category-spcontent">7</div>{" "}
+              <div className="profile-statistics-category-spcontent">
+                {parseInt(losses).toLocaleString()}
+              </div>{" "}
               {/**change when done */}
             </div>
             <div className="profile-statistics-category-container">
               <div className="profile-statistics-category-title">Singleplayer</div>
               <div className="profile-statistics-category-category">Average Score</div>
-              <div className="profile-statistics-category-mpcontent">10,000</div>{" "}
+              <div className="profile-statistics-category-mpcontent">
+                {parseInt(average_score).toLocaleString()}
+              </div>{" "}
               {/**change when done */}
               <div className="profile-statistics-category-category">High Score</div>
-              <div className="profile-statistics-category-mpcontent">10,000,000,000</div>{" "}
+              <div className="profile-statistics-category-mpcontent">
+                {parseInt(high_score).toLocaleString()}
+              </div>{" "}
               {/**change when done */}
             </div>
           </div>
