@@ -110,7 +110,8 @@
 
 .profile-edit-icon {
   width: 2vw;
-  cursor: pointer;
+  cursor: pointer; /* i actually really liked this */
+  /* do we want it to change color or background to be slightly lighter?" */
 }
 
 /* .profile-edit-icon { */
