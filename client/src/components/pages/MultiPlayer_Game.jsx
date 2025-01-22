@@ -98,7 +98,7 @@ const MultiPlayer_Game = () => {
             players: gameStates.roomPlayers,
             state: gameStates.roomState,
           });
-          navigate(`/results/${roomCode}`, {state: {
+          navigate(`/standings/${roomCode}`, {state: {
             standings: gameStates.roomScores,
             players: gameStates.roomPlayers,
             state: gameStates.roomState,

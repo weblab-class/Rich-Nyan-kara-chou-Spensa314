@@ -19,6 +19,7 @@ const MultiPlayer_Score_Summary = () => {
   const [winner, setWinner] = useState("");
 
   const location = useLocation();
+  const { roomCode } = useParams();
   useEffect(() => {
     if (location.state) {
       setStandings(location.state.standings || []);
@@ -34,17 +35,6 @@ const MultiPlayer_Score_Summary = () => {
       setOppScore(location.state.standings?.[index]?.playerState?.score || 0);
       setOppName(location.state.standings?.[index]?.playerName || "");
       setWinner(location.state.standings?.[0]?.playerName || "Unknown");
-
-      console.log(standings);
-      console.log(players);
-      console.log(roomState);
-      console.log(queries);
-      console.log(ownScore);
-      console.log(index);
-      console.log(oppQueries);
-      console.log(oppScore);
-      console.log(oppName);
-      console.log(winner);
     }
   }, [location.state]);
 

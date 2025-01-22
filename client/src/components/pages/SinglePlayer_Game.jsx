@@ -40,7 +40,7 @@ const SinglePlayer_Game = () => {
     const gameSeed = "seed" + Math.floor(Math.random() * 1000000);
 
     const firstLetter = generateRandomLetter(gameSeed); // Initialize the first letter
-    setIndex(index + 1);
+    setIndex((prevIndex) => prevIndex + 1);
     setGameState((prevState) => ({
       ...prevState,
       curLetter: firstLetter,
@@ -80,7 +80,8 @@ const SinglePlayer_Game = () => {
 
         return; // Stop execution if the input is too short
       }
-      const queryText = `${gameState.prevWord} ${gameState.curLetter}${event.target.value}`;
+      const q = `${gameState.curLetter}${event.target.value}`;
+      const queryText = `${gameState.prevWord} ${q}`;
       console.log("Search Query:", queryText);
       setQuery("");
       get("/api/search", { query: queryText })
@@ -91,14 +92,14 @@ const SinglePlayer_Game = () => {
             const newLetter = generateRandomLetter(deriveSeed(prevState.seed, index)); // Generate new letter using seed
             return {
               ...prevState,
-              prevWord: `${prevState.curLetter}${event.target.value}`, // Update previous word
+              prevWord: q, // Update previous word
               curScore: parseInt(res.totalResults, 10) || 0,
               curQuery: queryText,
               score: prevState.score + (parseInt(res.totalResults, 10) || 0), // Safely parse and update score
               curLetter: prevState.nextLetter, // Shift next letter to current
               nextLetter: newLetter, // Generate next letter
               queries: [...prevState.queries, [queryText, res.totalResults]],
-              words: [...prevState.words, `${prevState.curLetter}${event.target.value}`],
+              words: [...prevState.words, q],
             };
           });
           console.log(gameState.queries);
@@ -117,9 +118,13 @@ const SinglePlayer_Game = () => {
         const newTimerValue = prevState.timerValue - 0.1;
         if (newTimerValue <= 0) {
           clearInterval(timer);
-          navigate(`/results/solo`, {
-            gameState: gameState,
-          });
+          navigate(`/results/solo`, {state: {
+            queries: prevState.queries,
+            score: prevState.score,
+            minLetters: minLetters, 
+            activeTime: activeTime, 
+            hardMode: hardMode
+          }});
           return { ...prevState, timerValue: 0 }; // Stop timer at 0
         }
         return { ...prevState, timerValue: newTimerValue };
@@ -140,16 +145,14 @@ const SinglePlayer_Game = () => {
 
   const [countdown, setCountdown] = useState(5); // 5 seconds countdown
   useEffect(() => {
-    if (isWaiting && countdown > 1) {
-      // Set an interval to decrease the countdown every second
+    if (isWaiting && countdown > 0) {
       const timer = setInterval(() => {
-        setCountdown((prevCountdown) => prevCountdown - 1);
+        setCountdown((prevCountdown) => Math.max(prevCountdown - 1, 0));
       }, 1000);
-
-      // Cleanup the interval once countdown reaches 0 or when component unmounts
+  
       return () => clearInterval(timer);
     }
-  }, [countdown]);
+  }, [isWaiting, countdown]);
 
   if (isWaiting) {
     return (
