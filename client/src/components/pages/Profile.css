@@ -129,7 +129,7 @@
 .profile-statistics-container {
   margin: var(--sm);
   margin-top: 0;
-  background-color: var(--beige);
+  background-color: var(--off--beige);
   display: flex;
   flex-direction: column;
   text-align: center;
@@ -149,7 +149,7 @@
   margin: var(--xs);
   margin-bottom: var(--xxs);
   margin-top: var(--sm);
-  text-shadow: 0.05vw 0.05vw 0.15vw rgba(0, 0, 0, 0.8);
+  text-shadow: 0.05vw 0.05vw 0.15vw var(--beige);
 }
 
 .profile-statistics-content-container {
@@ -165,7 +165,9 @@
   margin: var(--xs);
   margin-top: 0;
   margin-bottom: var(--xs);
-  box-shadow: 0.05vw 0.05vw 0.2vw rgba(0, 0, 0, 0.7); /* Adjust as needed */
+  box-shadow:
+    0.05vw 0.05vw 0.2vw rgba(0, 0, 0, 0.7),
+    inset 0.05vw 0.05vw 0.2vw var(--beige); /* Adjust as needed */
 
   background-color: var(--light--brown);
   border-radius: var(--s);
@@ -229,7 +231,9 @@
   background-color: var(--brown);
   color: var(--beige);
   font-size: 1.5vw;
-  box-shadow: 0 0.1vw 0.2vw rgba(0, 0, 0, 0.7); /* Adjust as needed */
+  box-shadow:
+    0.1vw 0.1vw 0.15vw rgba(0, 0, 0, 0.7),
+    inset 0.1vw 0.1vw 0.15vw var(--beige); /* Adjust as needed */
   border-radius: var(--s);
   padding: var(--xxs) var(--xs);
   margin: 0.3vw;
@@ -239,7 +243,13 @@
     color 0.2s ease,
     transform 0.2s ease;
   cursor: pointer;
-  background-image: linear-gradient(45deg, var(--off--brown), var(--brown));
+  background-image: linear-gradient(
+    45deg,
+    var(--off--brown),
+    var(--dark--brown),
+    var(--brown),
+    var(--off--brown)
+  );
 }
 
 .p-leaderboard-dropdown-container:hover {

@@ -29,8 +29,8 @@
   margin-bottom: var(--l);
 
   background: var(--light--beige--glass);
-  backdrop-filter: blur(var(--s));
-  -webkit-backdrop-filter: blur(var(--s));
+  backdrop-filter: blur(0.2vw);
+  -webkit-backdrop-filter: blur(0.2vw);
   border: 0.1vw solid rgba(255, 255, 255, 0.3);
 }
 

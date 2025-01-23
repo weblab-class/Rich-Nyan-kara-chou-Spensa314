@@ -123,7 +123,13 @@
     color 0.2s ease,
     transform 0.2s ease;
   cursor: pointer;
-  background-image: linear-gradient(45deg, var(--off--brown), var(--brown));
+  background-image: linear-gradient(
+    45deg,
+    var(--off--brown),
+    var(--dark--brown),
+    var(--brown),
+    var(--off--brown)
+  );
 }
 
 .leaderboard-dropdown-container:hover {

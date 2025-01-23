@@ -5,7 +5,7 @@
   justify-content: space-between;
   text-align: center;
   align-items: center; /* Ensure vertical alignment */
-  height: 2.8vw;
+  height: 3vw;
 
   background-image: linear-gradient(
     45deg,
@@ -25,6 +25,8 @@
 }
 
 .navigate-home-container {
+  margin-top: 0.4vw;
+
   margin-left: var(--xs);
   display: flex;
   align-items: center;
@@ -53,6 +55,8 @@
 }
 
 .right-container {
+  margin-top: 0.4vw;
+
   display: flex;
   align-items: center;
 }

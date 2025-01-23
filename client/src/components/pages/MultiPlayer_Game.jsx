@@ -192,7 +192,9 @@ const MultiPlayer_Game = () => {
     return (
       <>
         <div className="loading-container">
-          <div className="countdown-timer">{countdown}</div>
+          <div className="countdown-timer">
+            <div className="countdown-text">{countdown}</div>
+          </div>
 
           <div className="settings-summary-container">
             <div className="settings-title">Room Settings</div>

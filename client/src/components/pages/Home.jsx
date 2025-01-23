@@ -70,7 +70,7 @@ const Home = () => {
     isGenerating.current = true;
     const randomLetter = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
     const letter = randomLetter.charAt(Math.floor(Math.random() * randomLetter.length));
-    const randomSize = Math.floor(Math.random() * 20) + 10; // Random size between 10px and 30px
+    const randomSize = Math.floor(Math.random() * 15) + 15; // Random size between 10px and 30px
     const fallDuration = Math.random() * 10 + 5; // Random fall duration between 2s and 10s
     const randomRotation = Math.random() * 720 - 360; // Value between -180 and 180 degrees
 
