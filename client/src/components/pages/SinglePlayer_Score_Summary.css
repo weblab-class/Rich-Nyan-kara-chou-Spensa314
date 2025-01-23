@@ -60,6 +60,7 @@
     var(--brown),
     var(--off--brown),
     var(--dark--brown),
+    var(--off--light--brown),
     var(--off--brown)
   );
 }
