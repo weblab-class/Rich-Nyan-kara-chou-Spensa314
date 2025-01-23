@@ -78,6 +78,7 @@
     var(--off--dark--brown),
     var(--off--brown)
   );
+}
 
 .profile-username span {
   flex-grow: 1;
