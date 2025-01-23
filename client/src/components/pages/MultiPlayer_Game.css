@@ -94,7 +94,9 @@
   background-color: var(--brown);
   border: var(--xxs) solid var(--dull--beige); /* **Added Border** */
   box-sizing: border-box; /* Ensures padding and border don't affect the layout */
-  box-shadow: 0 0 var(--xxs) rgba(0, 0, 0, 0.25); /* Horizontal, vertical, blur radius, shadow color */
+  box-shadow:
+    0 0 var(--xxs) rgba(0, 0, 0, 0.25),
+    inset 0 0 var(--xs) var(--beige--shadow); /* Horizontal, vertical, blur radius, shadow color */
   border-radius: var(--s); /* Adjust the radius value as needed */
   font-size: var(--ml);
 
@@ -103,6 +105,15 @@
   overflow-x: auto;
   overflow-y: hidden;
   scroll-behavior: smooth;
+
+  background-image: linear-gradient(
+    45deg,
+    var(--brown),
+    var(--off--brown),
+    var(--dark--brown),
+    var(--off--dark--brown),
+    var(--off--brown)
+  );
 }
 
 .mp-prevword-text {
@@ -232,6 +243,7 @@
   margin: 2.5vw;
   margin-top: var(--ml);
   height: 35vw;
+  background: linear-gradient(45deg, var(--brown), var(--off--brown), var(--brown));
 
   border: 0.2vw solid var(--dark--brown);
 }

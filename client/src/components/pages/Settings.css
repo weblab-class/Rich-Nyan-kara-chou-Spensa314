@@ -16,6 +16,7 @@
   border-radius: var(--xxs);
   width: 40vw;
   text-align: center;
+  box-shadow: 0.1vw 0.1vw var(--xxs) rgba(0, 0, 0, 0.5);
 }
 
 .settings-modal-close {
