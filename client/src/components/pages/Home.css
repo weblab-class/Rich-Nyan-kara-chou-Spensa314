@@ -79,11 +79,10 @@
   position: relative; /* To position the close button */
   background-color: var(--off--light--brown);
 
-  /* From https://css.glass */
   background: var(--beige--glass);
   backdrop-filter: blur(0.7vw);
   -webkit-backdrop-filter: blur(0.7vw);
-  border: 0.1vw solid rgba(255, 255, 255, 0.3);
+  border: 0.15vw solid rgba(255, 255, 255, 0.3);
 }
 
 .close-button {
@@ -193,5 +192,33 @@
   box-shadow: 0 0 var(--xxs) rgba(0, 0, 0, 0.5);
   margin-top: var(--s);
   padding: var(--xs) var(--s);
-  background-image: linear-gradient(45deg, var(--dark--brown), var(--off--dark--brown));
+  background-image: linear-gradient(
+    45deg,
+    var(--dark--brown),
+    var(--off--dark--brown),
+    var(--brown),
+    var(--dark--brown)
+  );
+}
+
+/* falling letters */
+
+.letter {
+  --tiltamount: 0deg;
+  position: absolute;
+  color: var(--beige);
+  opacity: 0;
+  pointer-events: none;
+  text-shadow: 0 0 var(--xs) var(--white);
+}
+
+@keyframes fall {
+  0% {
+    opacity: 1;
+    transform: translateY(0) rotate(0deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(100vh) rotate(var(--tiltamount));
+  }
 }

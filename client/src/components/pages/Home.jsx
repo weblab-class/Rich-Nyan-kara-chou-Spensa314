@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import "../../utilities.css";
 import NavBar from "../modules/NavBar";
 import { useNavigate } from "react-router-dom";
@@ -56,10 +56,68 @@ const Home = () => {
     setIsInfoModalOpen(false);
   };
 
+  {
+    /* falling letters */
+  }
+
+  const [letters, setLetters] = useState([]);
+  const isGenerating = useRef(false);
+
+  const handleMouseMove = (e) => {
+    if (isGenerating.current) return; // Prevent generating letters too often
+
+    // Set the flag to true so letters can't generate until the timeout finishes
+    isGenerating.current = true;
+    const randomLetter = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+    const letter = randomLetter.charAt(Math.floor(Math.random() * randomLetter.length));
+    const randomSize = Math.floor(Math.random() * 20) + 10; // Random size between 10px and 30px
+    const fallDuration = Math.random() * 10 + 5; // Random fall duration between 2s and 10s
+    const randomRotation = Math.random() * 720 - 360; // Value between -180 and 180 degrees
+
+    const newLetter = {
+      letter,
+      x: e.pageX,
+      y: e.pageY,
+      size: randomSize,
+      fallDuration,
+      tilt: randomRotation, // Store the random rotation in the letter object
+
+      id: Date.now() + Math.random(), // Unique ID for each letter
+    };
+
+    setLetters((prevLetters) => [...prevLetters, newLetter]);
+
+    // Remove letter after animation
+    setTimeout(() => {
+      setLetters((prevLetters) => prevLetters.filter((item) => item.id !== newLetter.id));
+    }, fallDuration * 1000); // Same as the animation duration
+    setTimeout(() => {
+      isGenerating.current = false;
+    }, 200); // 200ms delay between generating new letters
+  };
+
   return (
     <>
       <NavBar />
-      <div className="home-container">
+      <div className="home-container" onMouseMove={handleMouseMove}>
+        {letters.map((item) => (
+          <div
+            key={item.id}
+            className="letter"
+            style={{
+              left: item.x,
+              top: item.y,
+              fontSize: `${item.size}px`,
+              "--tiltamount": `${item.tilt}deg`, // Apply random tilt
+              animationDuration: `${item.fallDuration}s`, // Set random fall speed
+              animationTimingFunction: "linear", // Smooth fall
+              animationName: "fall", // Apply falling animation
+            }}
+          >
+            {item.letter}
+          </div>
+        ))}
+
         <div className="center-container">
           <div onClick={onMultiplayerClick} className="player-button">
             Multiplayer

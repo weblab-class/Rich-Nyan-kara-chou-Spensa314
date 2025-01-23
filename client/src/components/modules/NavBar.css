@@ -149,6 +149,21 @@
   justify-content: center;
   align-items: center;
   z-index: 100000;
+  backdrop-filter: blur(0.5vw);
+  -webkit-backdrop-filter: blur(0.5vw);
+  animation: fadeInOverlay 0.25s forwards; /* Add animation */
+}
+
+/* Keyframe for overlay fade-in */
+@keyframes fadeInOverlay {
+  0% {
+    opacity: 0;
+    visibility: hidden;
+  }
+  100% {
+    opacity: 1;
+    visibility: visible;
+  }
 }
 
 .logout-container {

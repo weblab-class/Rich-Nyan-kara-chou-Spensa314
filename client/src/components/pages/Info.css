@@ -130,4 +130,19 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  backdrop-filter: blur(0.1vw);
+  -webkit-backdrop-filter: blur(0.1vw);
+  animation: fadeInOverlay 0.25s forwards; /* Add animation */
+}
+
+/* Keyframe for overlay fade-in */
+@keyframes fadeInOverlay {
+  0% {
+    opacity: 0;
+    visibility: hidden;
+  }
+  100% {
+    opacity: 1;
+    visibility: visible;
+  }
 }
