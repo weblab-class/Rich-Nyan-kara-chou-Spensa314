@@ -175,6 +175,19 @@ const MultiPlayer_Game = () => {
     }
   }, [countdown]);
 
+  {
+    /* scroll bottom bar */
+  }
+
+  const resultsContainerRef = useRef(null);
+
+  useEffect(() => {
+    if (resultsContainerRef.current) {
+      // Scroll to the rightmost part whenever the words change
+      resultsContainerRef.current.scrollLeft = resultsContainerRef.current.scrollWidth;
+    }
+  }, [gameState.words]);
+
   if (isLoading) {
     return (
       <>
@@ -258,7 +271,7 @@ const MultiPlayer_Game = () => {
           )}
 
           {/* Query History */}
-          <div className="mp-results-list-container">
+          <div className="mp-results-list-container" ref={resultsContainerRef}>
             {gameState.words.map((word, index) => (
               <span key={index}>{word} - </span>
             ))}

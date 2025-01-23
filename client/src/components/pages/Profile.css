@@ -173,6 +173,13 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  background-image: linear-gradient(
+    45deg,
+    var(--light--brown),
+    var(--off--light--brown),
+    var(--dark--beige),
+    var(--light--brown)
+  );
 }
 
 .profile-statistics-category-title {
