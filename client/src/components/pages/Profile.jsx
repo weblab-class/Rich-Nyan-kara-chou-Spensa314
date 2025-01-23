@@ -53,6 +53,38 @@ const Profile = () => {
   const high_score = 1000000;
   const average_score = 1000;
 
+  {
+    /* settings */
+  }
+
+  const [minLetters, setMinLetters] = useState(3);
+  const onMinLettersClick = () => {
+    if (minLetters === 6) {
+      setMinLetters(3);
+    } else {
+      setMinLetters(minLetters + 1);
+    }
+  };
+
+  const [time, setTime] = useState(30);
+  const onTimeClick = () => {
+    if (time === 30) {
+      setTime(60);
+    } else {
+      setTime(30);
+    }
+  };
+
+  const [isHardMode, setIsHardMode] = useState(false);
+  const onHardModeClick = () => {
+    setIsHardMode(!isHardMode);
+  };
+
+  const [isLetterHidden, setIsLetterHidden] = useState(false);
+  const onNextLetterClick = () => {
+    setIsLetterHidden(!isLetterHidden);
+  };
+
   return (
     <>
       <NavBar />
@@ -119,6 +151,20 @@ const Profile = () => {
               <div className="profile-statistics-category-mpcontent">
                 {parseInt(high_score).toLocaleString()}
               </div>
+            </div>
+          </div>
+          <div className="p-leaderboard-settings-container">
+            <div className="p-leaderboard-dropdown-container" onClick={onMinLettersClick}>
+              Min Letters: {minLetters}
+            </div>
+            <div className="p-leaderboard-dropdown-container" onClick={onTimeClick}>
+              Time: {time}
+            </div>
+            <div className="p-leaderboard-dropdown-container" onClick={onHardModeClick}>
+              {isHardMode ? "Hard Mode" : "Normal Mode"}
+            </div>
+            <div className="p-leaderboard-dropdown-container" onClick={onNextLetterClick}>
+              {isLetterHidden ? "Next Letter: Hidden" : "Next Letter: Shown"}
             </div>
           </div>
         </div>

@@ -38,6 +38,8 @@ const MultiPlayer_Game = () => {
   const [username, setUsername] = useState(null);
   const [id, setId] = useState(null);
   const [scores, setScores] = useState([]);
+  const [isError, setIsError] = useState(false);
+
   // Fetch room settings and join room
   useEffect(() => {
     const fetchRoomSettings = async () => {
@@ -98,13 +100,15 @@ const MultiPlayer_Game = () => {
             players: gameStates.roomPlayers,
             state: gameStates.roomState,
           });
-          navigate(`/standings/${roomCode}`, {state: {
-            standings: gameStates.roomScores,
-            players: gameStates.roomPlayers,
-            state: gameStates.roomState,
-            queries: gameStates.playerStates.queries,
-            score: gameStates.playerStates.score,
-          }});
+          navigate(`/standings/${roomCode}`, {
+            state: {
+              standings: gameStates.roomScores,
+              players: gameStates.roomPlayers,
+              state: gameStates.roomState,
+              queries: gameStates.playerStates.queries,
+              score: gameStates.playerStates.score,
+            },
+          });
           return;
         }
         setGameState((prevState) => ({
@@ -148,6 +152,10 @@ const MultiPlayer_Game = () => {
     if (!query || query.length < (roomSettings.minLength - 1 || 2)) {
       setErrorMessage(`Word must be at least ${roomSettings.minLength || 3} letters long.`);
       setTimeout(() => setErrorMessage(null), 2000);
+      setIsError(true);
+      setTimeout(() => {
+        setIsError(false);
+      }, 500); // 0.5 seconds
       return;
     }
     setQuery("");
@@ -236,6 +244,7 @@ const MultiPlayer_Game = () => {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+              className={`${isError ? "error" : ""}`}
               autocomplete="off"
             />
           </div>

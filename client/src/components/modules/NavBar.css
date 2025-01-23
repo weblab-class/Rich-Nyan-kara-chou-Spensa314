@@ -87,6 +87,7 @@
 .nav-profile {
   color: var(--beige);
   height: 2.5vw;
+
   background-color: var(--dark--brown);
   border-radius: var(--s);
   margin-right: var(--s);
@@ -94,7 +95,7 @@
   padding-right: var(--xs);
   padding-bottom: 0.25vw;
   padding-top: 0.1vw;
-  font-size: var(--s);
+  font-size: 1.5vw;
   display: flex;
   align-items: center;
   text-align: center;

@@ -19,6 +19,10 @@ const Login = () => {
     console.error(err);
   };
 
+  {
+    /* falling letters effect */
+  }
+
   return (
     <div className="login-container">
       <div className="title-container">
