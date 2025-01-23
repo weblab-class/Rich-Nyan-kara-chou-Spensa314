@@ -145,7 +145,7 @@ const SinglePlayer_Game = () => {
         if (newTimerValue <= 0) {
           clearInterval(timer);
 
-          // call saveScore function
+          // call saveScore function editing
           saveScore(
             userId,
             prevState.score,
