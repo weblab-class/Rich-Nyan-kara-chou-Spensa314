@@ -20,7 +20,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin: var(--m);
+  margin: var(--s);
 }
 
 .profile-picture {
@@ -53,11 +53,11 @@
 }
 
 .profile-username {
-  font-size: var(--sm);
+  font-size: 2.5vw;
   color: var(--beige);
-  width: 20vw;
+  width: 25vw;
   background-color: var(--dark--brown);
-  padding: var(--xxs) var(--s);
+  padding: var(--xxs) 1.5vw;
   border-radius: var(--m);
   box-shadow:
     0.15vw 0.15vw 0.25vw rgba(0, 0, 0, 1),
@@ -68,7 +68,7 @@
   align-items: center;
   justify-content: center;
   text-shadow: none;
-
+  text-align: center;
   background-image: linear-gradient(
     45deg,
     var(--off--brown),
@@ -90,28 +90,20 @@
 
 .profile-username input {
   /* really trying to make it as seamless as possible */
-  font-size: var(--sm);
+  font-size: 2.5vw;
   width: 100%;
   border: none;
   outline: none;
   background-color: transparent;
-  color: black;
+  color: var(--dark--beige);
   padding: var(--xxs);
-}
-
-.profile-username-input {
-  font-size: var(--sm);
-  width: 100%;
-  border: none;
-  outline: none;
-  background-color: transparent;
-  text-align: left;
   font-family: inherit;
+  text-align: center;
 }
 
 .profile-username-container input:focus {
   box-shadow: none;
-  font-size: calc(var(--sm) - 2px); /* Adjust font size slightly */
+  font-size: calc(2.4vw); /* Adjust font size slightly */
 }
 
 .profile-username {
@@ -135,7 +127,7 @@
 /* } */
 
 .profile-statistics-container {
-  margin: var(--m);
+  margin: var(--sm);
   margin-top: 0;
   background-color: var(--beige);
   display: flex;
@@ -143,11 +135,11 @@
   text-align: center;
   align-items: top;
   justify-content: center;
-  height: 35vw;
-  width: 50vw;
+  height: 36vw;
+  width: 55vw;
   border-radius: var(--m);
   box-shadow:
-    0.05vw 0.05vw 0.3vw rgba(0, 0, 0, 0.6),
+    0.15vw 0.15vw 0.3vw rgba(0, 0, 0, 0.6),
     inset 0 0 var(--xs) rgba(255, 255, 255, 1); /* Adjust as needed */
 }
 
@@ -168,13 +160,12 @@
 }
 
 .profile-statistics-category-container {
-  height: 25vw;
+  height: 22.5vw;
   width: 20vw;
   margin: var(--xs);
   margin-top: 0;
-  margin-bottom: var(--m);
+  margin-bottom: var(--xs);
   box-shadow: 0.05vw 0.05vw 0.2vw rgba(0, 0, 0, 0.7); /* Adjust as needed */
-
 
   background-color: var(--light--brown);
   border-radius: var(--s);
@@ -210,4 +201,44 @@
   color: white;
   font-size: var(--s);
   margin-bottom: var(--sm);
+}
+
+/* settings */
+
+.p-leaderboard-settings-container {
+  width: 55vw;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: var(--m);
+}
+
+.p-leaderboard-dropdown-container {
+  display: flex;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--brown);
+  color: var(--beige);
+  font-size: 1.5vw;
+  box-shadow: 0 0.1vw 0.2vw rgba(0, 0, 0, 0.7); /* Adjust as needed */
+  border-radius: var(--s);
+  padding: var(--xxs) var(--xs);
+  margin: 0.3vw;
+  margin-top: var(--xxs);
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+  cursor: pointer;
+  background-image: linear-gradient(45deg, var(--off--brown), var(--brown));
+}
+
+.p-leaderboard-dropdown-container:hover {
+  background-color: var(--beige);
+  color: var(--brown);
+  transform: scale(1.05);
+  text-shadow: none;
+  background-image: linear-gradient(45deg, var(--off--beige), var(--beige));
 }
