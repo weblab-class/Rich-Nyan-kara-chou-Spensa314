@@ -17,7 +17,7 @@ const letters = {
 // State Maps
 const roomStates = {};
 const playerStates = {};
-const startedRooms = [];
+let startedRooms = [];
 const roomToPlayers = {};
 // Helper: Generate Seeded Random Sequence
 function generateSeededSequence(seed, length = DEFAULT_SEQUENCE_LENGTH, type = false) {
@@ -61,6 +61,7 @@ function initializeRoom(roomId, settings = {minLength: 3, hideLetter: false, typ
       gameEnded: false,
       type: settings.type,
       time: settings.time,
+      host: "",
     };
     for (const playerId in roomToPlayers[roomId]) {
         resetPlayerState(playerId, roomId);
@@ -110,8 +111,21 @@ function getPlayerState(playerId) {
 // Reset Player State
 function resetPlayerState(playerId, roomId) {
   const state = getPlayerState(playerId);
+  console.log(state);
   if (state.score > state.highScore) state.highScore = state.score;
-
+    if (!roomStates[roomId]) {
+        state.score = 0;
+        state.index = 0;
+        state.prevWord = "";
+        state.curScore = 0;
+        state.curLetter = "";
+        state.nextLetter = "";
+        state.timerValue = DEFAULT_TIMER_VALUE;
+        state.initiated = false;
+        state.curQuery = "";
+        state.queries = [];
+        state.words = [];
+    }
   state.score = 0;
   state.index = 0;
   state.prevWord = roomStates[roomId].firstWord;
@@ -129,15 +143,53 @@ function setRoomId(roomId, players) {
     if (!roomToPlayers[roomId]) {
       roomToPlayers[roomId] = []; // Initialize the list for the room if it doesn't exist
     }
-  
     const playerIds = players.map((player) => player.userId); // Extract user IDs from the players
     for (let i = 0; i < playerIds.length; i++) {
         if (!roomToPlayers[roomId].includes(playerIds[i])) {
             roomToPlayers[roomId] = roomToPlayers[roomId].concat(playerIds[i]);
         }
     }
+    setHost(roomId);
+}
+
+function setHost(roomId) {
+    if (!roomToPlayers[roomId]) {
+        return;
+    }
+    roomStates[roomId].host = roomToPlayers[roomId][0];
+    console.log("HOST", roomStates[roomId].host);
 }
   
+function getHost(roomId) {
+    if (!roomToPlayers[roomId]) {
+        return;
+    }
+    return roomStates[roomId].host;
+}
+
+function leaveRoom(roomId, playerId) {
+    if (!roomToPlayers[roomId]) {
+        return;
+    }
+    roomToPlayers[roomId] = roomToPlayers[roomId].filter((id) => id !== playerId);
+    playerStates[playerId] = null;
+    if (roomToPlayers[roomId].length === 0) {
+        delete roomToPlayers[roomId];
+        delete roomStates[roomId];
+    }
+}
+
+function endGame(roomId) {
+    for (const playerId in roomToPlayers[roomId]) {
+        resetPlayerState(playerId, roomId);
+    }
+    roomStates[roomId].gameStarted = false;
+    console.log("Started rooms before filtering:", startedRooms);
+    console.log("Room ID to remove:", roomId, "Type:", typeof roomId);
+    startedRooms = startedRooms.filter((id) => id !== parseInt(roomId, 10));
+    console.log("Started rooms after filtering:", startedRooms);
+}
+
 // Handle Player Search
 async function handlePlayerSearch(playerId, roomId, query) {
   const state = getPlayerState(playerId);
@@ -219,7 +271,7 @@ function getSortedScores(roomId) {
   return playersInRoom
     .map((playerId) => {
       const state = playerStates[playerId];
-      if (!state) throw new Error(`Player state not found for playerId ${playerId}.`);
+      if (!state) return;
       return { playerName: playerId, score: state.score, playerState: playerStates[playerId] };
     })
     .sort((a, b) => b.score - a.score); // Sort in descending order of scores
@@ -254,6 +306,10 @@ module.exports = {
   setInitiated,
   getInitiated,
   setRoomId,
-  getRoomInfo
+  getRoomInfo,
+  setHost,
+  getHost,
+  leaveRoom,
+  endGame
 };
 

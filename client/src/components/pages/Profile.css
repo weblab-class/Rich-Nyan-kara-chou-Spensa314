@@ -46,6 +46,12 @@
   text-transform: uppercase; /* Ensure initials are always uppercase */
 }
 
+.profile-username-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
 .profile-username {
   font-size: var(--sm);
   color: var(--beige);
@@ -58,9 +64,7 @@
     inset 0.15vw 0.15vw 0.2vw var(--beige--shadow); /* Adjust as needed */
   margin-bottom: var(--m);
   margin-top: var(--m);
-
   display: flex;
-  text-align: center;
   align-items: center;
   justify-content: center;
   text-shadow: none;
@@ -74,7 +78,60 @@
     var(--off--dark--brown),
     var(--off--brown)
   );
+
+.profile-username span {
+  flex-grow: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis; /* I don't actually like this that much */
+  cursor: pointer;
 }
+
+.profile-username input {
+  /* really trying to make it as seamless as possible */
+  font-size: var(--sm);
+  width: 100%;
+  border: none;
+  outline: none;
+  background-color: transparent;
+  color: black;
+  padding: var(--xxs);
+}
+
+.profile-username-input {
+  font-size: var(--sm);
+  width: 100%;
+  border: none;
+  outline: none;
+  background-color: transparent;
+  text-align: left;
+  font-family: inherit;
+}
+
+.profile-username-container input:focus {
+  box-shadow: none;
+  font-size: calc(var(--sm) - 2px); /* Adjust font size slightly */
+}
+
+.profile-username {
+  transition:
+    font-size 0.2s ease-in-out,
+    width 0.2s ease-in-out;
+}
+
+.profile-edit-icon {
+  width: 2vw;
+  cursor: pointer; /* i actually really liked this */
+  /* do we want it to change color or background to be slightly lighter?" */
+}
+
+/* .profile-edit-icon { */
+/* width: 2.5vw; Slightly smaller icon */
+/* height: 2.5vw; Ensure it's square */
+/* aspect-ratio: 1/1; */
+/* object-fit: contain; */
+/* cursor: pointer; Make the icon clickable */
+/* } */
 
 .profile-statistics-container {
   margin: var(--m);
@@ -116,6 +173,7 @@
   margin-top: 0;
   margin-bottom: var(--m);
   box-shadow: 0.05vw 0.05vw 0.2vw rgba(0, 0, 0, 0.7); /* Adjust as needed */
+
 
   background-color: var(--light--brown);
   border-radius: var(--s);

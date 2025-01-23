@@ -67,9 +67,11 @@ const joinRoom = (roomId, user, socket, settings) => {
   }
 
   socket.join(roomId);
+  gameLogic.setRoomId(roomId, rooms[roomId].players);
   // Emit the updated player list to everyone in the room
   console.log(`Updated players list for room ${roomId}:`, room.players);
   io.to(roomId).emit("updatePlayers", room.players);
+  io.to(roomId).emit("updateHost", gameLogic.getHost(roomId));
  
 };
 
@@ -81,16 +83,20 @@ const leaveRoom = (roomId, socket) => {
 
   const room = rooms[roomId];
   room.players = room.players.filter((p) => p.id !== socket.id);
+  gameLogic.leaveRoom(roomId, socketToIDMap[socket.id]);
   socket.leave(roomId);
-  gameLogic.resetPlayerState(socketToIDMap[socket.id], roomId);
 
+  gameLogic.setHost(roomId);
+  console.log("TWTFD", room.players.length);
   // If the room is empty, delete it
   if (room.players.length === 0) {
     delete rooms[roomId];
   } else {
     // Notify remaining players about the updated player list
     io.to(roomId).emit("updatePlayers", room.players);
+    io.to(roomId).emit("updateHost", gameLogic.getHost(roomId));
   }
+  console.log("SUFGHSDLFJKA", rooms[roomId], roomId);
 };
 
 const startGame = (roomId, gameDetails) => {
@@ -112,7 +118,13 @@ const startGame = (roomId, gameDetails) => {
   console.log(`Game started in room ${roomId}, notification sent to everyone.`);
 };
 
-
+const endGame = (roomId) => {
+  if (!rooms[roomId]) {
+    console.error(`Room ${roomId} not found in endGame`);
+    return;
+  }
+  gameLogic.endGame(roomId);
+}
 const gR = (roomId) => {
   if (!gameLogic.getRoom(roomId)) {
     return;
@@ -271,5 +283,6 @@ module.exports = {
   gameStarted: gameStarted, 
   initiated: initiated, 
   setInitiated: setInitiated,
-  startGameLoop: startGameLoop
+  startGameLoop: startGameLoop,
+  endGame: endGame
 };

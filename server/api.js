@@ -22,11 +22,19 @@ const games = {}; // In-memory store for game states
 router.post("/login", auth.login);
 router.post("/logout", auth.logout);
 
-router.get("/whoami", (req, res) => {
+//making them async so we get the right info first
+router.get("/whoami", async (req, res) => {
   if (!req.user) {
     return res.send({});
   }
-  res.send(req.user);
+  // trying to have new session data
+  try {
+    const user = await User.findById(req.user._id); // Ensure latest DB fetch
+    res.send(user);
+  } catch (err) {
+    console.error("Error fetching user:", err);
+    res.status(500).send({ msg: "Error fetching user data." });
+  }
 });
 
 // Route to handle profile picture upload
@@ -50,6 +58,41 @@ router.post("/upload-profile-picture", auth.ensureLoggedIn, async (req, res) => 
     res.status(200).send({ success: true, profilePicture: user.profilePicture });
   } catch (err) {
     console.error("Error uploading profile picture:", err);
+    res.status(500).send({ msg: "Internal server error" });
+  }
+});
+
+router.post("/update-username", auth.ensureLoggedIn, async (req, res) => {
+  const { userId, newUsername } = req.body;
+
+  if (!userId || !newUsername || !newUsername.trim()) {
+    return res.status(400).send({ msg: "Invalid input. UserId and newUsername are required." });
+  }
+
+  try {
+    // Find the user in the database
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).send({ msg: "User not found" });
+    }
+
+    console.log("updating user.name with ", newUsername);
+    // Update user's username
+    user.name = newUsername.trim();
+    await user.save();
+
+    console.log("newUsername saved successfully");
+
+    // refresh session so we get the new name
+    // req.login(user, (err) => {
+    //   if (err) {
+    //     return res.status(500).send({ msg: "Session refresh error" });
+    //   }
+    //   res.status(200).send({ success: true, username: user.name });
+    // });
+    res.status(200).send({ success: true, username: user.name });
+  } catch (err) {
+    console.error("Error updating username:", err);
     res.status(500).send({ msg: "Internal server error" });
   }
 });
@@ -124,7 +167,6 @@ router.post("/startGame/:roomCode", (req, res) => {
   try {
     // Extract gameDetails directly from req.body
     const gameDetails = req.body;
-    console.log("THIS" + gameDetails.hardMode);
     socketManager.startGame(gameDetails.roomCode, gameDetails);
     // Validate that gameDetails is provided
     if (!gameDetails) {
@@ -146,9 +188,14 @@ router.post("/startGame/:roomCode", (req, res) => {
   }
 });
 
+router.post("/endGame/:roomCode", (req, res) => {
+  const roomCode = req.params.roomCode;
+  socketManager.endGame(roomCode);
+  res.status(200).send({ msg: "Game ended successfully" });
+});
+
 router.get("/getRoom/:roomCode", async (req, res) => {
   const roomCode = req.params.roomCode;
-  console.log("HUHUHU", socketManager.gameStarted(roomCode));
   res.send(socketManager.gameStarted(roomCode));
 });
 // Route: Search
