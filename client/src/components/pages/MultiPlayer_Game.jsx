@@ -1,13 +1,16 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import { socket } from "../../client-socket.js";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { get, post } from "../../utilities";
+import { UserContext } from "../App";
 
 import "../../utilities.css";
 import "./MultiPlayer_Game.css";
 import "./Loading.css";
 
 const MultiPlayer_Game = () => {
+  const { userId } = useContext(UserContext);
+  const [scoreUpdated, setScoreUpdated] = useState(false); // to update score only once
   const navigate = useNavigate();
   const { roomCode } = useParams();
   const location = useLocation();
@@ -41,7 +44,7 @@ const MultiPlayer_Game = () => {
   // Fetch room settings and join room
   useEffect(() => {
     const fetchRoomSettings = async () => {
-      const r = await get("/api/whoami");
+      const r = await get("/api/whoami"); // todo neha: check if usercontext can be used
       const userId = r._id;
       console.log(userId);
       post(`/api/startGameLoop/${roomCode}?userId=${userId}`);
@@ -85,28 +88,61 @@ const MultiPlayer_Game = () => {
         }
       });
 
+      // Ensure listeners are not added multiple times
+      socket.off("updateGameState");
       socket.on("updateGameState", (gameStates) => {
         if (!gameStates.roomState.loading) {
           setIsLoading(false);
         }
 
-        if (gameStates.roomState.gameEnded) {
-          console.log("Game ended!");
+        //trying to make sure it only gets here once
+        // lafskdjflaksjdf
+        if (gameStates.roomState.gameEnded && !scoreUpdated) {
+          console.log("Game ended! Triggering score update...");
+          setScoreUpdated(true); // game should only end once
 
           console.log({
             standings: gameStates.roomScores,
             players: gameStates.roomPlayers,
             state: gameStates.roomState,
           });
-          navigate(`/standings/${roomCode}`, {state: {
-            standings: gameStates.roomScores,
-            players: gameStates.roomPlayers,
-            state: gameStates.roomState,
-            queries: gameStates.playerStates.queries,
-            score: gameStates.playerStates.score,
-          }});
+
+          //Check if winner
+          const isWinner =
+            gameStates.roomScores.length === 1 ||
+            gameStates.roomScores.find((player) => player.playerName === userId)?.rank === 1;
+
+          // update wins/losses through api
+          post("/api/updateMultiPlayerScore", {
+            userId: userId,
+            isWinner: isWinner,
+            settings: JSON.stringify({
+              minLetters: roomSettings.minLength,
+              activeTime: initialTime,
+              hideLetter: roomSettings.hideLetter,
+              hardMode: roomSettings.type,
+            }), // thoughts and prayers
+          })
+            .then((response) => {
+              console.log("Multiplayer score updated:", response);
+              // setScoreUpdated(true); // Set flag to true after successful API call
+            })
+            .catch((error) => {
+              console.error("Error updating multiplayer score:", error);
+            });
+
+          navigate(`/standings/${roomCode}`, {
+            state: {
+              standings: gameStates.roomScores,
+              players: gameStates.roomPlayers,
+              state: gameStates.roomState,
+              queries: gameStates.playerStates.queries,
+              score: gameStates.playerStates.score,
+            },
+          });
           return;
         }
+
         setGameState((prevState) => ({
           ...prevState,
           prevWord: gameStates.playerStates.prevWord,
@@ -122,10 +158,12 @@ const MultiPlayer_Game = () => {
         setScores(gameStates.roomScores);
       });
 
+      socket.off("updatePlayers");
       socket.on("updatePlayers", (players) => {
         console.log("Players in room:", players);
       });
 
+      socket.off("errorMessage");
       socket.on("errorMessage", (message) => {
         setErrorMessage(message);
         setTimeout(() => setErrorMessage(null), 2000);
@@ -141,7 +179,8 @@ const MultiPlayer_Game = () => {
     };
 
     fetchRoomSettings();
-  }, [roomCode, roomSettings, location.state]);
+    // }, [roomCode, roomSettings, location.state]);
+  }, [roomCode, location.state]);
 
   //   // Handle player search
   const handleSearch = () => {

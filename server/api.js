@@ -148,6 +148,56 @@ router.post("/updateSinglePlayerScore", auth.ensureLoggedIn, async (req, res) =>
   }
 });
 
+//Update Multiplayer Scores
+
+router.post("/updateMultiPlayerScore", auth.ensureLoggedIn, async (req, res) => {
+  const { userId, isWinner, settings } = req.body;
+  console.log("Req body:", req.body);
+
+  if (!userId || isWinner === undefined || !settings) {
+    return res.status(400).json({ message: "Missing required fields" });
+  }
+
+  try {
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    console.log("User found:", userId);
+
+    const settingsString = JSON.stringify(settings);
+    console.log("Settingsstring:", settingsString);
+    // do the settings already exist for this user?
+    const existingGame = user.multiPlayerScores.find((game) => game.settings === settingsString);
+
+    if (existingGame) {
+      console.log("settings exist");
+      // Update wins/losses
+      if (isWinner) {
+        existingGame.wins += 1;
+      } else {
+        existingGame.losses += 1;
+      }
+    } else {
+      // Add a new game entry
+      console.log("new entry");
+      user.multiPlayerScores.push({
+        settings: settingsString,
+        wins: isWinner ? 1 : 0,
+        losses: isWinner ? 0 : 1,
+      });
+    }
+
+    await user.save();
+
+    res.status(200).json({ message: "Score updated successfully" });
+  } catch (err) {
+    console.error("Error updating multiplayer score:", err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 router.post("/initsocket", (req, res) => {
   // do nothing if user not logged in
   if (req.user)
