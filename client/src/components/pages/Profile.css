@@ -41,7 +41,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 36px; /* Adjust as needed */
+  font-size: var(-m); /* Adjust as needed */
   font-weight: bold;
   text-transform: uppercase; /* Ensure initials are always uppercase */
 }
@@ -53,7 +53,9 @@
   background-color: var(--dark--brown);
   padding: var(--xxs) var(--s);
   border-radius: var(--m);
-  box-shadow: 0.05vw 0.05vw 0.3vw rgba(0, 0, 0, 0.4); /* Adjust as needed */
+  box-shadow:
+    0.15vw 0.15vw 0.25vw rgba(0, 0, 0, 1),
+    inset 0.15vw 0.15vw 0.2vw var(--beige--shadow); /* Adjust as needed */
   margin-bottom: var(--m);
   margin-top: var(--m);
 
@@ -62,6 +64,16 @@
   align-items: center;
   justify-content: center;
   text-shadow: none;
+
+  background-image: linear-gradient(
+    45deg,
+    var(--off--brown),
+    var(--dark--brown),
+    var(--off--dark--brown),
+    var(--dark--brown),
+    var(--off--dark--brown),
+    var(--off--brown)
+  );
 }
 
 .profile-statistics-container {
@@ -76,7 +88,9 @@
   height: 35vw;
   width: 50vw;
   border-radius: var(--m);
-  box-shadow: 0.05vw 0.05vw 0.3vw rgba(0, 0, 0, 0.4); /* Adjust as needed */
+  box-shadow:
+    0.05vw 0.05vw 0.3vw rgba(0, 0, 0, 0.6),
+    inset 0 0 var(--xs) rgba(255, 255, 255, 1); /* Adjust as needed */
 }
 
 .profile-statistics-title {
@@ -85,6 +99,7 @@
   margin: var(--xs);
   margin-bottom: var(--xxs);
   margin-top: var(--sm);
+  text-shadow: 0.05vw 0.05vw 0.15vw rgba(0, 0, 0, 0.8);
 }
 
 .profile-statistics-content-container {
@@ -100,7 +115,7 @@
   margin: var(--xs);
   margin-top: 0;
   margin-bottom: var(--m);
-  box-shadow: 0.05vw 0.05vw 0.2vw rgba(0, 0, 0, 0.6); /* Adjust as needed */
+  box-shadow: 0.05vw 0.05vw 0.2vw rgba(0, 0, 0, 0.7); /* Adjust as needed */
 
   background-color: var(--light--brown);
   border-radius: var(--s);

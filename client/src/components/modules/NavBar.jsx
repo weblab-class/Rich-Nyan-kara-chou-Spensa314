@@ -31,6 +31,15 @@ const NavBar = () => {
     navigate("/profile");
   };
 
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+  const handleLogoutButtonClick = () => {
+    setIsLogoutModalOpen(true);
+  };
+
+  const handleLogoutCancel = () => {
+    setIsLogoutModalOpen(false);
+  };
+
   return (
     <div className="navbar-container">
       <div onClick={handleHomeClick} className="navigate-home-container navbar-link">
@@ -58,10 +67,26 @@ const NavBar = () => {
         <div onClick={handleLeaderboardClick} className="navbar-link">
           <img src="/images/crown.png" alt="Crown" className="leaderboard" />
         </div>
-        <div onClick={handleLogoutClick} className="navbar-link">
+        <div onClick={handleLogoutButtonClick} className="navbar-link">
           <img src="/images/logout.png" alt="Logout" className="logout" />
         </div>
       </div>
+
+      {isLogoutModalOpen && (
+        <div className="logout-modal-overlay">
+          <div className="logout-container">
+            <p className="logout-question">Are you sure you want to logout?</p>
+            <div className="logout-button-container">
+              <div className="logout-yes logout-button" onClick={handleLogoutClick}>
+                Yes
+              </div>
+              <div className="logout-no logout-button" onClick={handleLogoutCancel}>
+                No
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

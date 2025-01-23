@@ -24,13 +24,20 @@
   --beige: #fae0cf;
   --off--beige: #f2d3be;
   --dark--beige: #e1b89c;
+  --off--dark--beige: #d2a68a;
+  --light--beige--glass: rgba(255, 226, 203, 0.629);
+  --beige--glass: rgba(241, 192, 152, 0.589);
+  --brown--glass: rgba(140, 100, 73, 0.708);
   --light--brown: #b08968;
   --off--light--brown: #b17f59;
-
+  --dark--light--brown: #a87a55;
   --brown: #7f5239;
-  --off--brown: #79492f;
-  --dull--dark--brown: #5c3c27;
+  --beige--shadow: rgb(179, 136, 87);
+
+  --off--brown: #6e452f;
+  --dull--dark--brown: #5e402c;
   --dark--brown: #4a230f;
+  --off--dark--brown: #411e0c;
 
   /* Leaderboard */
 
@@ -58,8 +65,10 @@
 body {
   background-image: linear-gradient(
     45deg,
+    var(--dark--light--brown),
     var(--light--brown),
     var(--off--light--brown),
+    var(--dark--light--brown),
     var(--light--brown),
     var(--off--light--brown)
   );

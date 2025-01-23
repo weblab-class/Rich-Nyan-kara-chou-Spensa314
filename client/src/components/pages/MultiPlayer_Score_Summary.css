@@ -42,6 +42,13 @@
   border-radius: var(--s);
   margin-bottom: var(--xs);
   box-shadow: 0 0 0.2vw rgba(0, 0, 0, 0.5); /* Adjust as needed */
+  background: linear-gradient(
+    45deg,
+    var(--brown),
+    var(--off--brown),
+    var(--dark--brown),
+    var(--off--brown)
+  );
 }
 
 .multi-opponent-title {
@@ -56,6 +63,13 @@
   transition:
     background-color 0.2s ease,
     color 0.2s ease;
+  background: linear-gradient(
+    45deg,
+    var(--brown),
+    var(--off--brown),
+    var(--dark--brown),
+    var(--off--brown)
+  );
 }
 
 .multi-opponent-title:hover {
@@ -111,6 +125,13 @@
 
   display: flex;
   align-items: center;
+  background: linear-gradient(
+    45deg,
+    var(--brown),
+    var(--off--brown),
+    var(--dark--brown),
+    var(--off--brown)
+  );
 }
 
 .mp-score-result-term {

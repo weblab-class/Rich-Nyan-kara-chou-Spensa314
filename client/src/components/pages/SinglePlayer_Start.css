@@ -43,4 +43,17 @@
   border-radius: var(--m);
   margin-top: var(--s);
   margin-bottom: var(--xl);
+  background-image: linear-gradient(
+    45deg,
+    var(--dark--beige),
+    var(--off--beige),
+    var(--beige),
+    var(--off--beige),
+    var(--dark--beige),
+    var(--off--beige)
+  );
+  text-shadow: none;
+  box-shadow:
+    0.05vw 0.05vw var(--xxs) rgba(0, 0, 0, 0.7),
+    inset 0.05vw 0.05vw var(--xxs) rgba(255, 255, 255, 0.831); /* Adjust as needed */
 }
