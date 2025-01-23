@@ -63,6 +63,7 @@ const Profile = () => {
               src={currentPicture || "/images/default.png"}
               alt={`${username || "Guest"}'s Profile Picture`}
               className="profile-picture"
+              onError={(e) => (e.target.src = "/images/default.png")}
             />
           ) : (
             <div className="profile-placeholder">{username ? username[0].toUpperCase() : "G"}</div>

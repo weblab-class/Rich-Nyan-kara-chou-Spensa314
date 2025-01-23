@@ -37,30 +37,30 @@ router.get("/whoami", async (req, res) => {
   }
 });
 
-// Route to handle profile picture upload
-router.post("/upload-profile-picture", auth.ensureLoggedIn, async (req, res) => {
-  const { userId, profilePicture } = req.body;
+// // Route to handle profile picture upload
+// router.post("/upload-profile-picture", auth.ensureLoggedIn, async (req, res) => {
+//   const { userId, profilePicture } = req.body;
 
-  if (!userId || !profilePicture) {
-    return res.status(400).send({ msg: "Missing required fields: userId or profilePicture" });
-  }
+//   if (!userId || !profilePicture) {
+//     return res.status(400).send({ msg: "Missing required fields: userId or profilePicture" });
+//   }
 
-  try {
-    // Update the user's profile picture in the database
-    const user = await User.findById(userId);
-    if (!user) {
-      return res.status(404).send({ msg: "User not found" });
-    }
+//   try {
+//     // Update the user's profile picture in the database
+//     const user = await User.findById(userId);
+//     if (!user) {
+//       return res.status(404).send({ msg: "User not found" });
+//     }
 
-    user.profilePicture = profilePicture;
-    await user.save();
+//     user.profilePicture = profilePicture;
+//     await user.save();
 
-    res.status(200).send({ success: true, profilePicture: user.profilePicture });
-  } catch (err) {
-    console.error("Error uploading profile picture:", err);
-    res.status(500).send({ msg: "Internal server error" });
-  }
-});
+//     res.status(200).send({ success: true, profilePicture: user.profilePicture });
+//   } catch (err) {
+//     console.error("Error uploading profile picture:", err);
+//     res.status(500).send({ msg: "Internal server error" });
+//   }
+// });
 
 router.post("/update-username", auth.ensureLoggedIn, async (req, res) => {
   const { userId, newUsername } = req.body;
@@ -93,6 +93,57 @@ router.post("/update-username", auth.ensureLoggedIn, async (req, res) => {
     res.status(200).send({ success: true, username: user.name });
   } catch (err) {
     console.error("Error updating username:", err);
+    res.status(500).send({ msg: "Internal server error" });
+  }
+});
+
+// Update single-player scores
+router.post("/updateSinglePlayerScore", auth.ensureLoggedIn, async (req, res) => {
+  const { userId, score, settings } = req.body;
+  console.log("Request Body:", req.body);
+  // console.log("")
+  if (!userId || !settings || score === undefined) {
+    return res.status(400).json({ message: "Missing required fields" });
+  }
+
+  try {
+    const user = await User.findById(userId);
+    console.log("This is my user: ", user);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const settingsString = JSON.stringify(settings); //lifesaver tbh
+    console.log("settingsString working okay", settingsString);
+    // checking if these settings have been played before
+    // should probably check .find() complexity
+    // but there's no workaround afaik and it shouldn't be too harsh
+    let scoreEntry = user.singlePlayerScores.find((entry) => entry.settings === settingsString);
+    console.log("got until here", scoreEntry);
+
+    if (!scoreEntry) {
+      // Add a new entry for these settings
+      console.log("Adding a new entry for these settings");
+      scoreEntry = {
+        settings: settingsString,
+        highScore: score,
+        totalScore: score,
+        gamesPlayed: 1,
+      };
+
+      user.singlePlayerScores.push(scoreEntry); //like a vector almost
+    } else {
+      // Update the existing entry
+      scoreEntry.highScore = Math.max(scoreEntry.highScore, score);
+      scoreEntry.totalScore += score;
+      scoreEntry.gamesPlayed += 1;
+    }
+
+    await user.save(); //honestly the most important part
+    res.status(200).send({ success: true, msg: "Score updated succsessfully!" });
+  } catch (err) {
+    console.error("Error updating score:", err);
     res.status(500).send({ msg: "Internal server error" });
   }
 });
