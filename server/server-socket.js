@@ -7,6 +7,7 @@ const socketToUserMap = {}; // maps socket ID to user object
 const rooms = {}; // stores room data
 const socketToIDMap = {};
 const userIDtoNameMap = {};
+const userIDtoPhotoMap = {};
 
 const getAllConnectedUsers = () => Object.values(socketToUserMap);
 const getSocketFromUserID = (userid) => userToSocketMap[userid];
@@ -14,6 +15,8 @@ const getUserFromSocketID = (socketid) => socketToUserMap[socketid];
 const getSocketFromSocketID = (socketid) => io.sockets.sockets.get(socketid);
 const getIDFromSocketID = (socket) => socketToIDMap[socket.id];
 const getNameFromUserID = (userid) => userIDtoNameMap[userid];
+const getPhotoFromUserID = (userid) => userIDtoPhotoMap[userid];
+
 const addUser = (user, socket) => {
   console.log('wtf', user._id);
   if (!user || !user._id) {
@@ -36,12 +39,14 @@ const addUser = (user, socket) => {
   socketToUserMap[socket.id] = user;
   socketToIDMap[socket.id] = user._id;
   userIDtoNameMap[user._id] = user.name;
+  userIDtoPhotoMap[user._id] = user.profilePicture;
 };
 
 const removeUser = (user, socket) => {
   if (user) {
     delete userToSocketMap[user._id];
     delete userIDtoNameMap[user._id];
+    delete userIDtoPhotoMap[user._id];
   }
   delete socketToUserMap[socket.id];
   delete socketToIDMap[socket.id];
@@ -61,7 +66,7 @@ const joinRoom = (roomId, user, socket, settings) => {
   const room = rooms[roomId];
   // Prevent duplicate players in the room
   if (!room.players.some((p) => p.id === socket.id)) {
-    room.players.push({ id: socket.id, name: user, userId: socketToIDMap[socket.id] });
+    room.players.push({ id: socket.id, name: user, photo: userIDtoPhotoMap[socketToIDMap[socket.id]], userId: socketToIDMap[socket.id] });
   }
 
   socket.join(roomId);
@@ -227,6 +232,11 @@ const startGameLoop = (roomId, playerId) => {
   }, 1000 / 30);
 };
 
+const updateProfilePicture = (userId, profilePicture) => {
+  console.log("Updating profile picture for user ID:", userId);
+  console.log("New profile picture:", profilePicture);
+  userIDtoPhotoMap[userId] = profilePicture;
+};
 
 module.exports = {
   init: (http) => {
@@ -317,5 +327,6 @@ module.exports = {
   initiated: initiated, 
   setInitiated: setInitiated,
   startGameLoop: startGameLoop,
-  endGame: endGame
+  endGame: endGame,
+  updateProfilePicture: updateProfilePicture,
 };

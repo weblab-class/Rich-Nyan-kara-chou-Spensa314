@@ -162,6 +162,12 @@ function setHost(roomId) {
     if (!roomStates[roomId]){
         return;
     }
+    while (roomToPlayers[roomId].length > 0 && !roomToPlayers[roomId][0]){
+        roomToPlayers[roomId].shift();
+    }
+    if (!roomToPlayers[roomId]){
+        return;
+    }
     roomStates[roomId].host = roomToPlayers[roomId][0];
 }
   
@@ -169,11 +175,17 @@ function getHost(roomId) {
     if (!roomToPlayers[roomId]) {
         return;
     }
+    if (!roomStates[roomId]){
+        return;
+    }
     return roomStates[roomId].host;
 }
 
 function leaveRoom(roomId, playerId) {
     if (!roomToPlayers[roomId]) {
+        return;
+    }
+    if (!roomStates[roomId]){
         return;
     }
     roomToPlayers[roomId] = roomToPlayers[roomId].filter((id) => id !== playerId);
@@ -189,10 +201,7 @@ function endGame(roomId) {
     }
     roomStates[roomId].gameStarted = false;
     roomToPlayers[roomId] = [];
-    console.log("Started rooms before filtering:", startedRooms);
-    console.log("Room ID to remove:", roomId, "Type:", typeof roomId);
     startedRooms = startedRooms.filter((id) => id !== parseInt(roomId, 10));
-    console.log("Started rooms after filtering:", startedRooms);
 }
 
 // Handle Player Search

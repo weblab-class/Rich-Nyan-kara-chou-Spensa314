@@ -53,6 +53,9 @@ const MultiPlayer_Start = () => {
     // Listen for updates to the player list
     socket.on("updatePlayers", (updatedPlayers) => {
       setPlayers(updatedPlayers);
+      {players.map((player) => (
+        console.log(player.picture)
+      ))};
     });
 
     socket.on("updateHost", (updatedHost) => {
@@ -190,7 +193,7 @@ const MultiPlayer_Start = () => {
           <div className="mp-players-list">
             {players.map((player) => (
               <div key={player.id} className={`mp-players-item`} >
-                <img src="/images/default.png" alt="default" className="mp-player-logo" />
+                <img src={player.photo} alt="default" className="mp-player-logo" onError={(e) => (e.target.src = "/images/default.png")} />
                 <div className={`mp-player-name ${(player.userId === host) ? "s-host" : "s-not-host"}`}>{player.name}</div>
               </div>
             ))}
