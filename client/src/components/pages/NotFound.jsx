@@ -1,10 +1,23 @@
 import React from "react";
+import { useEffect } from "react";
 import "./NotFound.css";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+import {get} from "../../utilities";
 import "../../utilities.css";
+
 
 const NotFound = () => {
   const navigate = useNavigate();
+
+  useEffect(() => {
+    get("/api/whoami").then((res) => {
+        if (!res.name) {
+            navigate("/");
+            return;
+        }
+      })
+  });
+  
   const handleLoginClick = () => {
     navigate("/");
   };

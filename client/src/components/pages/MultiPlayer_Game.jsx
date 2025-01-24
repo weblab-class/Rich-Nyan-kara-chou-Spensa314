@@ -80,6 +80,10 @@ const MultiPlayer_Game = () => {
 
     const joinRoom = (settings) => {
       get("/api/whoami").then((res) => {
+        if (!res.name) {
+          navigate("/");
+          return;
+        }
         if (res.name !== null) {
           setUsername(res.name);
           setId(res._id);

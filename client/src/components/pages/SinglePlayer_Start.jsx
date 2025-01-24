@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import "../../utilities.css";
 import NavBar from "../modules/NavBar";
 import { useNavigate, useParams } from "react-router-dom";
+import { useEffect } from "react";
+import {get, post} from "../../utilities.js";
 import "./Settings.css";
 import "./Info.css";
 import "./SinglePlayer_Start.css";
@@ -14,6 +16,16 @@ const SinglePlayer_Start = () => {
   const [hardMode, setHardMode] = useState(false);
   const [player, setPlayer] = useState(["Player 1"]); //tesp
   const navigate = useNavigate();
+
+  useEffect(() => {
+    get("/api/whoami").then((res) => {
+        console.log(res);
+        if (!res.name) {
+            navigate("/");
+            return;
+        }
+      })
+  });
 
   const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
   const onInfoButtonClick = () => {

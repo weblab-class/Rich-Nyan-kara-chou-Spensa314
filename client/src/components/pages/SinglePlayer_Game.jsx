@@ -32,7 +32,16 @@ const SinglePlayer_Game = () => {
     queries: [],
     words: ["apple"],
   });
-  console.log(parseInt(activeTime) * 1000);
+
+  useEffect(() => {
+    get("/api/whoami").then((res) => {
+        if (!res.name) {
+            navigate("/");
+            return;
+        }
+      })
+  });
+
   // Start the game
   const startGame = () => {
     console.log("Game started!");

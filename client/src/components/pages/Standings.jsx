@@ -20,7 +20,19 @@ const Standings = () => {
 
   const location = useLocation();
   const { roomCode } = useParams();
+  const navigate = useNavigate();
+
   useEffect(() => {
+    get("/api/whoami").then((res) => {
+      if (!res.name) {
+        navigate("/");
+        return;
+      }
+    });
+    if (!location.state) {
+      navigate("/home");
+      return;
+    }
     if (location.state) {
       setStandings(location.state.standings || []);
       setPlayers(location.state.players || []);
@@ -37,8 +49,6 @@ const Standings = () => {
       setWinner(location.state.standings?.[0]?.playerName || "Unknown");
     }
   }, [location.state]);
-
-  const navigate = useNavigate();
 
   const handleNextClick = () => {
     socket.emit("endGame", roomCode);

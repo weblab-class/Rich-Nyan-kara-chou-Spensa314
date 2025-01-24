@@ -1,4 +1,5 @@
 import React, { useState, useContext, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import "../../utilities.css";
 import NavBar from "../modules/NavBar";
 import { get, post } from "../../utilities";
@@ -19,6 +20,15 @@ const Profile = () => {
   // const [settings, setSettings] = useState(
   //   '{"minLetters":3,"activeTime":30,"hideLetter":false,"hardMode":false}'
   // ); // Default setting
+  const navigate = useNavigate();
+  const location = useLocation();
+  get("/api/whoami").then((res) => {
+    console.log(res);
+      if (!res.name) {
+          navigate("/");
+          return;
+      }
+    })
 
   const handleEditClick = () => setIsEditing(true);
 

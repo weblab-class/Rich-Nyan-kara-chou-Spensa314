@@ -3,6 +3,7 @@ import "../../utilities.css";
 import NavBar from "../modules/NavBar";
 import { useNavigate, useLocation } from "react-router-dom";
 import "./SinglePlayer_Score_Summary.css";
+import {get} from "../../utilities";
 
 const SinglePlayer_Score_Summary = () => {
   const [queries, setQueries] = useState([]);
@@ -13,7 +14,19 @@ const SinglePlayer_Score_Summary = () => {
   const [hardMode, setHardMode] = useState(false);
 
   const location = useLocation();
+  const navigate = useNavigate();
   useEffect(() => {
+    get("/api/whoami").then((res) => {
+        if (!res.name) {
+            navigate("/");
+            return;
+        }
+      })
+      
+    if (!location.state) {
+      navigate("/home");
+      return;
+    }
     if (location.state) {
       setQueries(location.state.queries || []);
       setScore(location.state.score || 0);
@@ -24,8 +37,6 @@ const SinglePlayer_Score_Summary = () => {
       console.log(location.state);
     }
   }, [location.state]);
-
-  const navigate = useNavigate();
 
   const handleNextClick = () => {
     navigate("/leaderboard");

@@ -19,9 +19,20 @@ const MultiPlayer_Score_Summary = () => {
 
   const location = useLocation();
   const { roomCode } = useParams();
+  const navigate = useNavigate();
   const updatedPlayersRef = useRef(new Set()); // Track players whose scores are updated
 
   useEffect(() => {
+    get("/api/whoami").then((res) => {
+        if (!res.name) {
+            navigate("/");
+            return;
+        }
+      })
+      if(!location.state) {
+        navigate("/home");
+        return;
+      }
     if (location.state) {
       setStandings(location.state.standings || []);
       setPlayers(location.state.players || []);
@@ -69,7 +80,7 @@ const MultiPlayer_Score_Summary = () => {
     }
   }, [location.state]);
 
-  const navigate = useNavigate();
+  
 
   const handleNextClick = () => {
     get(`/api/room/${roomCode}`).then((res) => {

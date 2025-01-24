@@ -12,6 +12,14 @@ const Home = () => {
   const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
   const [roomCode, setRoomCode] = useState(""); // Define roomCode state
 
+  useEffect(() => {
+    get("/api/whoami").then((res) => {
+        if (!res.name) {
+            navigate("/");
+            return;
+        }
+      })
+  });
   const onMultiplayerClick = () => {
     setIsModalOpen(true);
   };

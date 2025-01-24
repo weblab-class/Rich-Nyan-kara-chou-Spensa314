@@ -34,6 +34,10 @@ const MultiPlayer_Start = () => {
 
   useEffect(() => {
     get("/api/whoami").then((res) => {
+        if (!res.name) {
+            navigate("/");
+            return;
+        }
       if (res.name !== null) {
         setUsername(res.name);
         setId(res._id);
