@@ -45,7 +45,7 @@ const MultiPlayer_Start = () => {
       }
     });
     if (!username) {
-    //   console.error("Username is not defined");
+      //   console.error("Username is not defined");
       return;
     }
 
@@ -56,34 +56,34 @@ const MultiPlayer_Start = () => {
 
     socket.on("updateHost", (updatedHost) => {
       setHost(updatedHost);
-      if(updatedHost === id) {
+      if (updatedHost === id) {
         setIsHost(true);
       }
     });
 
     const handleBeforeUnload = () => {
-        if (!started) {
-          socket.emit("leaveRoom", roomCode);
-        }
-      };
-    
-      window.addEventListener("beforeunload", handleBeforeUnload);
-    
-      const handleNavBarClick = (event) => {
-        const target = event.target.closest(".navbar-link"); // Check for navbar-link class
-        if (target && !started) {
-          socket.emit("leaveRoom", roomCode);
-        }
-      };
-    
-      const navBar = document.querySelector(".navbar-container");
-      navBar?.addEventListener("click", handleNavBarClick);
-      return () => {
-        window.removeEventListener("beforeunload", handleBeforeUnload);
-        socket.off("updatePlayers");
-        socket.off("updateHost");
-        navBar?.removeEventListener("click", handleNavBarClick);
-      };
+      if (!started) {
+        socket.emit("leaveRoom", roomCode);
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    const handleNavBarClick = (event) => {
+      const target = event.target.closest(".navbar-link"); // Check for navbar-link class
+      if (target && !started) {
+        socket.emit("leaveRoom", roomCode);
+      }
+    };
+
+    const navBar = document.querySelector(".navbar-container");
+    navBar?.addEventListener("click", handleNavBarClick);
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+      socket.off("updatePlayers");
+      socket.off("updateHost");
+      navBar?.removeEventListener("click", handleNavBarClick);
+    };
   }, [roomCode, username, id, started]);
 
   const onStartClick = () => {
@@ -169,6 +169,41 @@ const MultiPlayer_Start = () => {
     setMinLetters(event.target.value);
   };
 
+  {
+    /* info animation */
+  }
+
+  const [prevWord, setPrevWord] = useState("Chain"); // Set the last word initially
+  const [currWord, setCurrWord] = useState("Reaction");
+  const [isAnimating, setIsAnimating] = useState(false);
+
+  useEffect(() => {
+    const intervalDuration = 4000; // the interval duration
+    setIsAnimating(true);
+
+    const interval = setInterval(() => {
+      if (currWord === "Chain") {
+        setPrevWord("Chain");
+        setCurrWord("Reaction");
+      } else {
+        setPrevWord("Reaction");
+        setCurrWord("Chain");
+      }
+
+      // Clean up timeout on the next cycle
+    }, intervalDuration);
+
+    return () => clearInterval(interval); // Cleanup on unmount
+  }, [prevWord, currWord]); // Only runs when currWord changes
+
+  useEffect(() => {
+    if (isInfoModalOpen) {
+      setPrevWord("Chain");
+      setCurrWord("Reaction");
+      setIsAnimating(false);
+    }
+  }, [isInfoModalOpen]); // Dependency on modal opening
+
   return (
     <>
       <NavBar />
@@ -187,9 +222,18 @@ const MultiPlayer_Start = () => {
           <div className="mp-players-title">Players</div>
           <div className="mp-players-list">
             {players.map((player) => (
-              <div key={player.id} className={`mp-players-item`} >
-                <img src={player.photo} alt="default" className="mp-player-logo" onError={(e) => (e.target.src = "/images/default.png")} />
-                <div className={`mp-player-name ${(player.userId === host) ? "s-host" : "s-not-host"}`}>{player.name}</div>
+              <div key={player.id} className={`mp-players-item`}>
+                <img
+                  src={player.photo}
+                  alt="default"
+                  className="mp-player-logo"
+                  onError={(e) => (e.target.src = "/images/default.png")}
+                />
+                <div
+                  className={`mp-player-name ${player.userId === host ? "s-host" : "s-not-host"}`}
+                >
+                  {player.name}
+                </div>
               </div>
             ))}
           </div>
@@ -205,6 +249,17 @@ const MultiPlayer_Start = () => {
             <div className="info-modal-container">
               <div className="info-text-container">
                 <div className="info-title">How to Play</div>
+                <div className="example-container">
+                  <h1 className="prev-word-container">
+                    <img src="/images/logo.png" className="info-logo" />
+                    <div className="prev-word-text">{prevWord}</div>
+                  </h1>
+                  <h2 className={`curr-word-text ${isAnimating ? "typing" : ""}`} key={currWord}>
+                    <span className={"first-letter"}>{currWord.charAt(0)}</span>
+                    {currWord.slice(1)}
+                  </h2>
+                  <hr className="curr-word-line" />
+                </div>
                 <div className="info-text">
                   <span className="info-text-title">Objective: </span> Score the highest points by
                   entering the trendiest search terms.
@@ -214,16 +269,6 @@ const MultiPlayer_Start = () => {
                   word and the starting letter for the following word in the phrase. You are to fill
                   in the following word. Once you enter your phrase, the word you filled in will now
                   become the starting word. This process is repeated within the given time limit.
-                </div>
-                <div className="info-text">
-                  <span className="info-text-title">Example: </span>
-                </div>
-                <div className="info-text">
-                  "Apple P": "Apple P<span className="info-text-color">ie</span>"
-                </div>
-                <div className="info-text">
-                  {" "}
-                  "Pie C": "Pie C<span className="info-text-color">hart</span>"
                 </div>
               </div>
               <div onClick={onInfoExitClick} className="room-button info-close-button">

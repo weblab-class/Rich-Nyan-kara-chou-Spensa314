@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../../utilities.css";
 import NavBar from "../modules/NavBar";
 import { useNavigate, useParams } from "react-router-dom";
@@ -59,6 +59,42 @@ const SinglePlayer_Start = () => {
     setMinLetters(event.target.value);
   };
   // Replace with player's actual logo
+
+  {
+    /* info animation */
+  }
+
+  const [prevWord, setPrevWord] = useState("Chain"); // Set the last word initially
+  const [currWord, setCurrWord] = useState("Reaction");
+  const [isAnimating, setIsAnimating] = useState(false);
+
+  useEffect(() => {
+    setIsAnimating(true);
+    const intervalDuration = 4000; // the interval duration
+
+    const interval = setInterval(() => {
+      if (currWord === "Chain") {
+        setPrevWord("Chain");
+        setCurrWord("Reaction");
+      } else {
+        setPrevWord("Reaction");
+        setCurrWord("Chain");
+      }
+
+      // Clean up timeout on the next cycle
+    }, intervalDuration);
+
+    return () => clearInterval(interval); // Cleanup on unmount
+  }, [prevWord, currWord]); // Only runs when currWord changes
+
+  useEffect(() => {
+    if (isInfoModalOpen) {
+      setPrevWord("Chain");
+      setCurrWord("Reaction");
+      setIsAnimating(false);
+    }
+  }, [isInfoModalOpen]); // Dependency on modal opening
+
   return (
     <>
       <NavBar />
@@ -79,6 +115,17 @@ const SinglePlayer_Start = () => {
             <div className="info-modal-container">
               <div className="info-text-container">
                 <div className="info-title">How to Play</div>
+                <div className="example-container">
+                  <h1 className="prev-word-container">
+                    <img src="/images/logo.png" className="info-logo" />
+                    <div className="prev-word-text">{prevWord}</div>
+                  </h1>
+                  <h2 className={`curr-word-text ${isAnimating ? "typing" : ""}`} key={currWord}>
+                    <span className={"first-letter"}>{currWord.charAt(0)}</span>
+                    {currWord.slice(1)}
+                  </h2>
+                  <hr className="curr-word-line" />
+                </div>
                 <div className="info-text">
                   <span className="info-text-title">Objective: </span> Score the highest points by
                   entering the trendiest search terms.
@@ -88,16 +135,6 @@ const SinglePlayer_Start = () => {
                   word and the starting letter for the following word in the phrase. You are to fill
                   in the following word. Once you enter your phrase, the word you filled in will now
                   become the starting word. This process is repeated within the given time limit.
-                </div>
-                <div className="info-text">
-                  <span className="info-text-title">Example: </span>
-                </div>
-                <div className="info-text">
-                  "Apple P": "Apple P<span className="info-text-color">ie</span>"
-                </div>
-                <div className="info-text">
-                  {" "}
-                  "Pie C": "Pie C<span className="info-text-color">hart</span>"
                 </div>
               </div>
               <div onClick={onInfoExitClick} className="room-button info-close-button">
