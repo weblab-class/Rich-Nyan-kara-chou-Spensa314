@@ -83,13 +83,6 @@ router.post("/update-username", auth.ensureLoggedIn, async (req, res) => {
 
     console.log("newUsername saved successfully");
 
-    // refresh session so we get the new name
-    // req.login(user, (err) => {
-    //   if (err) {
-    //     return res.status(500).send({ msg: "Session refresh error" });
-    //   }
-    //   res.status(200).send({ success: true, username: user.name });
-    // });
     res.status(200).send({ success: true, username: user.name });
   } catch (err) {
     console.error("Error updating username:", err);

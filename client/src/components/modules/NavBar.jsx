@@ -51,7 +51,7 @@ const NavBar = () => {
         <div onClick={handleProfileClick} className="navbar-link nav-profile">
           {profilepicture ? (
             <img
-              src={currentPicture}
+              src={profilepicture}
               alt="User Profile Picture"
               className="nav-profile-picture"
               onError={(e) => {
@@ -59,7 +59,8 @@ const NavBar = () => {
               }}
             />
           ) : (
-            <div>{username ? username[0].toUpperCase() : "G"}</div>
+            <div></div>
+            // <div>{username ? username[0].toUpperCase() : "G"}</div>
           )}
           {username || "Guest"} {/* put in actual name */}
         </div>
