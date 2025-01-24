@@ -77,13 +77,13 @@ const MultiPlayer_Game = () => {
     };
 
     const joinRoom = (settings) => {
-      get("/api/whoami").then((res) => {
-        if (res.name !== null) {
-          setUsername(res.name);
-          setId(res._id);
-          socket.emit("joinRoom", { roomId: roomCode, user: res, settings });
-        }
-      });
+    //   get("/api/whoami").then((res) => {
+    //     if (res.name !== null) {
+    //       setUsername(res.name);
+    //       setId(res._id);
+    //       socket.emit("joinRoom", { roomId: roomCode, user: res, settings });
+    //     }
+    //   });
 
       socket.on("updateGameState", (gameStates) => {
         if (!gameStates.roomState.loading) {
