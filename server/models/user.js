@@ -5,7 +5,7 @@ const SinglePlayerSchema = new mongoose.Schema({
   settings: {
     type: String, // JSON string for settings { minLetters, activeTime, hideLetter, hardMode }
     required: true,
-    unique: true,
+    // unique: true,
   },
   highScore: { type: Number, default: 0 },
   totalScore: { type: Number, default: 0 },
@@ -16,7 +16,7 @@ const MultiPlayerSchema = new mongoose.Schema({
   settings: {
     type: String, // JSON string for settings { minLetters, activeTime, hideLetter, hardMode }
     required: true,
-    unique: true, //hopefully helps
+    // unique: true, //hopefully helps
   },
   wins: { type: Number, default: 0 },
   losses: { type: Number, default: 0 },

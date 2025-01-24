@@ -1,11 +1,13 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import "../../utilities.css";
 import NavBar from "../modules/NavBar";
 import { useNavigate, useLocation, useParams } from "react-router-dom";
-import { get , post} from "../../utilities";
+import { get, post } from "../../utilities";
 import "./MultiPlayer_Score_Summary.css";
+// import { UserContext } from "../App";
 
 const MultiPlayer_Score_Summary = () => {
+  // const { userId } = useContext(UserContext);
   const [standings, setStandings] = useState([]);
   const [players, setPlayers] = useState([]);
   const [roomState, setRoomState] = useState({});
@@ -34,6 +36,30 @@ const MultiPlayer_Score_Summary = () => {
       setOppScore(location.state.standings?.[index]?.playerState?.score || 0);
       setOppName(location.state.standings?.[index]?.playerName || "");
       setWinner(location.state.standings?.[0]?.playerName || "Unknown");
+
+      // Update multiplayer score for all players
+      location.state.players.forEach((playerId) => {
+        // Check if the current player is a winner
+        const isWinner = location.state.standings.some(
+          (player) =>
+            player.playerId === playerId && player.score === location.state.standings[0]?.score
+        );
+
+        console.log("sending ", playerId, isWinner, JSON.stringify(location.state.state.settings));
+
+        // Make the API call with the correct playerId and settings
+        post("/api/updateMultiPlayerScore", {
+          userId: playerId, // Use the playerId directly
+          isWinner: isWinner,
+          settings: JSON.stringify(location.state.state.settings),
+        })
+          .then((response) => {
+            console.log(`Multiplayer score updated for ${playerId}:`, response);
+          })
+          .catch((error) => {
+            console.error(`Error updating multiplayer score for ${playerId}:`, error);
+          });
+      });
     }
   }, [location.state]);
 

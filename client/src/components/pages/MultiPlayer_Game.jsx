@@ -1,16 +1,13 @@
-import React, { useState, useEffect, useRef, useContext } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { socket } from "../../client-socket.js";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { get, post } from "../../utilities";
-import { UserContext } from "../App";
 
 import "../../utilities.css";
 import "./MultiPlayer_Game.css";
 import "./Loading.css";
 
 const MultiPlayer_Game = () => {
-  const { userId } = useContext(UserContext);
-  const [scoreUpdated, setScoreUpdated] = useState(false); // to update score only once
   const navigate = useNavigate();
   const { roomCode } = useParams();
   const location = useLocation();
@@ -41,10 +38,12 @@ const MultiPlayer_Game = () => {
   const [username, setUsername] = useState(null);
   const [id, setId] = useState(null);
   const [scores, setScores] = useState([]);
+  const [isError, setIsError] = useState(false);
+
   // Fetch room settings and join room
   useEffect(() => {
     const fetchRoomSettings = async () => {
-      const r = await get("/api/whoami"); // todo neha: check if usercontext can be used
+      const r = await get("/api/whoami");
       const userId = r._id;
       console.log(userId);
       post(`/api/startGameLoop/${roomCode}?userId=${userId}`);
@@ -88,49 +87,19 @@ const MultiPlayer_Game = () => {
         }
       });
 
-      // Ensure listeners are not added multiple times
-      socket.off("updateGameState");
       socket.on("updateGameState", (gameStates) => {
         if (!gameStates.roomState.loading) {
           setIsLoading(false);
         }
 
-        //trying to make sure it only gets here once
-        // lafskdjflaksjdf
-        if (gameStates.roomState.gameEnded && !scoreUpdated) {
-          console.log("Game ended! Triggering score update...");
-          setScoreUpdated(true); // game should only end once
+        if (gameStates.roomState.gameEnded) {
+          console.log("Game ended!");
 
           console.log({
             standings: gameStates.roomScores,
             players: gameStates.roomPlayers,
             state: gameStates.roomState,
           });
-
-          //Check if winner
-          const isWinner =
-            gameStates.roomScores.length === 1 ||
-            gameStates.roomScores.find((player) => player.playerName === userId)?.rank === 1;
-
-          // update wins/losses through api
-          post("/api/updateMultiPlayerScore", {
-            userId: userId,
-            isWinner: isWinner,
-            settings: JSON.stringify({
-              minLetters: roomSettings.minLength,
-              activeTime: initialTime,
-              hideLetter: roomSettings.hideLetter,
-              hardMode: roomSettings.type,
-            }), // thoughts and prayers
-          })
-            .then((response) => {
-              console.log("Multiplayer score updated:", response);
-              // setScoreUpdated(true); // Set flag to true after successful API call
-            })
-            .catch((error) => {
-              console.error("Error updating multiplayer score:", error);
-            });
-
           navigate(`/standings/${roomCode}`, {
             state: {
               standings: gameStates.roomScores,
@@ -142,7 +111,6 @@ const MultiPlayer_Game = () => {
           });
           return;
         }
-
         setGameState((prevState) => ({
           ...prevState,
           prevWord: gameStates.playerStates.prevWord,
@@ -158,12 +126,10 @@ const MultiPlayer_Game = () => {
         setScores(gameStates.roomScores);
       });
 
-      socket.off("updatePlayers");
       socket.on("updatePlayers", (players) => {
         console.log("Players in room:", players);
       });
 
-      socket.off("errorMessage");
       socket.on("errorMessage", (message) => {
         setErrorMessage(message);
         setTimeout(() => setErrorMessage(null), 2000);
@@ -179,14 +145,17 @@ const MultiPlayer_Game = () => {
     };
 
     fetchRoomSettings();
-    // }, [roomCode, roomSettings, location.state]);
-  }, [roomCode, location.state]);
+  }, [roomCode, roomSettings, location.state]);
 
   //   // Handle player search
   const handleSearch = () => {
     if (!query || query.length < (roomSettings.minLength - 1 || 2)) {
       setErrorMessage(`Word must be at least ${roomSettings.minLength || 3} letters long.`);
       setTimeout(() => setErrorMessage(null), 2000);
+      setIsError(true);
+      setTimeout(() => {
+        setIsError(false);
+      }, 500); // 0.5 seconds
       return;
     }
     setQuery("");
@@ -206,11 +175,26 @@ const MultiPlayer_Game = () => {
     }
   }, [countdown]);
 
+  {
+    /* scroll bottom bar */
+  }
+
+  const resultsContainerRef = useRef(null);
+
+  useEffect(() => {
+    if (resultsContainerRef.current) {
+      // Scroll to the rightmost part whenever the words change
+      resultsContainerRef.current.scrollLeft = resultsContainerRef.current.scrollWidth;
+    }
+  }, [gameState.words]);
+
   if (isLoading) {
     return (
       <>
         <div className="loading-container">
-          <div className="countdown-timer">{countdown}</div>
+          <div className="countdown-timer">
+            <div className="countdown-text">{countdown}</div>
+          </div>
 
           <div className="settings-summary-container">
             <div className="settings-title">Room Settings</div>
@@ -275,6 +259,7 @@ const MultiPlayer_Game = () => {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+              className={`${isError ? "error" : ""}`}
               autocomplete="off"
             />
           </div>
@@ -288,7 +273,7 @@ const MultiPlayer_Game = () => {
           )}
 
           {/* Query History */}
-          <div className="mp-results-list-container">
+          <div className="mp-results-list-container" ref={resultsContainerRef}>
             {gameState.words.map((word, index) => (
               <span key={index}>{word} - </span>
             ))}
