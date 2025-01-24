@@ -51,7 +51,7 @@ const MultiPlayer_Game = () => {
         if (!response) {
           try {
             const response = await get(`/api/room/${roomCode}`);
-            console.log(response);
+            // console.log(response);
             setRoomSettings(response.room.settings); // Save room settings (e.g., minLetters, hideLetter)          setHiddenLetter(response.room.settings.hideLetter);
             setRandomString(response.room.randomLetters);
             setGameState((prevState) => ({
@@ -86,7 +86,7 @@ const MultiPlayer_Game = () => {
         //
         }
         get(`/api/inRoom/${roomCode}/${res._id}`).then((inRoom) => {
-            console.log(inRoom);
+            // console.log(inRoom);
             if (!inRoom) {
               navigate("/home");
               return; // Stop execution if the user is not in the room
