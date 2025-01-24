@@ -1,15 +1,17 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import { useOutletContext } from "react-router-dom";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import "../../utilities.css";
 import "./SinglePlayer_Game.css";
-import { get } from "../../utilities";
+import { get, post } from "../../utilities";
+import { UserContext } from "../App";
 import seedrandom from "seedrandom";
 import "./Loading.css";
 
 const SinglePlayer_Game = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { userId } = useContext(UserContext);
   const { minLetters, activeTime, hideLetter, hardMode, player } = location.state || {};
   const [isWaiting, setIsWaiting] = useState(true); // Flag for waiting state
   const [query, setQuery] = useState(""); // Input query
@@ -111,6 +113,30 @@ const SinglePlayer_Game = () => {
     }
   };
 
+  // Save the score to the backend
+  const saveScore = async (userId, score, settings) => {
+    console.log("Saving score:", { userId, score, settings });
+
+    try {
+      const response = await post("/api/updateSinglePlayerScore", {
+        userId,
+        score: score,
+        settings: settings,
+      });
+
+      if (response.success) {
+        console.log("Score updated successfully:", response);
+        // alert("Score saved!");
+      } else {
+        console.error("Failed to update score:", response);
+        alert("Could not save the score.");
+      }
+    } catch (error) {
+      console.error("Error updating score:", error);
+      alert("An error occurred while saving the score.");
+    }
+  };
+
   useEffect(() => {
     if (isWaiting) return;
     const timer = setInterval(() => {
@@ -118,6 +144,14 @@ const SinglePlayer_Game = () => {
         const newTimerValue = prevState.timerValue - 0.1;
         if (newTimerValue <= 0) {
           clearInterval(timer);
+
+          // call saveScore function editing
+          saveScore(
+            userId,
+            prevState.score,
+            JSON.stringify({ minLetters, activeTime, hideLetter, hardMode })
+          );
+
           navigate(`/results/solo`, {
             state: {
               queries: prevState.queries,

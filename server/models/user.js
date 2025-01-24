@@ -1,6 +1,16 @@
 // models/user.js
 const mongoose = require("mongoose");
 
+const SinglePlayerSchema = new mongoose.Schema({
+  settings: {
+    type: String, // JSON string for settings { minLetters, activeTime, hideLetter, hardMode }
+    required: true,
+  },
+  highScore: { type: Number, default: 0 },
+  totalScore: { type: Number, default: 0 },
+  gamesPlayed: { type: Number, default: 0 },
+});
+
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -18,6 +28,7 @@ const userSchema = new mongoose.Schema({
   profilePicture: {
     type: String, // Store the profile picture URL
   },
+  singlePlayerScores: [SinglePlayerSchema], // Array
 });
 
 const User = mongoose.model("User", userSchema);
