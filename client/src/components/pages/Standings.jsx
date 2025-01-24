@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import "../../utilities.css";
 import NavBar from "../modules/NavBar";
+import { socket } from "../../client-socket.js";
 import { useNavigate , useLocation, useParams} from "react-router-dom";
 import { get, post } from "../../utilities";
 import "./Standings.css";
@@ -40,13 +41,7 @@ const Standings = () => {
   const navigate = useNavigate();
 
   const handleNextClick = () => {
-    post(`/api/endGame/${roomCode}`).then((res) => {
-      console.log(res);
-      if (res.error) {
-        alert(res.error);
-        return;
-      }
-    })
+    socket.emit("endGame", roomCode);
     navigate(`/results/${roomCode}`, {state: {
       standings: standings,
       players: players,

@@ -52,9 +52,7 @@ const joinRoom = (roomId, user, socket, settings) => {
     console.error("Invalid roomId or user object in joinRoom");
     return;
   }
-
   // Initialize the room if it doesn't exist
-
   if (!rooms[roomId]) {
     gameLogic.initializeRoom(roomId, settings);
     rooms[roomId] = { players: [], gameStarted: false , firstWord: gameLogic.getRoom(roomId).firstWord };
@@ -84,7 +82,7 @@ const leaveRoom = (roomId, socket) => {
   const room = rooms[roomId];
   room.players = room.players.filter((p) => p.id !== socket.id);
   gameLogic.leaveRoom(roomId, socketToIDMap[socket.id]);
-  socket.leave(roomId);
+  // socket.leave(roomId);
 
   gameLogic.setHost(roomId);
   // If the room is empty, delete it
@@ -116,11 +114,13 @@ const startGame = (roomId, gameDetails) => {
   console.log(`Game started in room ${roomId}, notification sent to everyone.`);
 };
 
-const endGame = (roomId) => {
+const endGame = (roomId, socket) => {
   if (!rooms[roomId]) {
     console.error(`Room ${roomId} not found in endGame`);
     return;
   }
+  console.log(roomId, 'asfkhasdlfahsdfjkdasfljkasdh');
+  socket.leave(roomId);
   gameLogic.endGame(roomId);
   rooms[roomId].players = [];
 }
@@ -248,7 +248,10 @@ module.exports = {
       socket.on("leaveRoom", (roomId) => {
         leaveRoom(roomId, socket);
       });
-
+      socket.on("endGame", (roomId) => {
+        endGame(roomId, socket);
+      });
+      
       // When a user submits a query
       socket.on("submitQuery", async ({ roomId, query }) => {
         const user = getUserFromSocketID(socket.id);

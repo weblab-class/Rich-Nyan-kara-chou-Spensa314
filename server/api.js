@@ -231,12 +231,6 @@ router.post("/startGame/:roomCode", (req, res) => {
   }
 });
 
-router.post("/endGame/:roomCode", (req, res) => {
-  const roomCode = req.params.roomCode;
-  socketManager.endGame(roomCode);
-  res.status(200).send({ msg: "Game ended successfully" });
-});
-
 router.get("/getRoom/:roomCode", async (req, res) => {
   const roomCode = req.params.roomCode;
   res.send(socketManager.gameStarted(roomCode));
