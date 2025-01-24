@@ -25,8 +25,8 @@
   --off--beige: #f2d3be;
   --dark--beige: #e1b89c;
   --off--dark--beige: #d2a68a;
-  --light--beige--glass: rgba(255, 226, 203, 0.629);
-  --beige--glass: rgba(241, 192, 152, 0.589);
+  --light--beige--glass: rgba(255, 226, 203, 0.353);
+  --beige--glass: rgba(202, 162, 130, 0.874);
   --brown--glass: rgba(140, 100, 73, 0.708);
   --light--brown: #b08968;
   --off--light--brown: #b17f59;
@@ -37,6 +37,8 @@
   --off--brown: #6e452f;
   --dull--dark--brown: #5e402c;
   --dark--brown: #4a230f;
+  --dark--brown--glass: #4a230fcf;
+
   --off--dark--brown: #411e0c;
 
   /* Leaderboard */

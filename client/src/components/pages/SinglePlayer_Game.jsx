@@ -144,14 +144,12 @@ const SinglePlayer_Game = () => {
         const newTimerValue = prevState.timerValue - 0.1;
         if (newTimerValue <= 0) {
           clearInterval(timer);
-
           // call saveScore function editing
           saveScore(
             userId,
             prevState.score,
             JSON.stringify({ minLetters, activeTime, hideLetter, hardMode })
           );
-
           navigate(`/results/solo`, {
             state: {
               queries: prevState.queries,
@@ -190,12 +188,26 @@ const SinglePlayer_Game = () => {
     }
   }, [isWaiting, countdown]);
 
+  {
+    /* scroll bottom bar */
+  }
+
+  const resultsContainerRef = useRef(null);
+
+  useEffect(() => {
+    if (resultsContainerRef.current) {
+      // Scroll to the rightmost part whenever the words change
+      resultsContainerRef.current.scrollLeft = resultsContainerRef.current.scrollWidth;
+    }
+  }, [gameState.words]);
+
   if (isWaiting) {
     return (
       <>
         <div className="loading-container">
-          <div className="countdown-timer">{countdown}</div>
-
+          <div className="countdown-timer">
+            <div className="countdown-text">{countdown}</div>
+          </div>
           <div className="settings-summary-container">
             <div className="settings-title">Room Settings</div>
             Minimum Length: <span className="white">{minLetters}</span>
@@ -282,7 +294,7 @@ const SinglePlayer_Game = () => {
         )}
 
         {/* Query History */}
-        <div className="results-list-container">
+        <div className="results-list-container" ref={resultsContainerRef}>
           {gameState.words.map((word, index) => (
             <span key={index}>{word} - </span>
           ))}

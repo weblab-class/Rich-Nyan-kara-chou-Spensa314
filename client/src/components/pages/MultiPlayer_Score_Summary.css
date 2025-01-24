@@ -80,6 +80,13 @@
   border-radius: var(--s);
   margin-bottom: var(--xs);
   box-shadow: 0 0 0.2vw rgba(0, 0, 0, 0.5); /* Adjust as needed */
+  background: linear-gradient(
+    45deg,
+    var(--beige),
+    var(--off--beige),
+    var(--dark--beige),
+    var(--off--beige)
+  );
 }
 
 .multi-individual-content {
@@ -130,6 +137,7 @@
     var(--brown),
     var(--off--brown),
     var(--dark--brown),
+    var(--off--light--brown),
     var(--off--brown)
   );
 }

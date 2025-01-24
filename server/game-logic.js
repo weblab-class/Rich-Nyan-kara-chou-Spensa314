@@ -63,14 +63,17 @@ function initializeRoom(roomId, settings = {minLength: 3, hideLetter: false, typ
       time: settings.time,
       host: "",
     };
-    for (const playerId in roomToPlayers[roomId]) {
+    if (!roomToPlayers[roomId]) {
+        return;
+    }
+    for (const playerId of roomToPlayers[roomId]) {
         resetPlayerState(playerId, roomId);
     }
     startTimer(roomId);
 }
 startTimer = (roomId) => {
     const roomState = roomStates[roomId];
-    if (!roomState) throw new Error(`Room ${roomId} not found.`);
+    if (!roomState) return;
     
     let val = roomState.time + 5; // Add 5 seconds to the initial time.
     const barrier = val - 5;
@@ -111,7 +114,6 @@ function getPlayerState(playerId) {
 // Reset Player State
 function resetPlayerState(playerId, roomId) {
   const state = getPlayerState(playerId);
-  console.log(state);
   if (state.score > state.highScore) state.highScore = state.score;
     if (!roomStates[roomId]) {
         state.score = 0;
@@ -137,6 +139,7 @@ function resetPlayerState(playerId, roomId) {
   state.curQuery = "";
   state.queries = [];
   state.words = [roomStates[roomId].firstWord];
+  console.log(state);
 }
 
 function setRoomId(roomId, players) {
@@ -157,7 +160,6 @@ function setHost(roomId) {
         return;
     }
     roomStates[roomId].host = roomToPlayers[roomId][0];
-    console.log("HOST", roomStates[roomId].host);
 }
   
 function getHost(roomId) {
@@ -172,7 +174,6 @@ function leaveRoom(roomId, playerId) {
         return;
     }
     roomToPlayers[roomId] = roomToPlayers[roomId].filter((id) => id !== playerId);
-    playerStates[playerId] = null;
     if (roomToPlayers[roomId].length === 0) {
         delete roomToPlayers[roomId];
         delete roomStates[roomId];
@@ -184,6 +185,7 @@ function endGame(roomId) {
         resetPlayerState(playerId, roomId);
     }
     roomStates[roomId].gameStarted = false;
+    roomToPlayers[roomId] = [];
     console.log("Started rooms before filtering:", startedRooms);
     console.log("Room ID to remove:", roomId, "Type:", typeof roomId);
     startedRooms = startedRooms.filter((id) => id !== parseInt(roomId, 10));
@@ -266,7 +268,7 @@ function getInitiated(playerId, roomId) {
 function getSortedScores(roomId) {
     const playersInRoom = roomToPlayers[roomId];
   if (!playersInRoom || playersInRoom.length === 0) {
-    throw new Error(`No players found for room ${roomId}.`);
+    return;
   }
   return playersInRoom
     .map((playerId) => {
@@ -278,6 +280,9 @@ function getSortedScores(roomId) {
 }
 
 function getRoomInfo(roomId, userId) {
+    if (roomStates[roomId] === undefined) {
+        return;
+    }
     playerStates[userId].curLetter = roomStates[roomId].randomLetters[playerStates[userId].index];
     playerStates[userId].nextLetter = roomStates[roomId].randomLetters[playerStates[userId].index + 1];
     const liveResults =  {

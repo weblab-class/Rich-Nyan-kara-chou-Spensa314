@@ -87,7 +87,6 @@ const leaveRoom = (roomId, socket) => {
   socket.leave(roomId);
 
   gameLogic.setHost(roomId);
-  console.log("TWTFD", room.players.length);
   // If the room is empty, delete it
   if (room.players.length === 0) {
     delete rooms[roomId];
@@ -96,7 +95,6 @@ const leaveRoom = (roomId, socket) => {
     io.to(roomId).emit("updatePlayers", room.players);
     io.to(roomId).emit("updateHost", gameLogic.getHost(roomId));
   }
-  console.log("SUFGHSDLFJKA", rooms[roomId], roomId);
 };
 
 const startGame = (roomId, gameDetails) => {
@@ -124,6 +122,7 @@ const endGame = (roomId) => {
     return;
   }
   gameLogic.endGame(roomId);
+  rooms[roomId].players = [];
 }
 const gR = (roomId) => {
   if (!gameLogic.getRoom(roomId)) {
@@ -143,14 +142,18 @@ const getPlayerStats = (socket) => {
 
 const notifyScores = (roomId) => {
   if (!rooms[roomId]) {
-    console.error(`Room ${roomId} not found in notifyScores`);
     return;
   }
-
+  if (!gameLogic.getPlayerStats(roomId)) {
+    return;
+  }
+  if (!gameLogic.getSortedScores(roomId)) {
+    return;
+  }
   const sortedScores = gameLogic.getSortedScores(roomId).map((scoreEntry) => {
     const userName = userIDtoNameMap[scoreEntry.playerName];
     return { playerName: userName, score: scoreEntry.score };
-});
+  });
   io.to(roomId).emit("updateScores", { scores: sortedScores });
 };
 
@@ -176,27 +179,54 @@ const startGameLoop = (roomId, playerId) => {
   const playerSocket = userToSocketMap[playerId];
   if (!playerSocket) return;
 
+  if (!gameLogic.getRoomInfo(roomId, playerId)) return;
+  if (!gameLogic.getSortedScores(roomId)) return;
+
   const intervalId = setInterval(() => {
+    // Safely get instanceState
     const instanceState = gameLogic.getRoomInfo(roomId, playerId);
-      const sortedScores = gameLogic.getSortedScores(roomId).map((scoreEntry) => {
-        const userName = userIDtoNameMap[scoreEntry.playerName];
-        return { playerName: userName, playerId: scoreEntry.playerName, score: scoreEntry.score, playerState: scoreEntry.playerState };
-    });
-      
-      // Emit current room state to all clients in the room
+    if (!instanceState) {
+      clearInterval(intervalId); // Exit if room info is invalid
+      return;
+    }
+
+    // Safely get sortedScores
+    const sortedScoresRaw = gameLogic.getSortedScores(roomId);
+    if (!sortedScoresRaw) {
+      clearInterval(intervalId); // Exit if sorted scores are invalid
+      return;
+    }
+
+    // Map sortedScores with error-checking
+    const sortedScores = sortedScoresRaw.map((scoreEntry) => {
+      const userName = userIDtoNameMap[scoreEntry.playerName];
+      if (!userName) return null; // Handle missing username
+      return {
+        playerName: userName,
+        playerId: scoreEntry.playerName,
+        score: scoreEntry.score,
+        playerState: scoreEntry.playerState,
+      };
+    }).filter((entry) => entry !== null); // Filter out invalid entries
+
+    // Emit only if instanceState and sortedScores are valid
+    if (sortedScores && instanceState) {
       playerSocket.emit("updateGameState", {
         roomState: instanceState.roomState,
         roomPlayers: instanceState.roomPlayers,
         playerStates: instanceState.playerStates,
-        roomScores: sortedScores
+        roomScores: sortedScores,
       });
-      if (instanceState.roomState.gameEnded) {
-        clearInterval(intervalId);
-        return;
-      }
+    }
 
+    // Stop interval if game has ended
+    if (instanceState.roomState?.gameEnded) {
+      clearInterval(intervalId);
+      return;
+    }
   }, 1000 / 30);
-}
+};
+
 
 module.exports = {
   init: (http) => {

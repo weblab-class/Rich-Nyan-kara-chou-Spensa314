@@ -5,7 +5,7 @@
   justify-content: space-between;
   text-align: center;
   align-items: center; /* Ensure vertical alignment */
-  height: 2.8vw;
+  height: 3vw;
 
   background-image: linear-gradient(
     45deg,
@@ -25,6 +25,8 @@
 }
 
 .navigate-home-container {
+  margin-top: 0.4vw;
+
   margin-left: var(--xs);
   display: flex;
   align-items: center;
@@ -53,6 +55,8 @@
 }
 
 .right-container {
+  margin-top: 0.4vw;
+
   display: flex;
   align-items: center;
 }
@@ -87,6 +91,7 @@
 .nav-profile {
   color: var(--beige);
   height: 2.5vw;
+
   background-color: var(--dark--brown);
   border-radius: var(--s);
   margin-right: var(--s);
@@ -94,7 +99,7 @@
   padding-right: var(--xs);
   padding-bottom: 0.25vw;
   padding-top: 0.1vw;
-  font-size: var(--s);
+  font-size: 1.5vw;
   display: flex;
   align-items: center;
   text-align: center;
@@ -148,6 +153,21 @@
   justify-content: center;
   align-items: center;
   z-index: 100000;
+  backdrop-filter: blur(0.5vw);
+  -webkit-backdrop-filter: blur(0.5vw);
+  animation: fadeInOverlay 0.25s forwards; /* Add animation */
+}
+
+/* Keyframe for overlay fade-in */
+@keyframes fadeInOverlay {
+  0% {
+    opacity: 0;
+    visibility: hidden;
+  }
+  100% {
+    opacity: 1;
+    visibility: visible;
+  }
 }
 
 .logout-container {

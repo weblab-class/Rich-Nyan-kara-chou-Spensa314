@@ -96,7 +96,15 @@
 .mp-player-name {
   font-size: var(--xss);
   color: var(--beige);
+  padding: 0.1vw var(--xs);
+  background-color: var(--dark--brown);
+  box-shadow:
+    0.05vw 0.05vw 0.1vw rgba(0, 0, 0, 0.57),
+    inset 0.05vw 0.05vw 0.1vw var(--beige--shadow);
+  border-radius: var(--xs);
   text-align: center;
+  margin-top: var(--xxs);
+  text-shadow: none;
 }
 
 .mp-room-code {
@@ -108,11 +116,34 @@
   margin-top: auto;
   margin-bottom: var(--ml);
   box-shadow:
-    0.05vw 0.05vw 0.1vw rgba(0, 0, 0, 0.57),
+    0.15vw 0.15vw 0.25vw rgba(0, 0, 0, 0.7),
     inset 0.05vw 0.05vw 0.1vw var(--beige--shadow);
-  background-image: linear-gradient(45deg, var(--brown), var(--off--brown), var(--brown));
+  background-image: linear-gradient(
+    45deg,
+    var(--brown),
+    var(--light--brown),
+    var(--brown),
+    var(--off--brown),
+    var(--brown),
+    var(--light--brown)
+  );
+  background-size: 400% 400%; /* Expands the gradient size */
+  animation: gradientShift 8s ease infinite; /* Animation for smooth movement */
+}
+
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 .mp-player-name.s-host {
-    color: var(--dark--brown);
+  color: var(--dark--brown);
+  background-color: var(--beige);
 }
