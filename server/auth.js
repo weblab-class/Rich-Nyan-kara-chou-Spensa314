@@ -25,26 +25,6 @@ function getOrCreateUser(user) {
       if (existingUser) {
         console.log("Existing user fetched from DB:", existingUser);
         return existingUser;
-        // // Update only the fields that might change
-        // const updatedFields = {
-        //   name: user.name,
-        //   email: user.email,
-        //   profilePicture: user.picture,
-        // };
-
-        // // Compare and log changes for debugging
-        // for (const [key, value] of Object.entries(updatedFields)) {
-        //   if (existingUser[key] !== value) {
-        //     console.log(`Updating ${key}: ${existingUser[key]} -> ${value}`);
-        //     existingUser[key] = value;
-        //   }
-        // }
-
-        // // Save the updated user
-        // return existingUser.save().then((savedUser) => {
-        //   console.log("Updated user saved to DB:", savedUser);
-        //   return savedUser;
-        // });
       } else {
         // If the user doesn't exist, create a new user
         const newUser = new User({
@@ -52,6 +32,8 @@ function getOrCreateUser(user) {
           googleid: user.sub,
           email: user.email,
           profilePicture: user.picture,
+          singlePlayerScores: [],
+          multiPlayerScores: [],
         });
 
         return newUser.save(); // Save the new user to the database

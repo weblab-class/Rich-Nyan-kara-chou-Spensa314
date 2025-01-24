@@ -19,6 +19,8 @@ const MultiPlayer_Score_Summary = () => {
 
   const location = useLocation();
   const { roomCode } = useParams();
+  const updatedPlayersRef = useRef(new Set()); // Track players whose scores are updated
+
   useEffect(() => {
     if (location.state) {
       setStandings(location.state.standings || []);
@@ -34,6 +36,36 @@ const MultiPlayer_Score_Summary = () => {
       setOppScore(location.state.standings?.[index]?.playerState?.score || 0);
       setOppName(location.state.standings?.[index]?.playerName || "");
       setWinner(location.state.standings?.[0]?.playerName || "Unknown");
+
+      console.log("location.state", location.state);
+
+      // Loop over all players to update their scores
+      location.state.players.forEach((playerId) => {
+        if (!updatedPlayersRef.current.has(playerId)) {
+          updatedPlayersRef.current.add(playerId); // Mark the player as updated
+
+          // Check if the current player is a winner
+          const isWinner = location.state.standings.some(
+            (player) =>
+              player.playerId === playerId && player.score === location.state.standings[0]?.score
+          );
+
+          console.log("sending ", playerId, isWinner, location.state.state.settings);
+
+          // Make the API call for each player
+          post("/api/updateMultiPlayerScore", {
+            userId: playerId,
+            isWinner: isWinner,
+            settings: JSON.stringify(location.state.state.settings),
+          })
+            .then((response) => {
+              console.log(`Multiplayer score updated for ${playerId}:`, response);
+            })
+            .catch((error) => {
+              console.error(`Error updating multiplayer score for ${playerId}:`, error);
+            });
+        }
+      });
     }
   }, [location.state]);
 

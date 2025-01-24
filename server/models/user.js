@@ -11,6 +11,15 @@ const SinglePlayerSchema = new mongoose.Schema({
   gamesPlayed: { type: Number, default: 0 },
 });
 
+const MultiPlayerSchema = new mongoose.Schema({
+  settings: {
+    type: String, // JSON string for settings { minLetters, activeTime, hideLetter, hardMode }
+    required: true,
+  },
+  wins: { type: Number, default: 0 },
+  losses: { type: Number, default: 0 },
+});
+
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -28,7 +37,14 @@ const userSchema = new mongoose.Schema({
   profilePicture: {
     type: String, // Store the profile picture URL
   },
-  singlePlayerScores: [SinglePlayerSchema], // Array
+  singlePlayerScores: {
+    type: [SinglePlayerSchema],
+    default: [], // Set default to an empty array
+  },
+  multiPlayerScores: {
+    type: [MultiPlayerSchema],
+    default: [], // Set default to an empty array
+  },
 });
 
 const User = mongoose.model("User", userSchema);

@@ -174,6 +174,76 @@ router.get("/getSinglePlayerHighestScore", async (req, res) => {
   }
 });
 
+let scoreUpdated = false; // Flag to track if the score has been updated
+
+// Endpoint to check if the score has been updated
+router.get("/check-score-update", (req, res) => {
+  res.json({ scoreUpdated });
+});
+
+router.post("/reset-score-update", (req, res) => {
+  scoreUpdated = false;
+  res.status(200).send({ message: "Score update flag reset successfully." });
+});
+
+router.post("/updateMultiPlayerScore", auth.ensureLoggedIn, async (req, res) => {
+  const { userId, isWinner, settings } = req.body;
+  console.log("Req body:", req.body);
+
+  if (!userId || isWinner === undefined || !settings) {
+    return res.status(400).json({ message: "Missing required fields" });
+  }
+
+  try {
+    if (scoreUpdated) {
+      return res.status(400).json({ message: "Score has already been updated." });
+    }
+    const user = await User.findById(userId);
+    console.log("This is my user: ", user);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const settingsString = settings;
+    console.log("settingsString working okay", settingsString);
+
+    // do the settings already exist for this user?
+    let scoreEntry = user.multiPlayerScores.find((entry) => entry.settings === settingsString);
+    console.log("scoreEntry: ", scoreEntry);
+
+    if (!scoreEntry) {
+      // Add a new entry for these settings
+      console.log("Adding a new multiplayer entry");
+      scoreEntry = {
+        settings: settingsString,
+        wins: isWinner ? 1 : 0,
+        losses: isWinner ? 0 : 1,
+      };
+
+      user.multiPlayerScores.push(scoreEntry); // array
+    } else {
+      // Update the existing entry
+      console.log("Updating an existing entry");
+      if (isWinner) {
+        scoreEntry.wins += 1;
+      } else {
+        scoreEntry.losses += 1;
+      }
+    }
+
+    // Set the scoreUpdated flag to true after updating
+    scoreUpdated = true;
+
+    await user.save();
+
+    res.status(200).json({ message: "Score updated successfully" });
+  } catch (err) {
+    console.error("Error updating multiplayer score:", err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 router.post("/initsocket", (req, res) => {
   // do nothing if user not logged in
   if (req.user)
@@ -198,9 +268,9 @@ router.get("/roomer/:roomCode/:id", (req, res) => {
   const roomCode = req.params.roomCode;
   const id = req.params.id;
   socketManager.addInRoom(roomCode, id);
-  console.log("this is the id",id);
+  console.log("this is the id", id);
   console.log(roomCode);
-  
+
   // Check if the roomCode exists in the rooms object
   if (socketManager.gR(roomCode)) {
     // Room exists

@@ -45,7 +45,7 @@ const MultiPlayer_Start = () => {
       }
     });
     if (!username) {
-    //   console.error("Username is not defined");
+      //   console.error("Username is not defined");
       return;
     }
 
@@ -56,34 +56,34 @@ const MultiPlayer_Start = () => {
 
     socket.on("updateHost", (updatedHost) => {
       setHost(updatedHost);
-      if(updatedHost === id) {
+      if (updatedHost === id) {
         setIsHost(true);
       }
     });
 
     const handleBeforeUnload = () => {
-        if (!started) {
-          socket.emit("leaveRoom", roomCode);
-        }
-      };
-    
-      window.addEventListener("beforeunload", handleBeforeUnload);
-    
-      const handleNavBarClick = (event) => {
-        const target = event.target.closest(".navbar-link"); // Check for navbar-link class
-        if (target && !started) {
-          socket.emit("leaveRoom", roomCode);
-        }
-      };
-    
-      const navBar = document.querySelector(".navbar-container");
-      navBar?.addEventListener("click", handleNavBarClick);
-      return () => {
-        window.removeEventListener("beforeunload", handleBeforeUnload);
-        socket.off("updatePlayers");
-        socket.off("updateHost");
-        navBar?.removeEventListener("click", handleNavBarClick);
-      };
+      if (!started) {
+        socket.emit("leaveRoom", roomCode);
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    const handleNavBarClick = (event) => {
+      const target = event.target.closest(".navbar-link"); // Check for navbar-link class
+      if (target && !started) {
+        socket.emit("leaveRoom", roomCode);
+      }
+    };
+
+    const navBar = document.querySelector(".navbar-container");
+    navBar?.addEventListener("click", handleNavBarClick);
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+      socket.off("updatePlayers");
+      socket.off("updateHost");
+      navBar?.removeEventListener("click", handleNavBarClick);
+    };
   }, [roomCode, username, id, started]);
 
   const onStartClick = () => {
@@ -96,8 +96,20 @@ const MultiPlayer_Start = () => {
       minWordLength: minLetters,
       gameState: "waiting",
     };
+
+    const resetScoreFlag = async () => {
+      try {
+        await post("/api/reset-score-update");
+        console.log("Score update flag reset for new game.");
+      } catch (err) {
+        console.error("Error resetting score flag:", err);
+      }
+    };
+
+    resetScoreFlag();
+
     // Notify the server to start the game
-    console.log("MY ID",id);
+    console.log("MY ID", id);
     post(`/api/startGame/${roomCode}/${id}`, gameDetails).then((res) => {
       console.log(res);
       if (res.error) {
@@ -125,16 +137,16 @@ const MultiPlayer_Start = () => {
       // Update game state or navigate to the game page
       get("/api/whoami").then((res) => {
         get(`/api/roomer/${roomCode}/${res._id}`).then((res) => {
-            navigate(`/game/${roomCode}`, {
+          navigate(`/game/${roomCode}`, {
             state: {
-                roomId: roomCode,
-                userId: socket.id,
-                userName: username,
-                minLetters: res.minWordLength,
-                hideLetter: res.hideLetter,
-                hardMode: res.hardMode,
+              roomId: roomCode,
+              userId: socket.id,
+              userName: username,
+              minLetters: res.minWordLength,
+              hideLetter: res.hideLetter,
+              hardMode: res.hardMode,
             },
-            });
+          });
         });
       });
     });
@@ -190,9 +202,18 @@ const MultiPlayer_Start = () => {
           <div className="mp-players-title">Players</div>
           <div className="mp-players-list">
             {players.map((player) => (
-              <div key={player.id} className={`mp-players-item`} >
-                <img src={player.photo} alt="default" className="mp-player-logo" onError={(e) => (e.target.src = "/images/default.png")} />
-                <div className={`mp-player-name ${(player.userId === host) ? "s-host" : "s-not-host"}`}>{player.name}</div>
+              <div key={player.id} className={`mp-players-item`}>
+                <img
+                  src={player.photo}
+                  alt="default"
+                  className="mp-player-logo"
+                  onError={(e) => (e.target.src = "/images/default.png")}
+                />
+                <div
+                  className={`mp-player-name ${player.userId === host ? "s-host" : "s-not-host"}`}
+                >
+                  {player.name}
+                </div>
               </div>
             ))}
           </div>
