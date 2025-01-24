@@ -8,6 +8,7 @@ const rooms = {}; // stores room data
 const socketToIDMap = {};
 const userIDtoNameMap = {};
 const userIDtoPhotoMap = {};
+const inRoom = {};
 
 const getAllConnectedUsers = () => Object.values(socketToUserMap);
 const getSocketFromUserID = (userid) => userToSocketMap[userid];
@@ -93,6 +94,7 @@ const leaveRoom = (roomId, socket) => {
   // If the room is empty, delete it
   if (room.players.length === 0) {
     delete rooms[roomId];
+    delete inRoom[roomId];
   } else {
     // Notify remaining players about the updated player list
     io.to(roomId).emit("updatePlayers", room.players);
@@ -127,6 +129,7 @@ const endGame = (roomId, socket) => {
   console.log(roomId, 'asfkhasdlfahsdfjkdasfljkasdh');
   socket.leave(roomId);
   gameLogic.endGame(roomId);
+  inRoom[roomId] = [];
   rooms[roomId].players = [];
 }
 const gR = (roomId) => {
@@ -238,6 +241,20 @@ const updateProfilePicture = (userId, profilePicture) => {
   userIDtoPhotoMap[userId] = profilePicture;
 };
 
+const addInRoom = (roomId, playerId) => {
+  if (!inRoom[roomId]) {
+    inRoom[roomId] = [];
+  }
+  // Check if the playerId already exists in the room
+  if (!inRoom[roomId].includes(playerId)) {
+    inRoom[roomId].push(playerId);
+  }
+  console.log("WTF", inRoom);
+};
+
+const inTheRoom = (roomId, playerId) => {
+  return inRoom[roomId]?.includes(playerId);
+};
 module.exports = {
   init: (http) => {
     io = require("socket.io")(http);
@@ -329,4 +346,6 @@ module.exports = {
   startGameLoop: startGameLoop,
   endGame: endGame,
   updateProfilePicture: updateProfilePicture,
+  addInRoom: addInRoom,
+  inTheRoom: inTheRoom
 };
