@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import "../../utilities.css";
 import NavBar from "../modules/NavBar";
 import { useNavigate } from "react-router-dom";
@@ -55,6 +55,17 @@ const Home = () => {
   const onInfoExitClick = () => {
     setIsInfoModalOpen(false);
   };
+
+  {
+    /* autofocus */
+  }
+  useEffect(() => {
+    if (isModalOpen) {
+      setTimeout(() => {
+        document.getElementById("roomCode")?.focus();
+      }, 250); // Adjust delay if necessary
+    }
+  }, [isModalOpen]);
 
   {
     /* falling letters */
@@ -117,7 +128,9 @@ const Home = () => {
             {item.letter}
           </div>
         ))}
-
+        <div onClick={onInfoButtonClick} className="how-to-play-button">
+          How to Play
+        </div>
         <div className="center-container">
           <div onClick={onMultiplayerClick} className="player-button">
             Multiplayer
@@ -125,9 +138,6 @@ const Home = () => {
           <div onClick={onSingleplayerClick} className="player-button">
             Singleplayer
           </div>
-        </div>
-        <div onClick={onInfoButtonClick} className="info-button">
-          ?
         </div>
 
         {isModalOpen && (

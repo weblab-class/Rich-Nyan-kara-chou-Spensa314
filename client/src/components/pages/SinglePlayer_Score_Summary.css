@@ -43,7 +43,7 @@
 .score-result-container {
   display: flex;
   flex-direction: row;
-  justify-content: top;
+  justify-content: space-between;
   background-color: var(--brown);
   box-shadow: 0 0.1vw 0.2vw rgba(0, 0, 0, 0.5); /* Adjust as needed */
   margin: var(--xxs);
@@ -60,7 +60,6 @@
     var(--brown),
     var(--off--brown),
     var(--dark--brown),
-    var(--off--light--brown),
     var(--off--brown)
   );
 }
@@ -70,6 +69,7 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   margin-right: var(--xxs);
+  max-width: 35vw;
 }
 
 .score-result-query {

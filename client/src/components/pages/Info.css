@@ -1,5 +1,38 @@
 /* INFO MODAL */
 
+.how-to-play-button {
+  position: relative;
+  background-image: linear-gradient(
+    45deg,
+    var(--dark--beige),
+    var(--beige),
+    var(--light--beige),
+    var(--dark--beige)
+  );
+  color: var(--dark--brown);
+
+  font-size: var(--sm);
+  border-radius: var(--m);
+  cursor: pointer;
+  transition: all 0.2s ease; /* Smooth transition */
+  padding: var(--xxs) var(--s);
+  text-shadow: 0.05vw 0.05vw 0.2vw rgba(0, 0, 0, 0.658);
+  margin-bottom: var(--s);
+  box-shadow: 0.1vw 0.1vw var(--xxs) rgba(0, 0, 0, 0.5);
+}
+
+.how-to-play-button:hover {
+  transform: scale(1.1);
+  background-image: linear-gradient(
+    45deg,
+    var(--dark--brown),
+    var(--off--dark--brown),
+    var(--brown),
+    var(--dark--brown)
+  );
+  color: var(--beige);
+}
+
 .info-button {
   position: absolute;
   bottom: var(--s);
