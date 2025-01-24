@@ -45,7 +45,7 @@ const MultiPlayer_Game = () => {
     const fetchRoomSettings = async () => {
       const r = await get("/api/whoami");
       const userId = r._id;
-      post(`/api/startGameLoop/${roomCode}?userId=${userId}`);
+      
       try {
         const response = await get(`/api/getInitiated/${roomCode}?userId=${userId}`);
         if (!response) {
@@ -62,9 +62,11 @@ const MultiPlayer_Game = () => {
             }));
             setInitialTime(response.room.settings.time);
             joinRoom(response.room.settings); // Pass settings to the joinRoom function
-            post(`/api/setInitiated/${roomCode}?userId=${userId}`);
+            post(`/api/setInitiated/${roomCode}&userId=${userId}`);
           } catch (error) {
             console.error("Error fetching room settings:", error);
+            navigate("/home");
+            return;
             setErrorMessage("Failed to fetch room settings.");
           }
         } else {
@@ -77,13 +79,22 @@ const MultiPlayer_Game = () => {
     };
 
     const joinRoom = (settings) => {
-    //   get("/api/whoami").then((res) => {
-    //     if (res.name !== null) {
-    //       setUsername(res.name);
-    //       setId(res._id);
-    //       socket.emit("joinRoom", { roomId: roomCode, user: res, settings });
-    //     }
-    //   });
+      get("/api/whoami").then((res) => {
+        if (res.name !== null) {
+          setUsername(res.name);
+          setId(res._id);
+        //
+        }
+        get(`/api/inRoom/${roomCode}/${res._id}`).then((inRoom) => {
+            // console.log(inRoom);
+            if (!inRoom) {
+              navigate("/home");
+              return; // Stop execution if the user is not in the room
+            }
+            socket.emit("joinRoom", { roomId: roomCode, user: res, settings });
+            post(`/api/startGameLoop/${roomCode}?userId=${res._id}`);
+        });
+      });
 
       socket.on("updateGameState", (gameStates) => {
         if (!gameStates.roomState.loading) {
@@ -137,7 +148,7 @@ const MultiPlayer_Game = () => {
     };
 
     fetchRoomSettings();
-  }, [roomCode, roomSettings, location.state]);
+  }, [roomCode]);
 
   //   // Handle player search
   const handleSearch = () => {

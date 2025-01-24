@@ -97,7 +97,8 @@ const MultiPlayer_Start = () => {
       gameState: "waiting",
     };
     // Notify the server to start the game
-    post(`/api/startGame/${roomCode}`, gameDetails).then((res) => {
+    console.log("MY ID",id);
+    post(`/api/startGame/${roomCode}/${id}`, gameDetails).then((res) => {
       console.log(res);
       if (res.error) {
         alert(res.error);
@@ -122,16 +123,18 @@ const MultiPlayer_Start = () => {
       setStarted(true);
       // Debug message
       // Update game state or navigate to the game page
-      get("/api/room/${roomCode}").then((res) => {
-        navigate(`/game/${roomCode}`, {
-          state: {
-            roomId: roomCode,
-            userId: socket.id,
-            userName: username,
-            minLetters: res.minWordLength,
-            hideLetter: res.hideLetter,
-            hardMode: res.hardMode,
-          },
+      get("/api/whoami").then((res) => {
+        get(`/api/roomer/${roomCode}/${res._id}`).then((res) => {
+            navigate(`/game/${roomCode}`, {
+            state: {
+                roomId: roomCode,
+                userId: socket.id,
+                userName: username,
+                minLetters: res.minWordLength,
+                hideLetter: res.hideLetter,
+                hardMode: res.hardMode,
+            },
+            });
         });
       });
     });

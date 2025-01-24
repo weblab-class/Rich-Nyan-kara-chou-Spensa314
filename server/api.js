@@ -194,6 +194,23 @@ router.get("/room/:roomCode", (req, res) => {
   }
 });
 
+router.get("/roomer/:roomCode/:id", (req, res) => {
+  const roomCode = req.params.roomCode;
+  const id = req.params.id;
+  socketManager.addInRoom(roomCode, id);
+  console.log("this is the id",id);
+  console.log(roomCode);
+  
+  // Check if the roomCode exists in the rooms object
+  if (socketManager.gR(roomCode)) {
+    // Room exists
+    res.send({ exists: true, room: socketManager.gR(roomCode) });
+  } else {
+    // Room does not exist
+    res.send({ exists: false, message: "Room not found" });
+  }
+});
+
 // Route: Check game status
 router.get("/game/status/:roomCode", (req, res) => {
   const roomCode = req.params.roomCode;
@@ -240,10 +257,13 @@ router.get("/game/status/:roomCode", (req, res) => {
 
 // Route: Start game
 // TODO: auth.ensureLoggedIn
-router.post("/startGame/:roomCode", (req, res) => {
+router.post("/startGame/:roomCode/:id", (req, res) => {
   try {
     // Extract gameDetails directly from req.body
     const gameDetails = req.body;
+    const roomCode = req.params.roomCode;
+    const id = req.params.id;
+    socketManager.addInRoom(roomCode, id);
     socketManager.startGame(gameDetails.roomCode, gameDetails);
     // Validate that gameDetails is provided
     if (!gameDetails) {
@@ -268,6 +288,12 @@ router.post("/startGame/:roomCode", (req, res) => {
 router.get("/getRoom/:roomCode", async (req, res) => {
   const roomCode = req.params.roomCode;
   res.send(socketManager.gameStarted(roomCode));
+});
+
+router.get("/inRoom/:roomCode/:id", (req, res) => {
+  const roomCode = req.params.roomCode;
+  const id = req.params.id;
+  res.send(socketManager.inTheRoom(roomCode, id));
 });
 // Route: Search
 router.get("/search", async (req, res) => {
