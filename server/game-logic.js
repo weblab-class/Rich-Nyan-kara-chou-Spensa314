@@ -162,7 +162,14 @@ function setHost(roomId) {
     if (!roomStates[roomId]){
         return;
     }
+    while (roomToPlayers[roomId].length > 0 && !roomToPlayers[roomId][0]){
+        roomToPlayers[roomId].shift();
+    }
+    if (!roomToPlayers[roomId]){
+        return;
+    }
     roomStates[roomId].host = roomToPlayers[roomId][0];
+    console.log("I LIKE SUCKING", roomToPlayers[roomId]);
 }
   
 function getHost(roomId) {
@@ -189,10 +196,7 @@ function endGame(roomId) {
     }
     roomStates[roomId].gameStarted = false;
     roomToPlayers[roomId] = [];
-    console.log("Started rooms before filtering:", startedRooms);
-    console.log("Room ID to remove:", roomId, "Type:", typeof roomId);
     startedRooms = startedRooms.filter((id) => id !== parseInt(roomId, 10));
-    console.log("Started rooms after filtering:", startedRooms);
 }
 
 // Handle Player Search
