@@ -33,17 +33,17 @@ const MultiPlayer_Start = () => {
   };
 
   useEffect(() => {
-    get("/api/whoami").then((res) => {
-      if (res.name !== null) {
-        setUsername(res.name);
-        setId(res._id);
-        socket.emit("joinRoom", {
-          roomId: roomCode,
-          user: res,
-          settings: { hideLetter, hardMode, minWordLength: minLetters, type: "false" },
-        });
-      }
-    });
+    // get("/api/whoami").then((res) => {
+    //   if (res.name !== null) {
+    //     setUsername(res.name);
+    //     setId(res._id);
+    //     socket.emit("joinRoom", {
+    //       roomId: roomCode,
+    //       user: res,
+    //       settings: { hideLetter, hardMode, minWordLength: minLetters, type: "false" },
+    //     });
+    //   }
+    // });
     if (!username) {
     //   console.error("Username is not defined");
       return;
