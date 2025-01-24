@@ -45,14 +45,13 @@ const MultiPlayer_Game = () => {
     const fetchRoomSettings = async () => {
       const r = await get("/api/whoami");
       const userId = r._id;
-      console.log(userId);
       post(`/api/startGameLoop/${roomCode}?userId=${userId}`);
       try {
         const response = await get(`/api/getInitiated/${roomCode}?userId=${userId}`);
         if (!response) {
           try {
             const response = await get(`/api/room/${roomCode}`);
-            console.log(response);
+            // console.log(response);
             setRoomSettings(response.room.settings); // Save room settings (e.g., minLetters, hideLetter)          setHiddenLetter(response.room.settings.hideLetter);
             setRandomString(response.room.randomLetters);
             setGameState((prevState) => ({
@@ -79,11 +78,10 @@ const MultiPlayer_Game = () => {
 
     const joinRoom = (settings) => {
       get("/api/whoami").then((res) => {
-        console.log(res);
         if (res.name !== null) {
           setUsername(res.name);
           setId(res._id);
-          socket.emit("joinRoom", { roomId: roomCode, user: res.name, settings });
+          socket.emit("joinRoom", { roomId: roomCode, user: res, settings });
         }
       });
 
@@ -94,12 +92,6 @@ const MultiPlayer_Game = () => {
 
         if (gameStates.roomState.gameEnded) {
           console.log("Game ended!");
-
-          console.log({
-            standings: gameStates.roomScores,
-            players: gameStates.roomPlayers,
-            state: gameStates.roomState,
-          });
           navigate(`/standings/${roomCode}`, {
             state: {
               standings: gameStates.roomScores,
@@ -127,7 +119,7 @@ const MultiPlayer_Game = () => {
       });
 
       socket.on("updatePlayers", (players) => {
-        console.log("Players in room:", players);
+        // console.log("Players in room:", players);
       });
 
       socket.on("errorMessage", (message) => {
@@ -260,7 +252,7 @@ const MultiPlayer_Game = () => {
               onChange={(e) => setQuery(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleSearch()}
               className={`${isError ? "error" : ""}`}
-              autocomplete="off"
+              autoComplete="off"
             />
           </div>
           <hr className="mp-currword-line" />

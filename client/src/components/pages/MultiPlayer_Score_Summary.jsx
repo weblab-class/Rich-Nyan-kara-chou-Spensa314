@@ -73,9 +73,9 @@ const MultiPlayer_Score_Summary = () => {
           <div className="multi-individual-results-container">
             <div className="multi-personal-title">Personal Score</div>
             <div className="multi-individual-content">
-              {queries.map((query) => (
-                <div key={query} className="mp-score-result-container">
-                  <div key={query} className="mp-score-result-term">
+              {queries.map((query, index) => (
+                <div key={`${query[0]}-${index}`} className="mp-score-result-container">
+                  <div className="mp-score-result-term">
                     "{query[0]}"
                   </div>
                   :
@@ -90,9 +90,9 @@ const MultiPlayer_Score_Summary = () => {
               {oppName}'s Score
             </div>
             <div className="multi-individual-content">
-              {oppQueries.map((result) => (
-                <div key={result} className="mp-score-result-container">
-                  <div key={result} className="mp-score-result-term">
+              {oppQueries.map((result, index) => (
+                <div key={`${result[0]}-${index}`} className="mp-score-result-container">
+                  <div className="mp-score-result-term">
                     "{result[0]}"
                   </div>
                   :

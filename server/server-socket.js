@@ -66,7 +66,7 @@ const joinRoom = (roomId, user, socket, settings) => {
   const room = rooms[roomId];
   // Prevent duplicate players in the room
   if (!room.players.some((p) => p.id === socket.id)) {
-    room.players.push({ id: socket.id, name: user, photo: userIDtoPhotoMap[socketToIDMap[socket.id]], userId: socketToIDMap[socket.id] });
+    room.players.push({ id: socket.id, name: user.name, photo: user.profilePicture, userId: user._id });
   }
 
   socket.join(roomId);

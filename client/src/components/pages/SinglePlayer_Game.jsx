@@ -279,7 +279,7 @@ const SinglePlayer_Game = () => {
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && onEnterKeyPress(e)}
             className={`${isError ? "error" : ""}`}
-            autocomplete="off"
+            autoComplete="off"
             style={{
               width: `${query.length + 1}ch`,
             }}

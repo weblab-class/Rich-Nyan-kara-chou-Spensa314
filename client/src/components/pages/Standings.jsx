@@ -59,11 +59,11 @@ const Standings = () => {
         <div className="standings-list-container">
           {standings.map((player, index) => (
             <div
-              key={player}
+              key={`${player.playerName}-${index}`}
               className={`standings-player-container ${(index + 1) === 1 ? "s-top-player-1" : (index + 1) === 2 ? "s-top-player-2" : (index + 1) === 3 ? "s-top-player-3" : ""}`}
             >
               <div
-                key={player}
+                key={`${player.playerName}-${index}`}
                 className={`standings-place ${(index + 1) === 1 ? "s-top-player-1-place" : (index + 1) === 2 ? "s-top-player-2-place" : (index + 1) === 3 ? "s-top-player-3-place" : ""}`}
               >
                 {index + 1}{" "}

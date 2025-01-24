@@ -34,28 +34,24 @@ const MultiPlayer_Start = () => {
 
   useEffect(() => {
     get("/api/whoami").then((res) => {
-      console.log(res.name);
       if (res.name !== null) {
         setUsername(res.name);
         setId(res._id);
         socket.emit("joinRoom", {
           roomId: roomCode,
-          user: res.name,
+          user: res,
           settings: { hideLetter, hardMode, minWordLength: minLetters, type: "false" },
         });
       }
     });
     if (!username) {
-      console.error("Username is not defined");
+    //   console.error("Username is not defined");
       return;
     }
 
     // Listen for updates to the player list
     socket.on("updatePlayers", (updatedPlayers) => {
       setPlayers(updatedPlayers);
-      {players.map((player) => (
-        console.log(player.picture)
-      ))};
     });
 
     socket.on("updateHost", (updatedHost) => {
@@ -63,7 +59,6 @@ const MultiPlayer_Start = () => {
       if(updatedHost === id) {
         setIsHost(true);
       }
-      console.log("WTF", (updatedHost === id));
     });
 
     const handleBeforeUnload = () => {

@@ -145,7 +145,7 @@ const Home = () => {
                   value={roomCode}
                   onChange={(e) => setRoomCode(e.target.value)}
                   placeholder="Room Code"
-                  autocomplete="off"
+                  autoComplete="off"
                   autoFocus
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
