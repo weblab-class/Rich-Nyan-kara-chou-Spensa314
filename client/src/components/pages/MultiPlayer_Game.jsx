@@ -161,7 +161,7 @@ const MultiPlayer_Game = () => {
       const timer = setInterval(() => {
         setCountdown((prevCountdown) => prevCountdown - 1);
       }, 1000);
-
+      isLoading = false;
       // Cleanup the interval once countdown reaches 0 or when component unmounts
       return () => clearInterval(timer);
     }
