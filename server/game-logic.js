@@ -169,11 +169,13 @@ function setHost(roomId) {
         return;
     }
     roomStates[roomId].host = roomToPlayers[roomId][0];
-    console.log("I LIKE SUCKING", roomToPlayers[roomId]);
 }
   
 function getHost(roomId) {
     if (!roomToPlayers[roomId]) {
+        return;
+    }
+    if (!roomStates[roomId]){
         return;
     }
     return roomStates[roomId].host;
@@ -181,6 +183,9 @@ function getHost(roomId) {
 
 function leaveRoom(roomId, playerId) {
     if (!roomToPlayers[roomId]) {
+        return;
+    }
+    if (!roomStates[roomId]){
         return;
     }
     roomToPlayers[roomId] = roomToPlayers[roomId].filter((id) => id !== playerId);

@@ -54,7 +54,6 @@ router.post("/upload-profile-picture", auth.ensureLoggedIn, async (req, res) => 
 
     user.profilePicture = profilePicture;
     await user.save();
-
     res.status(200).send({ success: true, profilePicture: user.profilePicture });
   } catch (err) {
     console.error("Error uploading profile picture:", err);
