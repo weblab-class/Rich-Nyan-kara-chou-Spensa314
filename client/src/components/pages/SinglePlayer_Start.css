@@ -57,3 +57,7 @@
     0.05vw 0.05vw var(--xxs) rgba(0, 0, 0, 0.7),
     inset 0.05vw 0.05vw var(--xxs) rgba(255, 255, 255, 0.831); /* Adjust as needed */
 }
+
+.sp-start-button:hover {
+  text-shadow: 0 0 1vw white;
+}

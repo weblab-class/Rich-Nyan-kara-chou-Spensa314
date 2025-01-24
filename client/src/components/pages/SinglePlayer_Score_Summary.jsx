@@ -39,10 +39,8 @@ const SinglePlayer_Score_Summary = () => {
         <div className="score-list-container">
           {queries.map((q) => (
             <div className="score-result-container">
-              <div className="score-result-term">
-                "{q[0]}"
-              </div>
-              :<div className="score-result-query">{parseInt(q[1]).toLocaleString()}</div>
+              <div className="score-result-term">{q[0]}</div>
+              <div className="score-result-query">{parseInt(q[1]).toLocaleString()}</div>
             </div>
           ))}
         </div>

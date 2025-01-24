@@ -119,8 +119,6 @@
 
 .mp-score-result-container {
   display: flex;
-  flex-direction: row;
-  justify-content: top;
   background-color: var(--brown);
   box-shadow: 0 0.1vw 0.2vw rgba(0, 0, 0, 0.5); /* Adjust as needed */
   margin: 0.3vw;
@@ -132,12 +130,13 @@
 
   display: flex;
   align-items: center;
+  flex-direction: row;
+  justify-content: space-between;
   background: linear-gradient(
     45deg,
     var(--brown),
     var(--off--brown),
     var(--dark--brown),
-    var(--off--light--brown),
     var(--off--brown)
   );
 }
@@ -147,6 +146,7 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   margin-right: var(--xxs);
+  max-width: 20vw;
 }
 
 .mp-score-result-query {

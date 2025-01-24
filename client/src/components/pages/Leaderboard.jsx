@@ -7,11 +7,11 @@ import "./Leaderboard.css";
 
 const Leaderboard = () => {
   const [players, setPlayers] = useState([
-    { name: "Player 1", score: "1,000,000,000,000,000,000", place: "1" },
-    { name: "Player 2", score: "900,000", place: "2" },
-    { name: "Player 3", score: "800,000", place: "3" },
-    { name: "Player 4", score: "700,000", place: "4" },
-    { name: "Player 5", score: "600,000", place: "5" },
+    { name: "Player 1", score: "1000000000000", place: "1" },
+    { name: "Player 2", score: "900000", place: "2" },
+    { name: "Player 3", score: "800000", place: "3" },
+    { name: "Player 4", score: "700000", place: "4" },
+    { name: "Player 5", score: "600000", place: "5" },
   ]);
 
   {
@@ -62,8 +62,11 @@ const Leaderboard = () => {
               >
                 {player.place}{" "}
               </div>
-              <div className="leaderboard-player">
-                {player.name}: {parseInt(player.score).toLocaleString()}
+              <div className="leaderboard-player-score-container">
+                <div className="leaderboard-player">{player.name}</div>
+                <div className="leaderboard-player-score">
+                  {parseInt(player.score).toLocaleString()}
+                </div>
               </div>
             </div>
           ))}

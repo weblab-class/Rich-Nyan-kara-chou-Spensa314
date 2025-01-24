@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import "../../utilities.css";
 import NavBar from "../modules/NavBar";
 import { socket } from "../../client-socket.js";
-import { useNavigate , useLocation, useParams} from "react-router-dom";
+import { useNavigate, useLocation, useParams } from "react-router-dom";
 import { get, post } from "../../utilities";
 import "./Standings.css";
 
@@ -42,13 +42,15 @@ const Standings = () => {
 
   const handleNextClick = () => {
     socket.emit("endGame", roomCode);
-    navigate(`/results/${roomCode}`, {state: {
-      standings: standings,
-      players: players,
-      state: roomState,
-      queries: queries,
-      score: ownScore,
-    }});
+    navigate(`/results/${roomCode}`, {
+      state: {
+        standings: standings,
+        players: players,
+        state: roomState,
+        queries: queries,
+        score: ownScore,
+      },
+    });
     return;
   };
   return (
@@ -60,16 +62,19 @@ const Standings = () => {
           {standings.map((player, index) => (
             <div
               key={`${player.playerName}-${index}`}
-              className={`standings-player-container ${(index + 1) === 1 ? "s-top-player-1" : (index + 1) === 2 ? "s-top-player-2" : (index + 1) === 3 ? "s-top-player-3" : ""}`}
+              className={`standings-player-container ${index + 1 === 1 ? "s-top-player-1" : index + 1 === 2 ? "s-top-player-2" : index + 1 === 3 ? "s-top-player-3" : ""}`}
             >
               <div
                 key={`${player.playerName}-${index}`}
-                className={`standings-place ${(index + 1) === 1 ? "s-top-player-1-place" : (index + 1) === 2 ? "s-top-player-2-place" : (index + 1) === 3 ? "s-top-player-3-place" : ""}`}
+                className={`standings-place ${index + 1 === 1 ? "s-top-player-1-place" : index + 1 === 2 ? "s-top-player-2-place" : index + 1 === 3 ? "s-top-player-3-place" : ""}`}
               >
                 {index + 1}{" "}
               </div>
-              <div className="standings-player">
-                {player.playerName}: {parseInt(player.score).toLocaleString()}
+              <div className="standings-player-score-container">
+                <div className="standings-player">{player.playerName}</div>
+                <div className="standings-player-score">
+                  {parseInt(player.score).toLocaleString()}
+                </div>
               </div>
             </div>
           ))}

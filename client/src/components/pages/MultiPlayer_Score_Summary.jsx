@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import "../../utilities.css";
 import NavBar from "../modules/NavBar";
 import { useNavigate, useLocation, useParams } from "react-router-dom";
-import { get , post} from "../../utilities";
+import { get, post } from "../../utilities";
 import "./MultiPlayer_Score_Summary.css";
 
 const MultiPlayer_Score_Summary = () => {
@@ -75,10 +75,7 @@ const MultiPlayer_Score_Summary = () => {
             <div className="multi-individual-content">
               {queries.map((query, index) => (
                 <div key={`${query[0]}-${index}`} className="mp-score-result-container">
-                  <div className="mp-score-result-term">
-                    "{query[0]}"
-                  </div>
-                  :
+                  <div className="mp-score-result-term">{query[0]}</div>
                   <div className="mp-score-result-query">{parseInt(query[1]).toLocaleString()}</div>
                 </div>
               ))}
@@ -92,10 +89,7 @@ const MultiPlayer_Score_Summary = () => {
             <div className="multi-individual-content">
               {oppQueries.map((result, index) => (
                 <div key={`${result[0]}-${index}`} className="mp-score-result-container">
-                  <div className="mp-score-result-term">
-                    "{result[0]}"
-                  </div>
-                  :
+                  <div className="mp-score-result-term">{result[0]}</div>
                   <div className="mp-score-result-query">
                     {parseInt(result[1]).toLocaleString()}
                   </div>

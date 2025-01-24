@@ -90,11 +90,26 @@
   box-shadow: 0 0.1vw 0.2vw rgba(0, 0, 0, 0.5); /* Adjust as needed */
 }
 
-.leaderboard-player {
+/* customized content */
+
+.leaderboard-player-score-container {
   margin-left: var(--xs);
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.leaderboard-player {
+  max-width: 20vw;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.leaderboard-player-score {
+  display: flex;
+  text-align: right;
 }
 
 .leaderboard-settings-container {
