@@ -121,7 +121,7 @@ const SinglePlayer_Game = () => {
       const response = await post("/api/updateSinglePlayerScore", {
         userId,
         score: score,
-        settings: settings,
+        settings: JSON.stringify(settings),
       });
 
       if (response.success) {
@@ -146,12 +146,12 @@ const SinglePlayer_Game = () => {
           clearInterval(timer);
 
           // call saveScore function editing
-          saveScore(
-            userId,
-            prevState.score,
-            JSON.stringify({ minLetters, activeTime, hideLetter, hardMode })
-          );
-
+          saveScore(userId, prevState.score, {
+            minLetters: parseInt(minLetters, 10),
+            activeTime,
+            hideLetter,
+            hardMode,
+          });
           navigate(`/results/solo`, {
             state: {
               queries: prevState.queries,

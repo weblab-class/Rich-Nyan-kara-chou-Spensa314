@@ -1,15 +1,24 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import "../../utilities.css";
 import NavBar from "../modules/NavBar";
-import { post } from "../../utilities";
+import { get, post } from "../../utilities";
 import { UserContext } from "../App";
 import "./Profile.css";
 
 const Profile = () => {
   const { username, setUsername, profilepicture, userId } = useContext(UserContext);
-  const [currentPicture, setCurrentPicture] = useState(profilepicture);
   const [isEditing, setIsEditing] = useState(false);
   const [newUsername, setNewUsername] = useState(username);
+  const [averageScore, setAverageScore] = useState(0);
+  const [highScore, setHighScore] = useState(0);
+  const [minLetters, setMinLetters] = useState(3);
+  const [activeTime, setActiveTime] = useState(30);
+  const [hardMode, setHardMode] = useState(false);
+  const [hideLetter, setHideLetter] = useState(false);
+
+  // const [settings, setSettings] = useState(
+  //   '{"minLetters":3,"activeTime":30,"hideLetter":false,"hardMode":false}'
+  // ); // Default setting
 
   const handleEditClick = () => setIsEditing(true);
 
@@ -48,16 +57,34 @@ const Profile = () => {
     }
   };
 
+  useEffect(() => {
+    const fetchHighScore = async () => {
+      try {
+        const settings = JSON.stringify({ minLetters, activeTime, hideLetter, hardMode });
+        console.log("Sending: ", userId, settings);
+        const response = await get("/api/getSinglePlayerHighestScore", { userId, settings });
+
+        if (response.error) {
+          console.error("Error in response:", response.error);
+          setHighScore(0);
+          setAverageScore(0);
+        } else {
+          setHighScore(response.highScore);
+          setAverageScore(response.averageScore);
+        }
+      } catch (error) {
+        console.error("Error fetching scores:", error);
+      }
+    };
+    fetchHighScore();
+  }, [userId, minLetters, activeTime, hideLetter, hardMode]);
+
   const wins = 0;
   const losses = 0;
-  const high_score = 1000000;
-  const average_score = 1000;
 
   {
     /* settings */
   }
-
-  const [minLetters, setMinLetters] = useState(3);
   const onMinLettersClick = () => {
     if (minLetters === 6) {
       setMinLetters(3);
@@ -66,23 +93,20 @@ const Profile = () => {
     }
   };
 
-  const [time, setTime] = useState(30);
   const onTimeClick = () => {
-    if (time === 30) {
-      setTime(60);
+    if (activeTime === 30) {
+      setActiveTime(60);
     } else {
-      setTime(30);
+      setActiveTime(30);
     }
   };
 
-  const [isHardMode, setIsHardMode] = useState(false);
   const onHardModeClick = () => {
-    setIsHardMode(!isHardMode);
+    setHardMode(!hardMode);
   };
 
-  const [isLetterHidden, setIsLetterHidden] = useState(false);
   const onNextLetterClick = () => {
-    setIsLetterHidden(!isLetterHidden);
+    setHideLetter(!hideLetter);
   };
 
   return (
@@ -92,7 +116,7 @@ const Profile = () => {
         <div className="profile-personal-container">
           {profilepicture ? (
             <img
-              src={currentPicture || "/images/default.png"}
+              src={profilepicture || "/images/default.png"}
               alt={`${username || "Guest"}'s Profile Picture`}
               className="profile-picture"
             />
@@ -145,11 +169,11 @@ const Profile = () => {
               <div className="profile-statistics-category-title">Singleplayer</div>
               <div className="profile-statistics-category-category">Average Score</div>
               <div className="profile-statistics-category-mpcontent">
-                {parseInt(average_score).toLocaleString()}
+                {parseInt(averageScore).toLocaleString()}
               </div>
               <div className="profile-statistics-category-category">High Score</div>
               <div className="profile-statistics-category-mpcontent">
-                {parseInt(high_score).toLocaleString()}
+                {parseInt(highScore).toLocaleString()}
               </div>
             </div>
           </div>
@@ -158,13 +182,13 @@ const Profile = () => {
               Min Letters: {minLetters}
             </div>
             <div className="p-leaderboard-dropdown-container" onClick={onTimeClick}>
-              Time: {time}
+              Time: {activeTime}
             </div>
             <div className="p-leaderboard-dropdown-container" onClick={onHardModeClick}>
-              {isHardMode ? "Hard Mode" : "Normal Mode"}
+              {hardMode ? "Hard Mode" : "Normal Mode"}
             </div>
             <div className="p-leaderboard-dropdown-container" onClick={onNextLetterClick}>
-              {isLetterHidden ? "Next Letter: Hidden" : "Next Letter: Shown"}
+              {hideLetter ? "Next Letter: Hidden" : "Next Letter: Shown"}
             </div>
           </div>
         </div>

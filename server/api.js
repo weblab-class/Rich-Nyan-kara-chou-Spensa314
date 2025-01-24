@@ -106,7 +106,9 @@ router.post("/updateSinglePlayerScore", auth.ensureLoggedIn, async (req, res) =>
       return res.status(404).json({ message: "User not found" });
     }
 
-    const settingsString = JSON.stringify(settings); //lifesaver tbh
+    const settingsString = settings; // Use settings directly as a string
+
+    // const settingsString = JSON.stringify(JSON.parse(settings)); //lifesaver tbh
     console.log("settingsString working okay", settingsString);
     // checking if these settings have been played before
     // should probably check .find() complexity
@@ -137,6 +139,39 @@ router.post("/updateSinglePlayerScore", auth.ensureLoggedIn, async (req, res) =>
   } catch (err) {
     console.error("Error updating score:", err);
     res.status(500).send({ msg: "Internal server error" });
+  }
+});
+
+router.get("/getSinglePlayerHighestScore", async (req, res) => {
+  const { userId, settings } = req.query;
+
+  console.log("Request Query:", req.query);
+  if (!userId || !settings) {
+    return res.status(400).json({ message: "Missing required fields" });
+  }
+
+  try {
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Parse settings to ensure comparison works
+    const parsedSettings = JSON.stringify(JSON.parse(settings)); // Normalize JSON string format
+    console.log("parsedSettings:", parsedSettings);
+    const scoreEntry = user.singlePlayerScores.find((score) => score.settings === parsedSettings);
+    console.log("scoreEntry: ", scoreEntry);
+    // If no scoreEntry exists
+    if (!scoreEntry) {
+      return res.json({ highScore: 0, averageScore: 0 });
+    }
+
+    const { highScore, totalScore, gamesPlayed } = scoreEntry;
+    const averageScore = gamesPlayed > 0 ? totalScore / gamesPlayed : 0;
+
+    return res.json({ highScore, averageScore });
+  } catch (error) {
+    res.status(500).json({ error: "Server error" });
   }
 });
 
