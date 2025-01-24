@@ -9,8 +9,9 @@ import { get } from "../../utilities";
 
 const NavBar = () => {
   const { userId, username, profilepicture, handleLogout } = useContext(UserContext);
-  const [currentPicture, setCurrentPicture] = useState(profilepicture);
+  // const [currentPicture, setCurrentPicture] = useState(profilepicture);
 
+  // console.log(profilepicture);
   const navigate = useNavigate();
 
   const handleLogoutClick = () => {
@@ -51,7 +52,7 @@ const NavBar = () => {
         <div onClick={handleProfileClick} className="navbar-link nav-profile">
           {profilepicture ? (
             <img
-              src={currentPicture}
+              src={profilepicture}
               alt="User Profile Picture"
               className="nav-profile-picture"
               onError={(e) => {
