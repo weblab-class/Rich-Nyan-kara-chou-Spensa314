@@ -17,6 +17,7 @@ export const UserContext = createContext(null);
 const App = () => {
   const [userId, setUserId] = useState(undefined);
   const [username, setUsername] = useState("");
+  const [isGuest, setGuest] = useState(false);
   const [profilepicture, setProfilePicture] = useState("");
 
   useEffect(() => {
@@ -47,9 +48,30 @@ const App = () => {
         // setUserId(updatedUser._id); //this should never change tho-
         setUsername(updatedUser.name); // fetching the right one
         setProfilePicture(updatedUser.profilePicture);
+        setGuest(false);
       });
       post("/api/initsocket", { socketid: socket.id });
     });
+  };
+
+  const handleGuestLogin = async () => {
+    try {
+      const response = await post("/api/guestlogin"); // Send guest login request
+      setUserId(response._id);
+      setUsername(response.name);
+      setProfilePicture(response.profilePicture);
+      setGuest(true);
+      // Initialize socket after successful guest login
+      if (socket && socket.id) {
+        await post("/api/initsocket", { socketid: socket.id });
+      }
+  
+      // Optionally log the guest user session
+      console.log("Logged in as guest:", response);
+    } catch (err) {
+      console.error("Guest login failed:", err);
+      alert("Unable to log in as Guest. Please try again.");
+    }
   };
 
   const handleLogout = () => {
@@ -64,6 +86,7 @@ const App = () => {
     profilepicture,
     setUsername,
     handleLogin,
+    handleGuestLogin,
     handleLogout,
   };
 

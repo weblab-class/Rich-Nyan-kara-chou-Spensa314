@@ -11,7 +11,6 @@ const express = require("express");
 const auth = require("./auth");
 const socketManager = require("./server-socket");
 
-const router = express.Router();
 const User = require("./models/user");
 const Leaderboard = require("./models/leaderboard");
 const mongoose = require("mongoose");
@@ -23,6 +22,55 @@ const games = {}; // In-memory store for game states
 
 router.post("/login", auth.login);
 router.post("/logout", auth.logout);
+
+router.post("/guestlogin", async (req, res) => {
+  try {
+    let isUnique = false;
+
+    // Ensure the generated guest ID is unique
+    while (!isUnique) {
+      // Generate a unique guest ID
+      const randomNumber = Math.floor(Math.random() * 1000000);
+      guestId = `Guest${randomNumber}`;
+      guestName = `Guest ${randomNumber}`;
+
+      // Check if a guest user with the same ID already exists
+      const existingGuest = await User.findOne({ googleid: guestId });
+      if (!existingGuest) {
+        isUnique = true;
+      }
+    }
+    // Create a new guest user in MongoDB
+    const guestUser = new User({
+      googleid: guestId,
+      name: guestName,
+      profilePicture: "/images/default.png",
+      isGuest: true, // Add a flag to differentiate guest users
+    });
+
+    // Save the guest user to the database
+    await guestUser.save();
+
+    // Store the guest user in the session
+    req.session.user = {
+      _id: guestUser._id,
+      name: guestUser.name,
+      profilePicture: guestUser.profilePicture,
+      isGuest: true,
+    };
+
+    // Send the guest user data back to the client
+    res.send({
+      _id: guestUser._id,
+      name: guestUser.name,
+      profilePicture: guestUser.profilePicture,
+      isGuest: true,
+    });
+  } catch (err) {
+    console.error("Error handling guest login:", err);
+    res.status(500).send({ msg: "Error handling guest login." });
+  }
+});
 
 //making them async so we get the right info first
 router.get("/whoami", async (req, res) => {

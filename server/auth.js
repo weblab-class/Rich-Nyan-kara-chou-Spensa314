@@ -46,8 +46,19 @@ function getOrCreateUser(user) {
 }
 
 function login(req, res) {
-  console.log("Login attempt with token:", req.body.token);
-  verify(req.body.token)
+  const { token, userId, username, profilepicture } = req.body;
+
+  if (userId && userId.startsWith("Guest")) {
+    // Handle guest user login
+    console.log("Guest login detected:", { userId, username });
+    req.session.user = { userId, username, profilepicture }; // Set session for guest
+    return res.send(req.session.user); // Respond with the session user
+  }
+
+  console.log("Login attempt with token:", token);
+
+  // Handle Google user login
+  verify(token)
     .then((user) => {
       console.log("Verified user:", user);
       return getOrCreateUser(user);
@@ -58,7 +69,7 @@ function login(req, res) {
       res.send(user);
     })
     .catch((err) => {
-      console.error("Login error:", err.message || err); // Log the detailed error
+      console.error("Login error:", err.message || err);
       res.status(500).send({ err: err.message || err });
     });
 }
