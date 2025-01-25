@@ -22,8 +22,7 @@ const Home = () => {
           } else {
             navigate("/");
           }
-        }
-        else{
+        } else {
           setLoggedIn(true);
         }
       } catch (err) {
@@ -31,7 +30,7 @@ const Home = () => {
         navigate("/"); // Navigate to home if fetch fails
       }
     };
-  
+
     fetchUserWithRetries();
   }, [navigate]);
   const onMultiplayerClick = () => {
@@ -47,14 +46,14 @@ const Home = () => {
   const onCreateRoomClick = async () => {
     let genRoom = null;
     let anotherRoom = true;
-  
+
     while (anotherRoom) {
       const newRoomCode = Math.floor(Math.random() * 10000).toString();
-      
+
       try {
         const res = await get(`/api/activeRooms/${newRoomCode}`); // Wait for the API response
         console.log(`Checking room code ${newRoomCode}:`, res);
-  
+
         if (res === false) {
           // If room code is available
           anotherRoom = false;
@@ -65,7 +64,7 @@ const Home = () => {
         return; // Exit early if there's an error
       }
     }
-  
+
     // Set the room code and navigate once a valid code is generated
     setRoomCode(genRoom);
     console.log("Generated room code:", genRoom);
@@ -146,7 +145,7 @@ const Home = () => {
     }, fallDuration * 1000);
     setTimeout(() => {
       isGenerating.current = false;
-    }, 200); // 200ms delay between generating new letters
+    }, 300); // 200ms delay between generating new letters
   };
 
   {
@@ -184,11 +183,10 @@ const Home = () => {
     }
   }, [isInfoModalOpen]); // Dependency on modal opening
 
-  return (
-    !isLoggedIn ? 
-    <div className="intermediate-container">
-    </div>:(
-      <>
+  return !isLoggedIn ? (
+    <div className="intermediate-container"></div>
+  ) : (
+    <>
       <NavBar />
       <div className="home-container" onMouseMove={handleMouseMove}>
         {letters.map((item) => (
@@ -290,9 +288,7 @@ const Home = () => {
         )}
       </div>
     </>
-    )
   );
-  
 };
 
 export default Home;

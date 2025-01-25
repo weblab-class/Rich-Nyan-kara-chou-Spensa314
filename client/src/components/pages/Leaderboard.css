@@ -35,7 +35,7 @@
 .leaderboard-list-container {
   background-color: var(--beige);
   border-radius: var(--s);
-  width: 60vw;
+  width: 70vw;
   height: 22vw;
   box-shadow: 0 0 var(--xxs) rgba(0, 0, 0, 0.5); /* Adjust as needed */
   margin-bottom: var(--xs);
@@ -101,7 +101,7 @@
 }
 
 .leaderboard-player {
-  max-width: 20vw;
+  max-width: 40vw;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -113,7 +113,7 @@
 }
 
 .leaderboard-settings-container {
-  width: 60vw;
+  width: 70vw;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -128,7 +128,7 @@
   justify-content: center;
   background-color: var(--brown);
   color: var(--beige);
-  font-size: 1.7vw;
+  font-size: 2vw;
   box-shadow: 0 0.1vw 0.2vw rgba(0, 0, 0, 0.7); /* Adjust as needed */
   border-radius: var(--s);
   padding: var(--xxs) var(--xs);
