@@ -52,6 +52,26 @@ const App = () => {
     });
   };
 
+  const handleGuestLogin = async () => {
+    try {
+      const response = await post("/api/guestlogin"); // Send guest login request
+      setUserId(response._id);
+      setUsername(response.name);
+      setProfilePicture(response.profilePicture);
+  
+      // Initialize socket after successful guest login
+      if (socket && socket.id) {
+        await post("/api/initsocket", { socketid: socket.id });
+      }
+  
+      // Optionally log the guest user session
+      console.log("Logged in as guest:", response);
+    } catch (err) {
+      console.error("Guest login failed:", err);
+      alert("Unable to log in as Guest. Please try again.");
+    }
+  };
+  
   const handleLogout = () => {
     setUserId(undefined);
     setUsername("");
@@ -64,6 +84,7 @@ const App = () => {
     profilepicture,
     setUsername,
     handleLogin,
+    handleGuestLogin,
     handleLogout,
   };
 

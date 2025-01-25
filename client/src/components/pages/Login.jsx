@@ -6,7 +6,7 @@ import "../../utilities.css";
 import "./Login.css";
 
 const Login = () => {
-  const { handleLogin } = useContext(UserContext);
+  const { handleLogin, handleGuestLogin } = useContext(UserContext);
 
   const navigate = useNavigate();
 
@@ -14,30 +14,28 @@ const Login = () => {
     handleLogin(credentialResponse);
     navigate("/home"); // Navigate to Home after successful login
   };
-  const handleGuestLogin = () => {
-    const number = Math.floor(Math.random() * 1000000);
 
-    // CHECK NUMBER IS NOT IN DATABASE ALREADY
-    handleLogin( {userId: `Guest${number}`, username: `Guest${number}`, profilepicture: `/images/default.png`, setUsername: `Guest${number}`} );
-    navigate("/home");
+  const handleGuestLoginClick = () => {
+    handleGuestLogin(); // Trigger the guest login function from context
+    navigate("/home"); // Navigate to Home after guest login
   };
-  
+
   const handleError = (err) => {
-    console.error(err);
+    console.error("Google Login Error:", err);
   };
 
   return (
     <div className="login-container">
       <div className="title-container">
         <h1 className="chain">
-          <img src="/images/logo.png" className="logo-login" />
+          <img src="/images/logo.png" className="logo-login" alt="App Logo" />
           <div className="chain-text">Chain</div>
         </h1>
         <h2 className="reaction">Reaction</h2>
         <hr className="reaction-line" />
       </div>
-      <button className="guest-login-button" onClick={handleGuestLogin}>
-          Continue as Guest
+      <button className="guest-login-button" onClick={handleGuestLoginClick}>
+        Continue as Guest
       </button>
       <div className="google-login-container">
         <GoogleLogin onSuccess={handleSuccess} onError={handleError} useOneTap />
@@ -47,3 +45,4 @@ const Login = () => {
 };
 
 export default Login;
+

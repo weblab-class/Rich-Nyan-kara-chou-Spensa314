@@ -10,9 +10,10 @@ require("dotenv").config();
 const express = require("express");
 const auth = require("./auth");
 const socketManager = require("./server-socket");
+const User = require("./models/user");
 
 const router = express.Router();
-const User = require("./models/user");
+
 // Load environment variables
 const apiKey = process.env.GOOGLE_API_KEY;
 const cx = process.env.GOOGLE_CX;
@@ -21,6 +22,51 @@ const games = {}; // In-memory store for game states
 
 router.post("/login", auth.login);
 router.post("/logout", auth.logout);
+
+router.post("/guestlogin", async (req, res) => {
+  try {
+    // Generate a unique guest ID
+    const randomNumber = Math.floor(Math.random() * 1000000);
+    const guestId = `Guest${randomNumber}`;
+    const guestName = `Guest ${randomNumber}`;
+
+    // Check if a guest user with the same ID already exists (unlikely, but for safety)
+    const existingGuest = await User.findOne({ googleid: guestId });
+    if (existingGuest) {
+      return res.status(400).send({ msg: "Guest ID conflict. Please try again." });
+    }
+
+    // Create a new guest user in MongoDB
+    const guestUser = new User({
+      googleid: guestId,
+      name: guestName,
+      profilePicture: "/images/default.png",
+      isGuest: true, // Add a flag to differentiate guest users
+    });
+
+    // Save the guest user to the database
+    await guestUser.save();
+
+    // Store the guest user in the session
+    req.session.user = {
+      _id: guestUser._id,
+      name: guestUser.name,
+      profilePicture: guestUser.profilePicture,
+      isGuest: true,
+    };
+
+    // Send the guest user data back to the client
+    res.send({
+      _id: guestUser._id,
+      name: guestUser.name,
+      profilePicture: guestUser.profilePicture,
+      isGuest: true,
+    });
+  } catch (err) {
+    console.error("Error handling guest login:", err);
+    res.status(500).send({ msg: "Error handling guest login." });
+  }
+});
 
 //making them async so we get the right info first
 router.get("/whoami", async (req, res) => {
