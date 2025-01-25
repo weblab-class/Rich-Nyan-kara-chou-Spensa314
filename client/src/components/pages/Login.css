@@ -147,3 +147,19 @@
   margin-top: auto; /* Pushes the Google login button to the bottom */
   padding-bottom: var(--s);
 }
+
+.guest-login-button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.guest-login-button:hover {
+  background-color: #45a049;
+}
