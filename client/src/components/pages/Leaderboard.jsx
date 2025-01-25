@@ -1,34 +1,71 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import "../../utilities.css";
 import NavBar from "../modules/NavBar";
 import { useNavigate } from "react-router-dom";
-import {get} from "../../utilities";
+import { get } from "../../utilities";
+import { UserContext } from "../App";
+
 import "./Leaderboard.css";
 
 const Leaderboard = () => {
+  const { username, profilepicture, userId } = useContext(UserContext);
+  const [topPlayers, setTopPlayers] = useState([]);
+  const [userRank, setUserRank] = useState(null);
+  const [userScore, setUserScore] = useState(null);
+  const [minLetters, setMinLetters] = useState(3);
+  const [activeTime, setActiveTime] = useState(30);
+  const [hardMode, setHardMode] = useState(false);
+  const [hideLetter, setHideLetter] = useState(false);
+
   const navigate = useNavigate();
   const [isLoggedIn, setLoggedIn] = useState(false);
   useEffect(() => {
+    //todo neha: use usercontext later for this
     get("/api/whoami").then((res) => {
-        if (!res.name) {
-            navigate("/");
-            return;
-        }
-        setLoggedIn(true);
-      })
+      if (!res.name) {
+        navigate("/");
+        return;
+      }
+      setLoggedIn(true);
+    });
   });
-  const [players, setPlayers] = useState([
-    { name: "Player 1", score: "1000000000000", place: "1" },
-    { name: "Player 2", score: "900000", place: "2" },
-    { name: "Player 3", score: "800000", place: "3" },
-    { name: "Player 4", score: "700000", place: "4" },
-    { name: "Player 5", score: "600000", place: "5" },
-  ]);
+  // const [players, setPlayers] = useState([
+  //   { name: "Player 1", score: "1000000000000", place: "1" },
+  //   { name: "Player 2", score: "900000", place: "2" },
+  //   { name: "Player 3", score: "800000", place: "3" },
+  //   { name: "Player 4", score: "700000", place: "4" },
+  //   { name: "Player 5", score: "600000", place: "5" },
+  // ]);
+
+  useEffect(() => {
+    const fetchLeaderboardData = async () => {
+      try {
+        const settings = JSON.stringify({
+          minLetters: parseInt(minLetters, 10), //10 is the base that's so cool
+          activeTime: parseInt(activeTime, 10),
+          hideLetter: hideLetter,
+          hardMode: hardMode,
+        });
+        console.log("Sending: ", userId, settings);
+        const response = await get("/api/leaderboard", { userId, settings });
+
+        if (response.error) {
+          console.error("Error in response:", response.error);
+        } else {
+          setTopPlayers(response.topPlayers || []);
+          setUserRank(response.userRank || null);
+          setUserScore(response.userScore || null);
+        }
+      } catch (error) {
+        console.error("Error fetching leaderboard:", error);
+      }
+    };
+    fetchLeaderboardData();
+  }, [userId, minLetters, activeTime, hideLetter, hardMode]);
 
   {
     /**settings adjustments */
   }
-  const [minLetters, setMinLetters] = useState(3);
   const onMinLettersClick = () => {
     if (minLetters === 6) {
       setMinLetters(3);
@@ -37,49 +74,63 @@ const Leaderboard = () => {
     }
   };
 
-  const [time, setTime] = useState(30);
   const onTimeClick = () => {
-    if (time === 30) {
-      setTime(60);
+    if (activeTime === 30) {
+      setActiveTime(60);
     } else {
-      setTime(30);
+      setActiveTime(30);
     }
   };
 
-  const [isHardMode, setIsHardMode] = useState(false);
   const onHardModeClick = () => {
-    setIsHardMode(!isHardMode);
+    setHardMode(!hardMode);
   };
 
-  const [isLetterHidden, setIsLetterHidden] = useState(false);
   const onNextLetterClick = () => {
-    setIsLetterHidden(!isLetterHidden);
+    setHideLetter(!hideLetter);
   };
 
-  return (
-    !isLoggedIn ? 
-    <div className="intermediate-container">
-    </div>:(
+  return !isLoggedIn ? (
+    <div className="intermediate-container"></div>
+  ) : (
     <>
       <NavBar />
       <div className="leaderboard-page-container">
         <h1 className="leaderboard-title">Leaderboard</h1>
         <div className="leaderboard-list-container">
-          {players.map((player) => (
+          {topPlayers.map((player, index) => (
             <div
-              key={player}
-              className={`leaderboard-player-container ${player.place === "1" ? "top-player-1" : player.place === "2" ? "top-player-2" : player.place === "3" ? "top-player-3" : ""}`}
+              key={player.playerId}
+              className={`leaderboard-player-container ${
+                index === 0
+                  ? "top-player-1"
+                  : index === 1
+                    ? "top-player-2"
+                    : index === 2
+                      ? "top-player-3"
+                      : ""
+              }`}
             >
               <div
-                key={player}
-                className={`leaderboard-place ${player.place === "1" ? "top-player-1-place" : player.place === "2" ? "top-player-2-place" : player.place === "3" ? "top-player-3-place" : ""}`}
+                className={`leaderboard-place ${
+                  index === 0
+                    ? "top-player-1-place"
+                    : index === 1
+                      ? "top-player-2-place"
+                      : index === 2
+                        ? "top-player-3-place"
+                        : ""
+                }`}
               >
-                {player.place}{" "}
+                {index + 1}
               </div>
               <div className="leaderboard-player-score-container">
-                <div className="leaderboard-player">{player.name}</div>
+                <div className="leaderboard-player">
+                  {" "}
+                  {player.playerId === userId ? `${player.name} (you)` : player.name}
+                </div>
                 <div className="leaderboard-player-score">
-                  {parseInt(player.score).toLocaleString()}
+                  {parseInt(player.highScore).toLocaleString()}
                 </div>
               </div>
             </div>
@@ -90,19 +141,18 @@ const Leaderboard = () => {
             Min Letters: {minLetters}
           </div>
           <div className="leaderboard-dropdown-container" onClick={onTimeClick}>
-            Time: {time}
+            Time: {activeTime}
           </div>
           <div className="leaderboard-dropdown-container" onClick={onHardModeClick}>
-            {isHardMode ? "Hard Mode" : "Normal Mode"}
+            {hardMode ? "Hard Mode" : "Normal Mode"}
           </div>
           <div className="leaderboard-dropdown-container" onClick={onNextLetterClick}>
-            {isLetterHidden ? "Next Letter: Hidden" : "Next Letter: Shown"}
+            {hideLetter ? "Next Letter: Hidden" : "Next Letter: Shown"}
           </div>
         </div>
       </div>
       ;
     </>
-    )
   );
 };
 

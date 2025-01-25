@@ -13,6 +13,8 @@ const socketManager = require("./server-socket");
 
 const router = express.Router();
 const User = require("./models/user");
+const Leaderboard = require("./models/leaderboard");
+const mongoose = require("mongoose");
 // Load environment variables
 const apiKey = process.env.GOOGLE_API_KEY;
 const cx = process.env.GOOGLE_CX;
@@ -134,10 +136,112 @@ router.post("/updateSinglePlayerScore", auth.ensureLoggedIn, async (req, res) =>
     }
 
     await user.save(); //honestly the most important part
+
+    // Leaderboard ugh
+    const existingLeaderboardEntry = await Leaderboard.findOne({
+      playerId: userId,
+      settings: settingsString,
+    });
+
+    if (!existingLeaderboardEntry) {
+      // New entry
+      console.log("New leaderboard entry");
+      const leaderboardEntry = new Leaderboard({
+        playerId: userId,
+        name: user.name,
+        profilePicture: user.profilePicture,
+        highScore: scoreEntry.highScore,
+        settings: settingsString,
+        rank: 0, // rank will be calculated later
+      });
+      await leaderboardEntry.save();
+    } else {
+      // Update their score if it's higher
+      existingLeaderboardEntry.highScore = Math.max(
+        existingLeaderboardEntry.highScore,
+        scoreEntry.highScore
+      );
+      await existingLeaderboardEntry.save();
+    }
+
     res.status(200).send({ success: true, msg: "Score updated succsessfully!" });
   } catch (err) {
     console.error("Error updating score:", err);
     res.status(500).send({ msg: "Internal server error" });
+  }
+});
+
+// GET leaderboard
+router.get("/leaderboard", async (req, res) => {
+  const { userId, settings } = req.query;
+
+  if (!userId || !settings) {
+    return res.status(400).json({ message: "Missing required fields" });
+  }
+
+  try {
+    const settingsFilter = JSON.stringify(JSON.parse(settings)); // Normalize the settings
+
+    // Query: Top 10 players
+    const topPlayers = await Leaderboard.find({ settings: settingsFilter })
+      .sort({ highScore: -1 }) //because ranks haven't been calculated yet
+      .limit(10); // Get top 10 players
+
+    // Calculate ranks for each player. Sorry guys we can;t get around the nlogn
+    // we might just have to sticj with it
+    topPlayers.forEach((player, index) => {
+      player.rank = index + 1; // Rank is position in sorted list (1-based index)
+    });
+
+    // Get the user's rank
+    const userRankResult = await Leaderboard.aggregate([
+      { $match: { settings: settingsFilter, playerId: new mongoose.Types.ObjectId(userId) } },
+      {
+        $lookup: {
+          from: "leaderboards",
+          let: { userScore: "$highScore" },
+          pipeline: [
+            { $match: { settings: settingsFilter } },
+            { $match: { $expr: { $gt: ["$highScore", "$$userScore"] } } },
+            { $count: "higherScores" },
+          ],
+          as: "rankInfo",
+        },
+      },
+      {
+        $project: {
+          playerId: 1,
+          name: 1,
+          profilePicture: 1,
+          highScore: 1,
+          rank: { $add: [{ $arrayElemAt: ["$rankInfo.higherScores", 0] }, 1] },
+        },
+      },
+    ]);
+
+    const userRank = userRankResult.length ? userRankResult[0].rank : null;
+    const userScore = userRankResult.length ? userRankResult[0].highScore : null;
+
+    // If user is not in top 10, add them as 11th entry
+    if (userRank > 10) {
+      topPlayers.push({
+        playerId: userId,
+        name: "You", // Display "You" for the user
+        profilePicture: "", // Optional: Provide the user's profile picture if available
+        highScore: userScore,
+        rank: userRank,
+      });
+    }
+
+    // Return the leaderboard and user's rank
+    res.json({
+      topPlayers,
+      userRank,
+      userScore,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Error fetching leaderboard" });
   }
 });
 

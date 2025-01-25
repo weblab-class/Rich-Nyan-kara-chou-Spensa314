@@ -1,4 +1,3 @@
-// models/user.js
 const mongoose = require("mongoose");
 
 const SinglePlayerSchema = new mongoose.Schema({
