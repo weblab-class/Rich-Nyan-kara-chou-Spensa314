@@ -11,6 +11,8 @@ const Profile = () => {
   const [newUsername, setNewUsername] = useState(username);
   const [averageScore, setAverageScore] = useState(0);
   const [highScore, setHighScore] = useState(0);
+  const [wins, setWins] = useState(0);
+  const [losses, setLosses] = useState(0);
   const [minLetters, setMinLetters] = useState(3);
   const [activeTime, setActiveTime] = useState(30);
   const [hardMode, setHardMode] = useState(false);
@@ -60,9 +62,14 @@ const Profile = () => {
   useEffect(() => {
     const fetchHighScore = async () => {
       try {
-        const settings = JSON.stringify({ minLetters, activeTime, hideLetter, hardMode });
+        const settings = JSON.stringify({
+          minLetters: parseInt(minLetters, 10),
+          activeTime: parseInt(activeTime, 10),
+          hideLetter: hideLetter,
+          hardMode: hardMode,
+        });
         console.log("Sending: ", userId, settings);
-        const response = await get("/api/getSinglePlayerHighestScore", { userId, settings });
+        const response = await get("/api/getScores", { userId, settings });
 
         if (response.error) {
           console.error("Error in response:", response.error);
@@ -71,6 +78,8 @@ const Profile = () => {
         } else {
           setHighScore(response.highScore);
           setAverageScore(response.averageScore);
+          setWins(response.wins);
+          setLosses(response.losses);
         }
       } catch (error) {
         console.error("Error fetching scores:", error);
@@ -78,9 +87,6 @@ const Profile = () => {
     };
     fetchHighScore();
   }, [userId, minLetters, activeTime, hideLetter, hardMode]);
-
-  const wins = 0;
-  const losses = 0;
 
   {
     /* settings */

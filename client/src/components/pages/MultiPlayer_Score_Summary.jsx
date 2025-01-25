@@ -50,13 +50,21 @@ const MultiPlayer_Score_Summary = () => {
               player.playerId === playerId && player.score === location.state.standings[0]?.score
           );
 
-          console.log("sending ", playerId, isWinner, location.state.state.settings);
+          // Parse and transform settings
+          const rawSettings = location.state.state.settings;
+          const formattedSettings = JSON.stringify({
+            minLetters: parseInt(rawSettings.minLength, 10),
+            activeTime: parseInt(rawSettings.time, 10),
+            hideLetter: rawSettings.hideLetter,
+            hardMode: rawSettings.type, // hardMode maps from `type`
+          });
 
-          // Make the API call for each player
+          console.log("sending ", playerId, isWinner, formattedSettings);
+
           post("/api/updateMultiPlayerScore", {
             userId: playerId,
             isWinner: isWinner,
-            settings: JSON.stringify(location.state.state.settings),
+            settings: formattedSettings,
           })
             .then((response) => {
               console.log(`Multiplayer score updated for ${playerId}:`, response);

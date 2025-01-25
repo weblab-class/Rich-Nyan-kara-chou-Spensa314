@@ -141,7 +141,7 @@ router.post("/updateSinglePlayerScore", auth.ensureLoggedIn, async (req, res) =>
   }
 });
 
-router.get("/getSinglePlayerHighestScore", async (req, res) => {
+router.get("/getScores", async (req, res) => {
   const { userId, settings } = req.query;
 
   console.log("Request Query:", req.query);
@@ -158,17 +158,27 @@ router.get("/getSinglePlayerHighestScore", async (req, res) => {
     // Parse settings to ensure comparison works
     const parsedSettings = JSON.stringify(JSON.parse(settings)); // Normalize JSON string format
     console.log("parsedSettings:", parsedSettings);
-    const scoreEntry = user.singlePlayerScores.find((score) => score.settings === parsedSettings);
-    console.log("scoreEntry: ", scoreEntry);
-    // If no scoreEntry exists
-    if (!scoreEntry) {
-      return res.json({ highScore: 0, averageScore: 0 });
-    }
 
-    const { highScore, totalScore, gamesPlayed } = scoreEntry;
+    const scoreSinglePlayerEntry = user.singlePlayerScores.find(
+      (score) => score.settings === parsedSettings
+    );
+    console.log("scoreSinglePlayerEntry: ", scoreSinglePlayerEntry);
+    // Default values if score entry does not exist
+    const highScore = scoreSinglePlayerEntry?.highScore || 0;
+    const totalScore = scoreSinglePlayerEntry?.totalScore || 0;
+    const gamesPlayed = scoreSinglePlayerEntry?.gamesPlayed || 0;
     const averageScore = gamesPlayed > 0 ? totalScore / gamesPlayed : 0;
 
-    return res.json({ highScore, averageScore });
+    const scoreMultiPlayerEntry = user.multiPlayerScores.find(
+      (score) => score.settings === parsedSettings
+    );
+    console.log("scoreMultiPlayerEntry: ", scoreMultiPlayerEntry);
+
+    // default values again ;-;
+    const wins = scoreMultiPlayerEntry?.wins || 0;
+    const losses = scoreMultiPlayerEntry?.losses || 0;
+
+    return res.json({ highScore, averageScore, wins, losses });
   } catch (error) {
     res.status(500).json({ error: "Server error" });
   }
