@@ -25,17 +25,21 @@ router.post("/logout", auth.logout);
 
 router.post("/guestlogin", async (req, res) => {
   try {
-    // Generate a unique guest ID
-    const randomNumber = Math.floor(Math.random() * 1000000);
-    const guestId = `Guest${randomNumber}`;
-    const guestName = `Guest ${randomNumber}`;
+    let isUnique = false;
 
-    // Check if a guest user with the same ID already exists (unlikely, but for safety)
-    const existingGuest = await User.findOne({ googleid: guestId });
-    if (existingGuest) {
-      return res.status(400).send({ msg: "Guest ID conflict. Please try again." });
+    // Ensure the generated guest ID is unique
+    while (!isUnique) {
+      // Generate a unique guest ID
+      const randomNumber = Math.floor(Math.random() * 1000000);
+      guestId = `Guest${randomNumber}`;
+      guestName = `Guest ${randomNumber}`;
+
+      // Check if a guest user with the same ID already exists
+      const existingGuest = await User.findOne({ googleid: guestId });
+      if (!existingGuest) {
+        isUnique = true;
+      }
     }
-
     // Create a new guest user in MongoDB
     const guestUser = new User({
       googleid: guestId,

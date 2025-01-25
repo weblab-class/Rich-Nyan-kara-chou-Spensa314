@@ -19,6 +19,7 @@ const SinglePlayer_Game = () => {
   const [index, setIndex] = useState(0);
   const [isError, setIsError] = useState(false);
   const inputRef = useRef(null);
+  const [guest, setGuest] = useState(false);
   const [isLoggedIn, setLoggedIn] = useState(false);
   const [gameState, setGameState] = useState({
     prevWord: "apple",
@@ -41,6 +42,7 @@ const SinglePlayer_Game = () => {
             return;
         }
         setLoggedIn(true);
+        setGuest(res.isGuest);
       })
   });
 
