@@ -11,6 +11,8 @@ const express = require("express");
 const auth = require("./auth");
 const socketManager = require("./server-socket");
 
+const router = express.Router();
+
 const User = require("./models/user");
 const Leaderboard = require("./models/leaderboard");
 const mongoose = require("mongoose");
