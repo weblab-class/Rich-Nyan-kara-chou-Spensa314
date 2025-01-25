@@ -34,15 +34,15 @@ const Login = () => {
         <h2 className="reaction">Reaction</h2>
         <hr className="reaction-line" />
       </div>
-      <button className="guest-login-button" onClick={handleGuestLoginClick}>
-        Continue as Guest
-      </button>
+
       <div className="google-login-container">
         <GoogleLogin onSuccess={handleSuccess} onError={handleError} useOneTap />
+      </div>
+      <div className="guest-login-button" onClick={handleGuestLoginClick}>
+        Continue as Guest
       </div>
     </div>
   );
 };
 
 export default Login;
-
