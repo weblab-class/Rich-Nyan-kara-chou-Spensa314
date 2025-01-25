@@ -80,7 +80,7 @@
 
 .leaderboard-place {
   border-radius: 50%;
-  background-color: var(--light--beige);
+  background-color: var(--off--beige);
   width: 3.5vw;
   height: 3.5vw;
   display: flex;
@@ -110,6 +110,16 @@
 .leaderboard-player-score {
   display: flex;
   text-align: right;
+}
+
+.glowy {
+  border: 0.2vw solid white;
+  transform: scale(1.02);
+  box-shadow:
+    inset 0 0 1vw white,
+    0.2vw 0.2vw 0.4vw rgba(0, 0, 0, 0.7);
+
+  filter: brightness(1.05);
 }
 
 .leaderboard-settings-container {
