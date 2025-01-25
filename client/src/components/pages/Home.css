@@ -119,12 +119,14 @@
   box-shadow: 0 0 var(--xxs) rgba(0, 0, 0, 0.5);
   opacity: 0.6;
   margin-right: var(--xs);
+  filter: brightness(0.7);
 }
 
 .room-code:focus {
   outline: none; /* Removes the default focus outline */
   border: none; /* Ensure no border appears on focus */
   opacity: 1;
+  filter: brightness(1);
 }
 
 .room-code::placeholder {

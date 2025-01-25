@@ -49,7 +49,7 @@ const Standings = () => {
       setOppName(location.state.standings?.[index]?.playerName || "");
 
       const topScore = location.state.standings?.[0]?.score || 0;
-      const topPlayers = location.state.standings?.filter(player => player.score === topScore);
+      const topPlayers = location.state.standings?.filter((player) => player.score === topScore);
       setWinner(topPlayers || []);
     }
   }, [location.state]);
@@ -77,10 +77,9 @@ const Standings = () => {
     return player;
   });
 
-  return (
-    !isLoggedIn ? 
-    <div className="intermediate-container">
-    </div>:(
+  return !isLoggedIn ? (
+    <div className="intermediate-container"></div>
+  ) : (
     <>
       <NavBar />
       <div className="standings-container">
@@ -93,10 +92,10 @@ const Standings = () => {
                 player.rank === 1
                   ? "s-top-player-1"
                   : player.rank === 2
-                  ? "s-top-player-2"
-                  : player.rank === 3
-                  ? "s-top-player-3"
-                  : ""
+                    ? "s-top-player-2"
+                    : player.rank === 3
+                      ? "s-top-player-3"
+                      : ""
               }`}
             >
               <div
@@ -104,10 +103,10 @@ const Standings = () => {
                   player.rank === 1
                     ? "s-top-player-1-place"
                     : player.rank === 2
-                    ? "s-top-player-2-place"
-                    : player.rank === 3
-                    ? "s-top-player-3-place"
-                    : ""
+                      ? "s-top-player-2-place"
+                      : player.rank === 3
+                        ? "s-top-player-3-place"
+                        : ""
                 }`}
               >
                 {player.rank}
@@ -126,9 +125,7 @@ const Standings = () => {
         </div>
       </div>
     </>
-    )
   );
-  
 };
 
 export default Standings;

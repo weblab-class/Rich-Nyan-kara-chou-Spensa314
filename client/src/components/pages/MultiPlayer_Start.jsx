@@ -279,9 +279,12 @@ const MultiPlayer_Start = () => {
         </div>
 
         <div className="mp-room-code" onClick={handleCopyClick}>
-          {copied && <div className="copy-notif">Copied!</div>}
           Room Code: {roomCode}
-          <img src="/images/copy.png" alt="Copy" className="mp-room-copy" />
+          {copied ? (
+            <img src="/images/check.png" alt="Check" className="mp-room-copy" />
+          ) : (
+            <img src="/images/copy.png" alt="Copy" className="mp-room-copy" />
+          )}{" "}
         </div>
         <div onClick={onInfoButtonClick} className="info-button">
           ?

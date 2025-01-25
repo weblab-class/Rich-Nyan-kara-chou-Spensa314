@@ -109,7 +109,7 @@ const Leaderboard = () => {
                     : index === 2
                       ? "top-player-3"
                       : ""
-              }`}
+              } ${player.playerId === userId ? "glowy" : ""}`}
             >
               <div
                 className={`leaderboard-place ${
@@ -125,7 +125,7 @@ const Leaderboard = () => {
                 {index + 1}
               </div>
               <div className="leaderboard-player-score-container">
-                <div className="leaderboard-player">
+                <div className={`leaderboard-player`}>
                   {" "}
                   {player.playerId === userId ? `${player.name} (you)` : player.name}
                 </div>
