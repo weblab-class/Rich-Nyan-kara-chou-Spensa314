@@ -143,7 +143,7 @@ router.post("/update-username", auth.ensureLoggedIn, async (req, res) => {
 
 // Update single-player scores
 router.post("/updateSinglePlayerScore", auth.ensureLoggedIn, async (req, res) => {
-  const { userId, score, settings } = req.body;
+  const { userId, score, settings, guest } = req.body;
   console.log("Request Body:", req.body);
   if (!userId || !settings || score === undefined) {
     return res.status(400).json({ message: "Missing required fields" });
@@ -188,37 +188,40 @@ router.post("/updateSinglePlayerScore", auth.ensureLoggedIn, async (req, res) =>
     await user.save(); //honestly the most important part
 
     // Leaderboard ugh
-    const existingLeaderboardEntry = await Leaderboard.findOne({
-      playerId: userId,
-      settings: settingsString,
-    });
-
-    if (!existingLeaderboardEntry) {
-      // New entry
-      console.log("New leaderboard entry");
-      const leaderboardEntry = new Leaderboard({
+    if (!guest) {
+      const existingLeaderboardEntry = await Leaderboard.findOne({
         playerId: userId,
-        name: user.name,
-        profilePicture: user.profilePicture,
-        highScore: scoreEntry.highScore,
         settings: settingsString,
-        rank: 0, // rank will be calculated later
       });
-      await leaderboardEntry.save();
-    } else {
-      // Update their score if it's higher
-      existingLeaderboardEntry.highScore = Math.max(
-        existingLeaderboardEntry.highScore,
-        scoreEntry.highScore
-      );
-      await existingLeaderboardEntry.save();
-    }
 
-    res.status(200).send({ success: true, msg: "Score updated succsessfully!" });
-  } catch (err) {
-    console.error("Error updating score:", err);
-    res.status(500).send({ msg: "Internal server error" });
-  }
+      if (!existingLeaderboardEntry) {
+        // New entry
+        console.log("New leaderboard entry");
+        const leaderboardEntry = new Leaderboard({
+          playerId: userId,
+          name: user.name,
+          profilePicture: user.profilePicture,
+          highScore: scoreEntry.highScore,
+          settings: settingsString,
+          rank: 0, // rank will be calculated later
+        });
+        await leaderboardEntry.save();
+      } else {
+        // Update their score if it's higher
+        existingLeaderboardEntry.highScore = Math.max(
+          existingLeaderboardEntry.highScore,
+          scoreEntry.highScore
+        );
+        await existingLeaderboardEntry.save();
+      }
+
+      res.status(200).send({ success: true, msg: "Score updated succsessfully!" });
+    }
+    } catch (err) {
+      console.error("Error updating score:", err);
+      res.status(500).send({ msg: "Internal server error" });
+    }
+  
 });
 
 // GET leaderboard

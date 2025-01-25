@@ -104,7 +104,7 @@ const SinglePlayer_Game = () => {
           }          
       const q = `${gameState.curLetter}${event.target.value}`;
       const queryText = `${gameState.prevWord} ${q}`;
-      console.log("Search Query:", queryText);
+      //console.log("Search Query:", queryText);
       setQuery("");
       get("/api/search", { query: queryText })
         .then((res) => {
@@ -124,7 +124,7 @@ const SinglePlayer_Game = () => {
               words: [...prevState.words, q],
             };
           });
-          console.log(gameState.queries);
+          //console.log(gameState.queries);
           // Clear input field
         })
         .catch((err) => {
@@ -142,6 +142,7 @@ const SinglePlayer_Game = () => {
         userId,
         score: score,
         settings: JSON.stringify(settings),
+        guest: guest,
       });
 
       if (response.success) {
@@ -166,12 +167,12 @@ const SinglePlayer_Game = () => {
           clearInterval(timer);
 
           // call saveScore function editing
-          saveScore(userId, prevState.score, {
+        saveScore(userId, prevState.score, {
             minLetters: parseInt(minLetters, 10),
             activeTime,
             hideLetter,
             hardMode,
-          });
+            });
           navigate(`/results/solo`, {
             state: {
               queries: prevState.queries,
