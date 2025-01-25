@@ -24,6 +24,7 @@ const MultiPlayer_Start = () => {
   const [started, setStarted] = useState(false);
   const navigate = useNavigate();
   const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
+  const [isLoggedIn, setLoggedIn] = useState(false);
   const onInfoButtonClick = () => {
     setIsInfoModalOpen(true);
   };
@@ -38,6 +39,7 @@ const MultiPlayer_Start = () => {
             navigate("/");
             return;
         }
+        setLoggedIn(true);
       if (res.name !== null) {
         setUsername(res.name);
         setId(res._id);
@@ -189,6 +191,7 @@ const MultiPlayer_Start = () => {
   };
 
   return (
+    isLoggedIn && (
     <>
       <NavBar />
       <div className="multiplayer-container">
@@ -310,6 +313,7 @@ const MultiPlayer_Start = () => {
         )}
       </div>
     </>
+    )
   );
 };
 

@@ -7,13 +7,14 @@ import "./Leaderboard.css";
 
 const Leaderboard = () => {
   const navigate = useNavigate();
-
+  const [isLoggedIn, setLoggedIn] = useState(false);
   useEffect(() => {
     get("/api/whoami").then((res) => {
         if (!res.name) {
             navigate("/");
             return;
         }
+        setLoggedIn(true);
       })
   });
   const [players, setPlayers] = useState([
@@ -56,6 +57,7 @@ const Leaderboard = () => {
   };
 
   return (
+    isLoggedIn && (
     <>
       <NavBar />
       <div className="leaderboard-page-container">
@@ -98,6 +100,7 @@ const Leaderboard = () => {
       </div>
       ;
     </>
+    )
   );
 };
 

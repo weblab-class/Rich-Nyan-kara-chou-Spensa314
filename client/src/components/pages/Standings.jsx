@@ -16,6 +16,7 @@ const Standings = () => {
   const [oppScore, setOppScore] = useState(0);
   const [oppName, setOppName] = useState("");
   const [winner, setWinner] = useState([]);
+  const [isLoggedIn, setLoggedIn] = useState(false);
 
   const location = useLocation();
   const { roomCode } = useParams();
@@ -27,6 +28,7 @@ const Standings = () => {
         navigate("/");
         return;
       }
+      setLoggedIn(true);
     });
     if (!location.state) {
       navigate("/home");
@@ -76,6 +78,7 @@ const Standings = () => {
   });
 
   return (
+    isLoggedIn && (
     <>
       <NavBar />
       <div className="standings-container">
@@ -121,7 +124,9 @@ const Standings = () => {
         </div>
       </div>
     </>
+    )
   );
+  
 };
 
 export default Standings;

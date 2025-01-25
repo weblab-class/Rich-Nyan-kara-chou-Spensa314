@@ -11,15 +11,29 @@ const Home = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
   const [roomCode, setRoomCode] = useState(""); // Define roomCode state
-
+  const [isLoggedIn, setLoggedIn] = useState(false);
   useEffect(() => {
-    get("/api/whoami").then((res) => {
+    const fetchUserWithRetries = async (retries = 3) => {
+      try {
+        const res = await get("/api/whoami");
         if (!res.name) {
+          if (retries > 0) {
+            setTimeout(() => fetchUserWithRetries(retries - 1), 100); // Retry after delay
+          } else {
             navigate("/");
-            return;
+          }
         }
-      })
-  });
+        else{
+          setLoggedIn(true);
+        }
+      } catch (err) {
+        console.error("Failed to fetch user:", err);
+        navigate("/"); // Navigate to home if fetch fails
+      }
+    };
+  
+    fetchUserWithRetries();
+  }, [navigate]);
   const onMultiplayerClick = () => {
     setIsModalOpen(true);
   };
@@ -116,8 +130,9 @@ const Home = () => {
   };
 
   return (
+    isLoggedIn && (
     <>
-      <NavBar />
+       <NavBar />
       <div className="home-container" onMouseMove={handleMouseMove}>
         {letters.map((item) => (
           <div
@@ -217,7 +232,9 @@ const Home = () => {
         )}
       </div>
     </>
+    )
   );
+  
 };
 
 export default Home;

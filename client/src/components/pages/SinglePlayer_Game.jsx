@@ -19,6 +19,7 @@ const SinglePlayer_Game = () => {
   const [index, setIndex] = useState(0);
   const [isError, setIsError] = useState(false);
   const inputRef = useRef(null);
+  const [isLoggedIn, setLoggedIn] = useState(false);
   const [gameState, setGameState] = useState({
     prevWord: "apple",
     score: 0,
@@ -39,6 +40,7 @@ const SinglePlayer_Game = () => {
             navigate("/");
             return;
         }
+        setLoggedIn(true);
       })
   });
 
@@ -250,6 +252,7 @@ const SinglePlayer_Game = () => {
   }
 
   return (
+    isLoggedIn && (
     <>
       <div className="game-container">
         {/* Scoreboard */}
@@ -315,6 +318,7 @@ const SinglePlayer_Game = () => {
         <div className="time-container">{Math.max(0, gameState.timerValue.toFixed(1))}</div>
       </div>
     </>
+    )
   );
 };
 

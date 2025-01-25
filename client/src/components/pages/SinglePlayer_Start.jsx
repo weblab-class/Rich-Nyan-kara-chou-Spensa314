@@ -15,6 +15,8 @@ const SinglePlayer_Start = () => {
   const [hideLetter, setHideLetter] = useState(false);
   const [hardMode, setHardMode] = useState(false);
   const [player, setPlayer] = useState(["Player 1"]); //tesp
+  const [isLoggedIn, setLoggedIn] = useState(false);
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -24,6 +26,7 @@ const SinglePlayer_Start = () => {
             navigate("/");
             return;
         }
+        setLoggedIn(true);
       })
   });
 
@@ -72,6 +75,7 @@ const SinglePlayer_Start = () => {
   };
   // Replace with player's actual logo
   return (
+    isLoggedIn && (
     <>
       <NavBar />
       <div className="singleplayer-container">
@@ -168,6 +172,7 @@ const SinglePlayer_Start = () => {
         )}
       </div>
     </>
+    )
   );
 };
 

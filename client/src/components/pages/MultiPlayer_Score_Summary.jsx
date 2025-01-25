@@ -16,6 +16,7 @@ const MultiPlayer_Score_Summary = () => {
   const [oppScore, setOppScore] = useState(0);
   const [oppName, setOppName] = useState("");
   const [winner, setWinner] = useState([]);
+  const [isLoggedIn, setLoggedIn] = useState(false);
 
   const location = useLocation();
   const { roomCode } = useParams();
@@ -28,6 +29,7 @@ const MultiPlayer_Score_Summary = () => {
             navigate("/");
             return;
         }
+        isLoggedIn(true);
       })
       if(!location.state) {
         navigate("/home");
@@ -111,6 +113,7 @@ const MultiPlayer_Score_Summary = () => {
   };
 
   return (
+    isLoggedIn && (
     <>
       <NavBar />
       <div className="multi-score-container">
@@ -151,6 +154,7 @@ const MultiPlayer_Score_Summary = () => {
         </div>
       </div>
     </>
+    )
   );
 };
 

@@ -16,7 +16,7 @@ const Profile = () => {
   const [activeTime, setActiveTime] = useState(30);
   const [hardMode, setHardMode] = useState(false);
   const [hideLetter, setHideLetter] = useState(false);
-
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   // const [settings, setSettings] = useState(
   //   '{"minLetters":3,"activeTime":30,"hideLetter":false,"hardMode":false}'
   // ); // Default setting
@@ -28,6 +28,7 @@ const Profile = () => {
           navigate("/");
           return;
       }
+      setIsLoggedIn(true);
     })
 
   const handleEditClick = () => setIsEditing(true);
@@ -120,6 +121,7 @@ const Profile = () => {
   };
 
   return (
+    isLoggedIn && (
     <>
       <NavBar />
       <div className="profile-container">
@@ -204,6 +206,7 @@ const Profile = () => {
         </div>
       </div>
     </>
+    )
   );
 };
 

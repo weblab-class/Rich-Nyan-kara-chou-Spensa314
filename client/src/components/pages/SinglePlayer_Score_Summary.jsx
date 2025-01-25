@@ -12,6 +12,7 @@ const SinglePlayer_Score_Summary = () => {
   const [activeTime, setActiveTime] = useState(0);
   const [hideLetter, setHideLetter] = useState(false);
   const [hardMode, setHardMode] = useState(false);
+  const [isLoggedIn, setLoggedIn] = useState(false);
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -21,6 +22,7 @@ const SinglePlayer_Score_Summary = () => {
             navigate("/");
             return;
         }
+        setLoggedIn(true);
       })
       
     if (!location.state) {
@@ -43,6 +45,7 @@ const SinglePlayer_Score_Summary = () => {
   };
 
   return (
+    isLoggedIn && (
     <>
       <NavBar />
       <div className="soloscore-container">
@@ -61,6 +64,7 @@ const SinglePlayer_Score_Summary = () => {
         </div>
       </div>
     </>
+    )
   );
 };
 export default SinglePlayer_Score_Summary;
