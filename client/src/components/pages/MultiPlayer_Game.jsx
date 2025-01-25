@@ -158,7 +158,7 @@ const MultiPlayer_Game = () => {
 
   //   // Handle player search
   const handleSearch = () => {
-    if (!query || query.length < (roomSettings.minLength - 1 || 2)) {
+    if (!query || query.length < (roomSettings.minLength - 1 || 2) || /[^a-zA-Z]/.test(query)) {
       setErrorMessage(`Word must be at least ${roomSettings.minLength || 3} letters long.`);
       setTimeout(() => setErrorMessage(null), 2000);
       setIsError(true);

@@ -23,9 +23,8 @@ const Profile = () => {
   //   '{"minLetters":3,"activeTime":30,"hideLetter":false,"hardMode":false}'
   // ); // Default setting
   const navigate = useNavigate();
-  const location = useLocation();
+
   get("/api/whoami").then((res) => {
-    console.log(res);
       if (!res.name) {
           navigate("/");
           return;

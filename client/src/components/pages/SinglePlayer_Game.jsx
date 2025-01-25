@@ -83,16 +83,23 @@ const SinglePlayer_Game = () => {
   // On Enter Key Press
   const onEnterKeyPress = (event) => {
     if (event.key === "Enter") {
-      if (event.target.value.length < minLetters - 1) {
-        console.error(`Word is too short!`);
-        setResultMessage(`Word must be at least ${minLetters} letters long.`);
-        setIsError(true);
-        setTimeout(() => {
-          setIsError(false);
-        }, 500); // 0.5 seconds
-
-        return; // Stop execution if the input is too short
-      }
+        if (
+            event.target.value.length < minLetters - 1 || 
+            /[^a-zA-Z]/.test(event.target.value) // Check for any non-letter characters
+          ) {
+            const errorMessage = 
+              /[^a-zA-Z]/.test(event.target.value)
+                ? 'Word can only contain letters (A-Z, a-z).'
+                : `Word must be at least ${minLetters} letters long.`;
+          
+            console.error(errorMessage);
+            setResultMessage(errorMessage);
+            setIsError(true);
+            setTimeout(() => {
+              setIsError(false);
+            }, 500); // 0.5 seconds
+            return;
+          }          
       const q = `${gameState.curLetter}${event.target.value}`;
       const queryText = `${gameState.prevWord} ${q}`;
       console.log("Search Query:", queryText);
