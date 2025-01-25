@@ -5,7 +5,6 @@ import { socket } from "../../client-socket.js";
 import { useNavigate, useLocation, useParams } from "react-router-dom";
 import { get, post } from "../../utilities";
 import "./Standings.css";
-
 const Standings = () => {
   const [standings, setStandings] = useState([]);
   const [players, setPlayers] = useState([]);
@@ -16,7 +15,7 @@ const Standings = () => {
   const [oppQueries, setOppQueries] = useState([]);
   const [oppScore, setOppScore] = useState(0);
   const [oppName, setOppName] = useState("");
-  const [winner, setWinner] = useState("");
+  const [winner, setWinner] = useState([]);
 
   const location = useLocation();
   const { roomCode } = useParams();
@@ -46,7 +45,10 @@ const Standings = () => {
       setOppQueries(location.state.standings?.[index]?.playerState?.queries || []);
       setOppScore(location.state.standings?.[index]?.playerState?.score || 0);
       setOppName(location.state.standings?.[index]?.playerName || "");
-      setWinner(location.state.standings?.[0]?.playerName || "Unknown");
+      
+      const topScore = location.state.standings?.[0]?.score || 0;
+      const topPlayers = location.state.standings?.filter(player => player.score === topScore);
+      setWinner(topPlayers || []);
     }
   }, [location.state]);
 
@@ -63,22 +65,48 @@ const Standings = () => {
     });
     return;
   };
+
+  // Assign ranks, accounting for ties
+  const standingsWithRanks = standings.map((player, index, arr) => {
+    if (index === 0 || player.score !== arr[index - 1].score) {
+      player.rank = index + 1; // New rank if not tied
+    } else {
+      player.rank = arr[index - 1].rank; // Same rank as the previous player
+    }
+    return player;
+  });
+
   return (
     <>
       <NavBar />
       <div className="standings-container">
         <h1 className="standings-title">Standings</h1>
         <div className="standings-list-container">
-          {standings.map((player, index) => (
+          {standingsWithRanks.map((player, index) => (
             <div
               key={`${player.playerName}-${index}`}
-              className={`standings-player-container ${index + 1 === 1 ? "s-top-player-1" : index + 1 === 2 ? "s-top-player-2" : index + 1 === 3 ? "s-top-player-3" : ""}`}
+              className={`standings-player-container ${
+                player.rank === 1
+                  ? "s-top-player-1"
+                  : player.rank === 2
+                  ? "s-top-player-2"
+                  : player.rank === 3
+                  ? "s-top-player-3"
+                  : ""
+              }`}
             >
               <div
-                key={`${player.playerName}-${index}`}
-                className={`standings-place ${index + 1 === 1 ? "s-top-player-1-place" : index + 1 === 2 ? "s-top-player-2-place" : index + 1 === 3 ? "s-top-player-3-place" : ""}`}
+                className={`standings-place ${
+                  player.rank === 1
+                    ? "s-top-player-1-place"
+                    : player.rank === 2
+                    ? "s-top-player-2-place"
+                    : player.rank === 3
+                    ? "s-top-player-3-place"
+                    : ""
+                }`}
               >
-                {index + 1}{" "}
+                {player.rank}
               </div>
               <div className="standings-player-score-container">
                 <div className="standings-player">{player.playerName}</div>

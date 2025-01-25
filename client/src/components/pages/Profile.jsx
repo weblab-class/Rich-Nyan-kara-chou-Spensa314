@@ -127,7 +127,7 @@ const Profile = () => {
           {profilepicture ? (
             <img
               src={profilepicture || "/images/default.png"}
-              alt={`${username || "Guest"}'s Profile Picture`}
+              alt={`${username}'s Profile Picture`}
               className="profile-picture"
             />
           ) : (
@@ -149,7 +149,7 @@ const Profile = () => {
               </div>
             ) : (
               <div className="profile-username">
-                <span onClick={handleEditClick}>{username || "Guest"}</span>
+                <span onClick={handleEditClick}>{username}</span>
                 <img
                   src="/images/editicon.png"
                   alt="Edit"

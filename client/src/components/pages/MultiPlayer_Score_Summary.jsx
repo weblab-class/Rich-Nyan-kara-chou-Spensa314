@@ -15,7 +15,7 @@ const MultiPlayer_Score_Summary = () => {
   const [oppQueries, setOppQueries] = useState([]);
   const [oppScore, setOppScore] = useState(0);
   const [oppName, setOppName] = useState("");
-  const [winner, setWinner] = useState("");
+  const [winner, setWinner] = useState([]);
 
   const location = useLocation();
   const { roomCode } = useParams();
@@ -46,7 +46,10 @@ const MultiPlayer_Score_Summary = () => {
       setOppQueries(location.state.standings?.[index]?.playerState?.queries || []);
       setOppScore(location.state.standings?.[index]?.playerState?.score || 0);
       setOppName(location.state.standings?.[index]?.playerName || "");
-      setWinner(location.state.standings?.[0]?.playerName || "Unknown");
+      
+      const topScore = location.state.standings?.[0]?.score || 0;
+      const topPlayers = location.state.standings?.filter(player => player.score === topScore);
+      setWinner(topPlayers || []);
 
       console.log("location.state", location.state);
 
@@ -111,7 +114,8 @@ const MultiPlayer_Score_Summary = () => {
     <>
       <NavBar />
       <div className="multi-score-container">
-        <div className="multi-winner-container">Winner: {winner}</div>
+        {winner.length > 1 && <div className="multi-winner-container">Winners: {winner.map((player) => player.playerName).join(", ")}</div>}
+        {winner.length === 1 && <div className="multi-winner-container">Winner: {winner[0].playerName}</div>}
         <div className="multi-results-container">
           <div className="multi-individual-results-container">
             <div className="multi-personal-title">Personal Score</div>
