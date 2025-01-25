@@ -15,13 +15,26 @@ const MultiPlayer_Score_Summary = () => {
   const [oppQueries, setOppQueries] = useState([]);
   const [oppScore, setOppScore] = useState(0);
   const [oppName, setOppName] = useState("");
-  const [winner, setWinner] = useState("");
+  const [winner, setWinner] = useState([]);
+  const [isLoggedIn, setLoggedIn] = useState(false);
 
   const location = useLocation();
   const { roomCode } = useParams();
+  const navigate = useNavigate();
   const updatedPlayersRef = useRef(new Set()); // Track players whose scores are updated
 
   useEffect(() => {
+    get("/api/whoami").then((res) => {
+        if (!res.name) {
+            navigate("/");
+            return;
+        }
+        isLoggedIn(true);
+      })
+      if(!location.state) {
+        navigate("/home");
+        return;
+      }
     if (location.state) {
       setStandings(location.state.standings || []);
       setPlayers(location.state.players || []);
@@ -35,7 +48,10 @@ const MultiPlayer_Score_Summary = () => {
       setOppQueries(location.state.standings?.[index]?.playerState?.queries || []);
       setOppScore(location.state.standings?.[index]?.playerState?.score || 0);
       setOppName(location.state.standings?.[index]?.playerName || "");
-      setWinner(location.state.standings?.[0]?.playerName || "Unknown");
+      
+      const topScore = location.state.standings?.[0]?.score || 0;
+      const topPlayers = location.state.standings?.filter(player => player.score === topScore);
+      setWinner(topPlayers || []);
 
       console.log("location.state", location.state);
 
@@ -77,7 +93,7 @@ const MultiPlayer_Score_Summary = () => {
     }
   }, [location.state]);
 
-  const navigate = useNavigate();
+  
 
   const handleNextClick = () => {
     get(`/api/room/${roomCode}`).then((res) => {
@@ -105,10 +121,12 @@ const MultiPlayer_Score_Summary = () => {
   };
 
   return (
+    isLoggedIn && (
     <>
       <NavBar />
       <div className="multi-score-container">
-        <div className="multi-winner-container">Winner: {winner}</div>
+        {winner.length > 1 && <div className="multi-winner-container">Winners: {winner.map((player) => player.playerName).join(", ")}</div>}
+        {winner.length === 1 && <div className="multi-winner-container">Winner: {winner[0].playerName}</div>}
         <div className="multi-results-container">
           <div className="multi-individual-results-container">
             <div className="multi-personal-title">Personal Score</div>
@@ -144,6 +162,7 @@ const MultiPlayer_Score_Summary = () => {
         </div>
       </div>
     </>
+    )
   );
 };
 

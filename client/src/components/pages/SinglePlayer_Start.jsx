@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import "../../utilities.css";
 import NavBar from "../modules/NavBar";
 import { useNavigate, useParams } from "react-router-dom";
+import { useEffect } from "react";
+import {get, post} from "../../utilities.js";
 import "./Settings.css";
 import "./Info.css";
 import "./SinglePlayer_Start.css";
@@ -13,7 +15,20 @@ const SinglePlayer_Start = () => {
   const [hideLetter, setHideLetter] = useState(false);
   const [hardMode, setHardMode] = useState(false);
   const [player, setPlayer] = useState(["Player 1"]); //tesp
+  const [isLoggedIn, setLoggedIn] = useState(false);
+
   const navigate = useNavigate();
+
+  useEffect(() => {
+    get("/api/whoami").then((res) => {
+        console.log(res);
+        if (!res.name) {
+            navigate("/");
+            return;
+        }
+        setLoggedIn(true);
+      })
+  });
 
   const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
   const onInfoButtonClick = () => {
@@ -96,6 +111,7 @@ const SinglePlayer_Start = () => {
   }, [isInfoModalOpen]); // Dependency on modal opening
 
   return (
+    isLoggedIn && (
     <>
       <NavBar />
       <div className="singleplayer-container">
@@ -193,6 +209,7 @@ const SinglePlayer_Start = () => {
         )}
       </div>
     </>
+    )
   );
 };
 

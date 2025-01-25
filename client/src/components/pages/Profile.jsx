@@ -1,4 +1,5 @@
 import React, { useState, useContext, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import "../../utilities.css";
 import NavBar from "../modules/NavBar";
 import { get, post } from "../../utilities";
@@ -17,10 +18,20 @@ const Profile = () => {
   const [activeTime, setActiveTime] = useState(30);
   const [hardMode, setHardMode] = useState(false);
   const [hideLetter, setHideLetter] = useState(false);
-
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   // const [settings, setSettings] = useState(
   //   '{"minLetters":3,"activeTime":30,"hideLetter":false,"hardMode":false}'
   // ); // Default setting
+  const navigate = useNavigate();
+  const location = useLocation();
+  get("/api/whoami").then((res) => {
+    console.log(res);
+      if (!res.name) {
+          navigate("/");
+          return;
+      }
+      setIsLoggedIn(true);
+    })
 
   const handleEditClick = () => setIsEditing(true);
 
@@ -116,6 +127,7 @@ const Profile = () => {
   };
 
   return (
+    isLoggedIn && (
     <>
       <NavBar />
       <div className="profile-container">
@@ -123,7 +135,7 @@ const Profile = () => {
           {profilepicture ? (
             <img
               src={profilepicture || "/images/default.png"}
-              alt={`${username || "Guest"}'s Profile Picture`}
+              alt={`${username}'s Profile Picture`}
               className="profile-picture"
             />
           ) : (
@@ -145,7 +157,7 @@ const Profile = () => {
               </div>
             ) : (
               <div className="profile-username">
-                <span onClick={handleEditClick}>{username || "Guest"}</span>
+                <span onClick={handleEditClick}>{username}</span>
                 <img
                   src="/images/editicon.png"
                   alt="Edit"
@@ -200,6 +212,7 @@ const Profile = () => {
         </div>
       </div>
     </>
+    )
   );
 };
 

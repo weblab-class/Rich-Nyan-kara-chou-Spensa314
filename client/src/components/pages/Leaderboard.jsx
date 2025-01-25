@@ -1,11 +1,22 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../../utilities.css";
 import NavBar from "../modules/NavBar";
 import { useNavigate } from "react-router-dom";
-
+import {get} from "../../utilities";
 import "./Leaderboard.css";
 
 const Leaderboard = () => {
+  const navigate = useNavigate();
+  const [isLoggedIn, setLoggedIn] = useState(false);
+  useEffect(() => {
+    get("/api/whoami").then((res) => {
+        if (!res.name) {
+            navigate("/");
+            return;
+        }
+        setLoggedIn(true);
+      })
+  });
   const [players, setPlayers] = useState([
     { name: "Player 1", score: "1000000000000", place: "1" },
     { name: "Player 2", score: "900000", place: "2" },
@@ -46,6 +57,7 @@ const Leaderboard = () => {
   };
 
   return (
+    isLoggedIn && (
     <>
       <NavBar />
       <div className="leaderboard-page-container">
@@ -88,6 +100,7 @@ const Leaderboard = () => {
       </div>
       ;
     </>
+    )
   );
 };
 

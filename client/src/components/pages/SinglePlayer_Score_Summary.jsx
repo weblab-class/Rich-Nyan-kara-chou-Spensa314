@@ -3,6 +3,7 @@ import "../../utilities.css";
 import NavBar from "../modules/NavBar";
 import { useNavigate, useLocation } from "react-router-dom";
 import "./SinglePlayer_Score_Summary.css";
+import {get} from "../../utilities";
 
 const SinglePlayer_Score_Summary = () => {
   const [queries, setQueries] = useState([]);
@@ -11,9 +12,23 @@ const SinglePlayer_Score_Summary = () => {
   const [activeTime, setActiveTime] = useState(0);
   const [hideLetter, setHideLetter] = useState(false);
   const [hardMode, setHardMode] = useState(false);
+  const [isLoggedIn, setLoggedIn] = useState(false);
 
   const location = useLocation();
+  const navigate = useNavigate();
   useEffect(() => {
+    get("/api/whoami").then((res) => {
+        if (!res.name) {
+            navigate("/");
+            return;
+        }
+        setLoggedIn(true);
+      })
+      
+    if (!location.state) {
+      navigate("/home");
+      return;
+    }
     if (location.state) {
       setQueries(location.state.queries || []);
       setScore(location.state.score || 0);
@@ -25,13 +40,12 @@ const SinglePlayer_Score_Summary = () => {
     }
   }, [location.state]);
 
-  const navigate = useNavigate();
-
   const handleNextClick = () => {
     navigate("/leaderboard");
   };
 
   return (
+    isLoggedIn && (
     <>
       <NavBar />
       <div className="soloscore-container">
@@ -50,6 +64,7 @@ const SinglePlayer_Score_Summary = () => {
         </div>
       </div>
     </>
+    )
   );
 };
 export default SinglePlayer_Score_Summary;

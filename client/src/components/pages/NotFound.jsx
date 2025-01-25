@@ -1,15 +1,31 @@
 import React from "react";
+import { useEffect } from "react";
 import "./NotFound.css";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+import {get} from "../../utilities";
 import "../../utilities.css";
+import { useState } from "react";
+
 
 const NotFound = () => {
   const navigate = useNavigate();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  useEffect(() => {
+    get("/api/whoami").then((res) => {
+        if (!res.name) {
+            navigate("/");
+            return;
+        }
+        setIsLoggedIn(true);
+      })
+  });
+  
   const handleLoginClick = () => {
     navigate("/");
   };
 
   return (
+    isLoggedIn && (
     <>
       <div className="not-found-container">
         <h1 className="not-found-title">404 Not Found</h1>
@@ -19,6 +35,7 @@ const NotFound = () => {
         </div>
       </div>
     </>
+    )
   );
 };
 

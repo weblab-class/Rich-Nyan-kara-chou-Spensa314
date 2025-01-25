@@ -39,7 +39,7 @@ const MultiPlayer_Game = () => {
   const [id, setId] = useState(null);
   const [scores, setScores] = useState([]);
   const [isError, setIsError] = useState(false);
-
+  const [isLoggedIn, setLoggedIn] = useState(false);
   // Fetch room settings and join room
   useEffect(() => {
     const fetchRoomSettings = async () => {
@@ -80,6 +80,11 @@ const MultiPlayer_Game = () => {
 
     const joinRoom = (settings) => {
       get("/api/whoami").then((res) => {
+        if (!res.name) {
+          navigate("/");
+          return;
+        }
+        setLoggedIn(true);
         if (res.name !== null) {
           setUsername(res.name);
           setId(res._id);
@@ -103,6 +108,7 @@ const MultiPlayer_Game = () => {
 
         if (gameStates.roomState.gameEnded) {
           console.log("Game ended!");
+          socket.emit("endGame", roomCode);
           navigate(`/standings/${roomCode}`, {
             state: {
               standings: gameStates.roomScores,
@@ -191,7 +197,7 @@ const MultiPlayer_Game = () => {
     }
   }, [gameState.words]);
 
-  if (isLoading) {
+  if (isLoading && isLoggedIn) {
     return (
       <>
         <div className="loading-container">
@@ -230,6 +236,7 @@ const MultiPlayer_Game = () => {
   }
 
   return (
+    isLoggedIn &&  (
     <>
       <div className="mp-game-container">
         <div className="individual-game-container">
@@ -299,6 +306,7 @@ const MultiPlayer_Game = () => {
         </div>
       </div>
     </>
+    )
   );
 };
 

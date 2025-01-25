@@ -19,6 +19,7 @@ const SinglePlayer_Game = () => {
   const [index, setIndex] = useState(0);
   const [isError, setIsError] = useState(false);
   const inputRef = useRef(null);
+  const [isLoggedIn, setLoggedIn] = useState(false);
   const [gameState, setGameState] = useState({
     prevWord: "apple",
     score: 0,
@@ -32,7 +33,17 @@ const SinglePlayer_Game = () => {
     queries: [],
     words: ["apple"],
   });
-  console.log(parseInt(activeTime) * 1000);
+
+  useEffect(() => {
+    get("/api/whoami").then((res) => {
+        if (!res.name) {
+            navigate("/");
+            return;
+        }
+        setLoggedIn(true);
+      })
+  });
+
   // Start the game
   const startGame = () => {
     console.log("Game started!");
@@ -241,6 +252,7 @@ const SinglePlayer_Game = () => {
   }
 
   return (
+    isLoggedIn && (
     <>
       <div className="game-container">
         {/* Scoreboard */}
@@ -306,6 +318,7 @@ const SinglePlayer_Game = () => {
         <div className="time-container">{Math.max(0, gameState.timerValue.toFixed(1))}</div>
       </div>
     </>
+    )
   );
 };
 
