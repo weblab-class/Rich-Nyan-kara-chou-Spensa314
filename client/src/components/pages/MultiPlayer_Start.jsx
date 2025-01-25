@@ -115,7 +115,6 @@ const MultiPlayer_Start = () => {
     resetScoreFlag();
 
     // Notify the server to start the game
-    console.log("MY ID", id);
     post(`/api/startGame/${roomCode}/${id}`, gameDetails).then((res) => {
       console.log(res);
       if (res.error) {

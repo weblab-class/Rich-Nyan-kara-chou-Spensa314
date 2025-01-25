@@ -445,6 +445,12 @@ router.post("/startGameLoop/:roomId", (req, res) => {
   res.status(200).send({ msg: "Game started successfully" });
 });
 
+router.get("/activeRooms/:roomId", (req, res) => {
+  const roomId = req.params.roomId;
+  const response = socketManager.getActiveRooms(roomId);
+  res.send(response);
+});
+
 // Catch-all for undefined routes
 router.all("*", (req, res) => {
   console.log(`API route not found: ${req.method} ${req.url}`);

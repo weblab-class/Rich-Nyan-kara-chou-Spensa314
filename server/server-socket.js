@@ -237,8 +237,6 @@ const startGameLoop = (roomId, playerId) => {
 };
 
 const updateProfilePicture = (userId, profilePicture) => {
-  console.log("Updating profile picture for user ID:", userId);
-  console.log("New profile picture:", profilePicture);
   userIDtoPhotoMap[userId] = profilePicture;
 };
 
@@ -250,9 +248,20 @@ const addInRoom = (roomId, playerId) => {
   if (!inRoom[roomId].includes(playerId)) {
     inRoom[roomId].push(playerId);
   }
-  console.log("WTF", inRoom);
 };
 
+const getActiveRooms = (roomId) => {
+  if (!rooms) {
+    return false;
+  }
+  for (const key of Object.entries(rooms)) {
+    console.log("ACTIVE ROOMS",key);
+    if (key === roomId) {
+      return true;
+    }
+  }
+  return false;
+}
 const inTheRoom = (roomId, playerId) => {
   return inRoom[roomId]?.includes(playerId);
 };
@@ -348,5 +357,6 @@ module.exports = {
   endGame: endGame,
   updateProfilePicture: updateProfilePicture,
   addInRoom: addInRoom,
-  inTheRoom: inTheRoom
+  inTheRoom: inTheRoom,
+  getActiveRooms: getActiveRooms,
 };
