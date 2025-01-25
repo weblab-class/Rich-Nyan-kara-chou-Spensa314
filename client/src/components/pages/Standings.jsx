@@ -78,7 +78,9 @@ const Standings = () => {
   });
 
   return (
-    isLoggedIn && (
+    !isLoggedIn ? 
+    <div className="intermediate-container">
+    </div>:(
     <>
       <NavBar />
       <div className="standings-container">

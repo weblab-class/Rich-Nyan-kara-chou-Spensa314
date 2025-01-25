@@ -25,7 +25,9 @@ const NotFound = () => {
   };
 
   return (
-    isLoggedIn && (
+    !isLoggedIn ? 
+    <div className="intermediate-container">
+    </div>:(
     <>
       <div className="not-found-container">
         <h1 className="not-found-title">404 Not Found</h1>

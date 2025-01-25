@@ -29,7 +29,7 @@ const MultiPlayer_Score_Summary = () => {
             navigate("/");
             return;
         }
-        isLoggedIn(true);
+        setLoggedIn(true);
       })
       if(!location.state) {
         navigate("/home");
@@ -121,7 +121,9 @@ const MultiPlayer_Score_Summary = () => {
   };
 
   return (
-    isLoggedIn && (
+    !isLoggedIn ? 
+    <div className="intermediate-container">
+    </div>:(
     <>
       <NavBar />
       <div className="multi-score-container">

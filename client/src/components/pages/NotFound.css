@@ -38,3 +38,25 @@
 .login-button:hover {
   transform: scale(1.05);
 }
+
+.intermediate-container {
+  background-image: linear-gradient(
+    45deg,
+    var(--dark--light--brown),
+    var(--light--brown),
+    var(--off--light--brown),
+    var(--dark--light--brown),
+    var(--light--brown),
+    var(--off--light--brown)
+  );
+  height: 100vh;
+  width: 100vw;
+  box-shadow: inset 0 0 var(--xs) rgba(0, 0, 0, 0.3); /* Adjust as needed */
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  overflow-y: auto;
+  scroll-behavior: smooth;
+}

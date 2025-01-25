@@ -44,11 +44,32 @@ const Home = () => {
     setIsModalOpen(false);
   };
 
-  const onCreateRoomClick = () => {
-    const newRoomCode = Math.floor(Math.random() * 10000).toString();
-    setRoomCode(newRoomCode);
-    console.log(newRoomCode);
-    navigate(`/room/${newRoomCode}`, { state: { host: true } });
+  const onCreateRoomClick = async () => {
+    let genRoom = null;
+    let anotherRoom = true;
+  
+    while (anotherRoom) {
+      const newRoomCode = Math.floor(Math.random() * 10000).toString();
+      
+      try {
+        const res = await get(`/api/activeRooms/${newRoomCode}`); // Wait for the API response
+        console.log(`Checking room code ${newRoomCode}:`, res);
+  
+        if (res === false) {
+          // If room code is available
+          anotherRoom = false;
+          genRoom = newRoomCode;
+        }
+      } catch (err) {
+        console.error("Error checking room code:", err);
+        return; // Exit early if there's an error
+      }
+    }
+  
+    // Set the room code and navigate once a valid code is generated
+    setRoomCode(genRoom);
+    console.log("Generated room code:", genRoom);
+    navigate(`/room/${genRoom}`, { state: { host: true } });
   };
 
   const onJoinRoomClick = () => {
@@ -164,9 +185,11 @@ const Home = () => {
   }, [isInfoModalOpen]); // Dependency on modal opening
 
   return (
-    isLoggedIn && (
-    <>
-       <NavBar />
+    !isLoggedIn ? 
+    <div className="intermediate-container">
+    </div>:(
+      <>
+      <NavBar />
       <div className="home-container" onMouseMove={handleMouseMove}>
         {letters.map((item) => (
           <div

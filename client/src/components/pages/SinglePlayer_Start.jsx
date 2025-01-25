@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import "../../utilities.css";
 import NavBar from "../modules/NavBar";
 import { useNavigate, useParams } from "react-router-dom";
-import { useEffect } from "react";
 import {get, post} from "../../utilities.js";
 import "./Settings.css";
 import "./Info.css";
@@ -21,7 +20,6 @@ const SinglePlayer_Start = () => {
 
   useEffect(() => {
     get("/api/whoami").then((res) => {
-        console.log(res);
         if (!res.name) {
             navigate("/");
             return;
@@ -111,7 +109,9 @@ const SinglePlayer_Start = () => {
   }, [isInfoModalOpen]); // Dependency on modal opening
 
   return (
-    isLoggedIn && (
+    !isLoggedIn ? 
+    <div className="intermediate-container">
+    </div>:(
     <>
       <NavBar />
       <div className="singleplayer-container">

@@ -115,7 +115,6 @@ const MultiPlayer_Start = () => {
     resetScoreFlag();
 
     // Notify the server to start the game
-    console.log("MY ID", id);
     post(`/api/startGame/${roomCode}/${id}`, gameDetails).then((res) => {
       console.log(res);
       if (res.error) {
@@ -226,7 +225,9 @@ const MultiPlayer_Start = () => {
   }, [isInfoModalOpen]); // Dependency on modal opening
 
   return (
-    isLoggedIn && (
+    !isLoggedIn ? 
+    <div className="intermediate-container">
+    </div>:(
     <>
       <NavBar />
       <div className="multiplayer-container">

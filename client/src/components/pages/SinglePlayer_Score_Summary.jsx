@@ -45,7 +45,9 @@ const SinglePlayer_Score_Summary = () => {
   };
 
   return (
-    isLoggedIn && (
+    !isLoggedIn ? 
+    <div className="intermediate-container">
+    </div>:(
     <>
       <NavBar />
       <div className="soloscore-container">
