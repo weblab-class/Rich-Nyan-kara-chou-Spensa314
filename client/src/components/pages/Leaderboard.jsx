@@ -57,7 +57,9 @@ const Leaderboard = () => {
   };
 
   return (
-    isLoggedIn && (
+    !isLoggedIn ? 
+    <div className="intermediate-container">
+    </div>:(
     <>
       <NavBar />
       <div className="leaderboard-page-container">

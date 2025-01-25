@@ -197,6 +197,14 @@ const MultiPlayer_Game = () => {
     }
   }, [gameState.words]);
 
+  if (!isLoggedIn) {
+    return (
+        <>
+        <div className="intermediate-container"></div>
+        </>
+    )
+  }
+    
   if (isLoading && isLoggedIn) {
     return (
       <>

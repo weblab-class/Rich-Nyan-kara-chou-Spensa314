@@ -126,7 +126,9 @@ const Profile = () => {
   };
 
   return (
-    isLoggedIn && (
+    !isLoggedIn ? 
+    <div className="intermediate-container">
+    </div>:(
     <>
       <NavBar />
       <div className="profile-container">

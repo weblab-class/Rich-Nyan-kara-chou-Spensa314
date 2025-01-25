@@ -185,9 +185,11 @@ const Home = () => {
   }, [isInfoModalOpen]); // Dependency on modal opening
 
   return (
-    isLoggedIn && (
-    <>
-       <NavBar />
+    !isLoggedIn ? 
+    <div className="intermediate-container">
+    </div>:(
+      <>
+      <NavBar />
       <div className="home-container" onMouseMove={handleMouseMove}>
         {letters.map((item) => (
           <div

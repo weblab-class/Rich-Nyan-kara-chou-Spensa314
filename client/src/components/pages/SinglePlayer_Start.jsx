@@ -109,7 +109,9 @@ const SinglePlayer_Start = () => {
   }, [isInfoModalOpen]); // Dependency on modal opening
 
   return (
-    isLoggedIn && (
+    !isLoggedIn ? 
+    <div className="intermediate-container">
+    </div>:(
     <>
       <NavBar />
       <div className="singleplayer-container">

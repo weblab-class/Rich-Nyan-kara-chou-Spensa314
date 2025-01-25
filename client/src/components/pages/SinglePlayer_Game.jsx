@@ -259,7 +259,9 @@ const SinglePlayer_Game = () => {
   }
 
   return (
-    isLoggedIn && (
+    !isLoggedIn ? 
+    <div className="intermediate-container">
+    </div>:(
     <>
       <div className="game-container">
         {/* Scoreboard */}
