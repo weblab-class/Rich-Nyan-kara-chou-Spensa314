@@ -1,7 +1,8 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { GoogleLogin } from "@react-oauth/google";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../App";
+import { get } from "../../utilities";
 import "../../utilities.css";
 import "./Login.css";
 
@@ -23,7 +24,18 @@ const Login = () => {
   const handleError = (err) => {
     console.error("Google Login Error:", err);
   };
-
+  useEffect(() => {
+    try {
+      get("/api/whoami").then((user) => {
+        if (user._id) {
+          // they are registed in the database, and currently logged in.
+          navigate("/home");
+        }
+      });
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
+  }, []);
   return (
     <div className="login-container">
       <div className="title-container">

@@ -8,6 +8,20 @@ import { UserContext } from "../App";
 import seedrandom from "seedrandom";
 import "./Loading.css";
 
+const firstWord = () => {
+    const lister = [
+        "apple", "the", "over", "user", "under",
+        "banana", "cherry", "grape", "orange", "lemon",
+        "pineapple", "pear", "mango", "peach", "plum",
+        "table", "chair", "desk", "lamp", "window",
+        "happy", "sad", "excited", "calm", "angry",
+        "ocean", "mountain", "valley", "river", "forest",
+        "house", "building", "apartment", "cabin", "castle"
+      ];
+    const index = Math.floor(Math.random() * lister.length);
+      return lister[index];
+}
+
 const SinglePlayer_Game = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -21,8 +35,9 @@ const SinglePlayer_Game = () => {
   const inputRef = useRef(null);
   const [guest, setGuest] = useState(false);
   const [isLoggedIn, setLoggedIn] = useState(false);
+  const fW = firstWord();
   const [gameState, setGameState] = useState({
-    prevWord: "apple",
+    prevWord: fW,
     score: 0,
     curScore: 0,
     curQuery: "",
@@ -32,7 +47,7 @@ const SinglePlayer_Game = () => {
     minWordLength: minLetters,
     seed: "",
     queries: [],
-    words: ["apple"],
+    words: [fW],
   });
 
   useEffect(() => {
