@@ -35,11 +35,11 @@ const MultiPlayer_Start = () => {
 
   useEffect(() => {
     get("/api/whoami").then((res) => {
-        if (!res.name) {
-            navigate("/");
-            return;
-        }
-        setLoggedIn(true);
+      if (!res.name) {
+        navigate("/");
+        return;
+      }
+      setLoggedIn(true);
       if (res.name !== null) {
         setUsername(res.name);
         setId(res._id);
@@ -190,6 +190,23 @@ const MultiPlayer_Start = () => {
   };
 
   {
+    /* copy room code on click */
+  }
+  const [copied, setCopied] = useState(false);
+
+  const handleCopyClick = () => {
+    navigator.clipboard
+      .writeText(roomCode)
+      .then(() => {
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      })
+      .catch((error) => {
+        console.error("Failed to copy: ", error);
+      });
+  };
+
+  {
     /* info animation */
   }
 
@@ -224,10 +241,9 @@ const MultiPlayer_Start = () => {
     }
   }, [isInfoModalOpen]); // Dependency on modal opening
 
-  return (
-    !isLoggedIn ? 
-    <div className="intermediate-container">
-    </div>:(
+  return !isLoggedIn ? (
+    <div className="intermediate-container"></div>
+  ) : (
     <>
       <NavBar />
       <div className="multiplayer-container">
@@ -262,7 +278,11 @@ const MultiPlayer_Start = () => {
           </div>
         </div>
 
-        <div className="mp-room-code">Room Code: {roomCode}</div>
+        <div className="mp-room-code" onClick={handleCopyClick}>
+          {copied && <div className="copy-notif">Copied!</div>}
+          Room Code: {roomCode}
+          <img src="/images/copy.png" alt="Copy" className="mp-room-copy" />
+        </div>
         <div onClick={onInfoButtonClick} className="info-button">
           ?
         </div>
@@ -350,7 +370,6 @@ const MultiPlayer_Start = () => {
         )}
       </div>
     </>
-    )
   );
 };
 

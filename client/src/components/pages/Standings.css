@@ -17,20 +17,27 @@
 }
 
 .mp-go-results {
-  height: var(--sm);
-  width: var(--sm);
+  height: var(--m);
+  width: var(--m);
   position: absolute;
   bottom: var(--xs);
   right: var(--xs);
-
+  border-radius: 50%;
+  box-shadow: 0.1vw 0.1vw 0.4vw rgba(0, 0, 0, 0.7); /* Adjust as needed */
+  background: linear-gradient(
+    45deg,
+    var(--brown),
+    var(--dark--brown),
+    var(--light--brown),
+    var(--off--dark--brown),
+    var(--dark--brown)
+  );
   cursor: pointer;
-  transition:
-    transform 0.2s ease,
-    opacity 0.2s ease; /* Smooth transition */
+  transition: all 0.2s ease; /* Smooth transition */
 }
 
 .mp-go-results:hover {
-  opacity: 0.6;
+  transform: scale(1.2);
 }
 
 .standings-title {
@@ -44,7 +51,7 @@
 .standings-list-container {
   background-color: var(--beige);
   border-radius: var(--s);
-  width: 60vw;
+  width: 70vw;
   max-height: 22vw;
   box-shadow: 0 0 var(--xxs) rgba(0, 0, 0, 0.5); /* Adjust as needed */
   margin-bottom: var(--l);
@@ -108,7 +115,7 @@
 }
 
 .standings-player {
-  max-width: 20vw;
+  max-width: 40vw;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

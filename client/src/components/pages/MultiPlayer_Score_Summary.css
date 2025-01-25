@@ -165,20 +165,28 @@
 }
 
 .mp-return-room {
-  height: var(--sm);
-  width: var(--sm);
+  height: var(--m);
+  width: var(--m);
   position: absolute;
   bottom: var(--xs);
   right: var(--xs);
+  border-radius: 50%;
+  box-shadow: 0.1vw 0.1vw 0.4vw rgba(0, 0, 0, 0.7); /* Adjust as needed */
+  background: linear-gradient(
+    45deg,
+    var(--brown),
+    var(--dark--brown),
+    var(--light--brown),
+    var(--off--dark--brown),
+    var(--dark--brown)
+  );
 
   cursor: pointer;
-  transition:
-    transform 0.2s ease,
-    opacity 0.2s ease; /* Smooth transition */
+  transition: all 0.2s ease; /* Smooth transition */
 }
 
 .mp-return-room:hover {
-  opacity: 0.6;
+  transform: scale(1.2);
 }
 
 .intermediate-container {

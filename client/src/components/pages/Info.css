@@ -6,19 +6,22 @@
     45deg,
     var(--dark--beige),
     var(--beige),
+    white,
     var(--light--beige),
     var(--dark--beige)
   );
-  color: var(--dark--brown);
+  color: var(--off--brown);
 
-  font-size: var(--sm);
-  border-radius: var(--m);
+  font-size: var(--s);
+  border-radius: var(--sm);
   cursor: pointer;
   transition: all 0.2s ease; /* Smooth transition */
-  padding: var(--xxs) var(--s);
-  text-shadow: 0.05vw 0.05vw 0.2vw rgba(0, 0, 0, 0.658);
+  padding: 0.3vw var(--xs);
   margin-bottom: var(--s);
+  text-shadow: none;
+  border: 0.1vw solid rgba(255, 255, 255, 0.3);
   box-shadow: 0.1vw 0.1vw var(--xxs) rgba(0, 0, 0, 0.5);
+  text-shadow: 0 0 1vw white;
 }
 
 .how-to-play-button:hover {
@@ -31,6 +34,7 @@
     var(--dark--brown)
   );
   color: var(--beige);
+  text-shadow: none;
 }
 
 .info-button {
@@ -258,7 +262,7 @@
   overflow: hidden; /* Ensures the content is not revealed until the animation */
   white-space: nowrap; /* Keeps the content on a single line */
   margin: 0;
-  letter-spacing: 0.07vw;
+  letter-spacing: 0.08vw;
 }
 
 .curr-word-line {
@@ -277,10 +281,10 @@
 /* The typing effect */
 @keyframes typing {
   0% {
-    width: 4.35%;
+    width: 4.25%;
   }
   30% {
-    width: 4.35%;
+    width: 4.25%;
   }
   100% {
     width: 100%;
