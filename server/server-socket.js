@@ -69,6 +69,7 @@ const joinRoom = (roomId, user, socket, settings) => {
   if (!room.players.some((p) => p.id === socket.id)) {
     room.players.push({ id: socket.id, name: user.name, photo: user.profilePicture, userId: user._id });
   }
+  console.log("FUCK THIS SHIT", rooms[roomId]);
 
   socket.join(roomId);
   gameLogic.setRoomId(roomId, rooms[roomId].players);

@@ -107,6 +107,7 @@ const MultiPlayer_Game = () => {
 
         if (gameStates.roomState.gameEnded) {
           console.log("Game ended!");
+          socket.emit("endGame", roomCode);
           navigate(`/standings/${roomCode}`, {
             state: {
               standings: gameStates.roomScores,

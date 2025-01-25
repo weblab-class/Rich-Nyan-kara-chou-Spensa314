@@ -45,7 +45,7 @@ const Standings = () => {
       setOppQueries(location.state.standings?.[index]?.playerState?.queries || []);
       setOppScore(location.state.standings?.[index]?.playerState?.score || 0);
       setOppName(location.state.standings?.[index]?.playerName || "");
-      
+
       const topScore = location.state.standings?.[0]?.score || 0;
       const topPlayers = location.state.standings?.filter(player => player.score === topScore);
       setWinner(topPlayers || []);
@@ -53,7 +53,6 @@ const Standings = () => {
   }, [location.state]);
 
   const handleNextClick = () => {
-    socket.emit("endGame", roomCode);
     navigate(`/results/${roomCode}`, {
       state: {
         standings: standings,
