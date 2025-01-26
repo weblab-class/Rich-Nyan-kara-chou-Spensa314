@@ -85,6 +85,20 @@
   transform: scale(1.2);
 }
 
+.themes {
+  height: var(--s);
+  width: var(--s);
+  margin-right: var(--s);
+  display: flex;
+  align-items: center;
+
+  transition: all 0.2s ease; /* Smooth transition */
+}
+
+.themes:hover {
+  transform: scale(1.2);
+}
+
 .nav-profile {
   color: var(--beige);
   height: 2.5vw;

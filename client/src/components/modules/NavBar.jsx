@@ -31,6 +31,10 @@ const NavBar = () => {
     navigate("/profile");
   };
 
+  const handleThemesClick = () => {
+    navigate("/themes");
+  };
+
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const handleLogoutButtonClick = () => {
     setIsLogoutModalOpen(true);
@@ -64,7 +68,9 @@ const NavBar = () => {
           )}
           {username || "Guest"} {/* put in actual name */}
         </div>
-
+        <div onClick={handleThemesClick} className="navbar-link">
+          <img src="/images/themes.png" alt="Themes" className="themes" />
+        </div>
         <div onClick={handleLeaderboardClick} className="navbar-link">
           <img src="/images/crown.png" alt="Crown" className="leaderboard" />
         </div>
