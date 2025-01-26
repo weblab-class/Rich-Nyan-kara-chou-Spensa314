@@ -10,7 +10,7 @@ require("dotenv").config();
 const express = require("express");
 const auth = require("./auth");
 const socketManager = require("./server-socket");
-
+const llmManager = require("./llm");
 const router = express.Router();
 
 const User = require("./models/user");
@@ -608,6 +608,20 @@ router.get("/activeRooms/:roomId", (req, res) => {
   res.send(response);
 });
 
+router.get("/getTheme", async (req, res) => {
+  const theme = req.query.theme; // Use req.query to access query parameters
+  if (!theme) {
+    return res.status(400).send({ error: "Theme query parameter is required." });
+  }
+
+  try {
+    const response = await llmManager.sendPromptToClaude(theme); // Wait for the response
+    res.send(response);
+  } catch (error) {
+    console.error("Error:", error.message);
+    res.status(500).send({ error: "Failed to process theme." });
+  }
+});
 // Catch-all for undefined routes
 router.all("*", (req, res) => {
   console.log(`API route not found: ${req.method} ${req.url}`);

@@ -19,6 +19,7 @@ const Profile = () => {
   const [hardMode, setHardMode] = useState(false);
   const [hideLetter, setHideLetter] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [guest, setGuest] = useState(false);
   // const [settings, setSettings] = useState(
   //   '{"minLetters":3,"activeTime":30,"hideLetter":false,"hardMode":false}'
   // ); // Default setting
@@ -30,6 +31,7 @@ const Profile = () => {
           return;
       }
       setIsLoggedIn(true);
+      setGuest(res.isGuest);
     })
 
   const handleEditClick = () => setIsEditing(true);
@@ -158,13 +160,20 @@ const Profile = () => {
               </div>
             ) : (
               <div className="profile-username">
+                {!guest && 
                 <span onClick={handleEditClick}>{username}</span>
+                }
+                {guest && 
+                <span>{username}</span>
+                }
+                {!guest && 
                 <img
                   src="/images/editicon.png"
                   alt="Edit"
                   className="profile-edit-icon"
                   onClick={handleEditClick}
                 />
+                }
               </div>
             )}
           </div>

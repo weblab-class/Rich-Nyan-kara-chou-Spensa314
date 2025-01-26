@@ -61,3 +61,12 @@ export function post(endpoint, params = {}) {
       throw `POST request to ${endpoint} failed with error:\n${error}`;
     });
 }
+
+export const updateThemeVariables = (newTheme) => {
+  const root = document.documentElement;
+
+  // Loop through the theme object and update the CSS variables
+  Object.keys(newTheme).forEach((key) => {
+    root.style.setProperty(key, newTheme[key]);
+  });
+};

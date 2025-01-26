@@ -17,7 +17,7 @@ const SinglePlayer_Score_Summary = () => {
   const [hideLetter, setHideLetter] = useState(false);
   const [hardMode, setHardMode] = useState(false);
   const [isLoggedIn, setLoggedIn] = useState(false);
-  const [guest, setGuest] = useState(false);
+  const [guest, setGuest] = useState(null);
   const [isSaving, setIsSaving] = useState(false); // To track saving state
 
   const location = useLocation();
@@ -50,7 +50,7 @@ const SinglePlayer_Score_Summary = () => {
   }, [location.state]);
 
   useEffect(() => {
-    if (location.state && !isSaving) {
+    if (location.state && !isSaving && guest) {
       // Save score asynchronously after rendering
       setIsSaving(true); // Set saving state
       saveScore(userId, location.state.score, {
