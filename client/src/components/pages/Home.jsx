@@ -68,7 +68,14 @@ const Home = () => {
     // Set the room code and navigate once a valid code is generated
     setRoomCode(genRoom);
     console.log("Generated room code:", genRoom);
-    navigate(`/room/${genRoom}`, { state: { host: true } });
+    navigate(`/room/${genRoom}`, {
+      state: {
+        hideLetter: false,
+        hardMode: false,
+        minLetters: 3,
+        time: 30,
+      },
+    });
   };
 
   const onJoinRoomClick = () => {
@@ -81,7 +88,7 @@ const Home = () => {
           if (res === true) {
             alert("Game already started!");
           } else {
-            navigate(`/room/${roomCode}`, { state: { host: false } });
+            navigate(`/room/${roomCode}`);
           }
         });
       } else {

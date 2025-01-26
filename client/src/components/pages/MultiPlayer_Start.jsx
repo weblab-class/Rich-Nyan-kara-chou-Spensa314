@@ -25,6 +25,7 @@ const MultiPlayer_Start = () => {
   const navigate = useNavigate();
   const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
   const [isLoggedIn, setLoggedIn] = useState(false);
+
   const onInfoButtonClick = () => {
     setIsInfoModalOpen(true);
   };
@@ -64,6 +65,10 @@ const MultiPlayer_Start = () => {
       setHost(updatedHost);
       if (updatedHost === id) {
         setIsHost(true);
+        setMinLetters(location.state.minLetters);
+        setActiveTime(location.state.time);
+        setHideLetter(location.state.hideLetter);
+        setHardMode(location.state.hardMode);
       }
     });
 
