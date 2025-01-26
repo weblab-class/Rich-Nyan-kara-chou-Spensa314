@@ -13,6 +13,7 @@ import SinglePlayer_Score_Summary from "./components/pages/SinglePlayer_Score_Su
 import Profile from "./components/pages/Profile";
 import MultiPlayer_Score_Summary from "./components/pages/MultiPlayer_Score_Summary";
 import Standings from "./components/pages/Standings";
+import Themes from "./components/pages/Themes";
 
 import {
   createBrowserRouter,
@@ -41,6 +42,7 @@ const router = createBrowserRouter(
       <Route path="/game/solo" element={<SinglePlayer_Game />} />
       <Route path="/results/solo" element={<SinglePlayer_Score_Summary />} />
       <Route path="/profile" element={<Profile />} />
+      <Route path="/themes" element={<Themes />} />
     </Route>
   )
 );

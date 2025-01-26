@@ -44,60 +44,7 @@ const Home = () => {
   const onExitClick = () => {
     setIsModalOpen(false);
   };
-
-  // Function to parse CSS variables from a CSS-like string
-  const parseCSSVariables = (cssString) => {
-    const variables = {};
-
-    // Split the string by semicolons to process each line
-    cssString.split(";").forEach((line) => {
-      if (line.trim() === "") return; // Skip empty lines
-
-      // Split each line into a key and value
-      const [key, value] = line.split(":").map((str) => str.trim());
-
-      if (key && value) {
-        variables[key] = value; // Add to the variables object
-      }
-    });
-
-    return variables;
-  };
-
-  // Function to dynamically update CSS variables in :root
-  const updateThemeVariables = (variables) => {
-    const root = document.documentElement;
-
-    Object.entries(variables).forEach(([key, value]) => {
-      root.style.setProperty(key, value);
-    });
-  };
-
-  // Fetch and apply the theme
-  const onThemeClick = () => {
-    if (!theme.trim()) {
-      alert("Please enter a theme.");
-      return;
-    }
-
-    get("/api/getTheme", { theme })
-      .then((res) => {
-        const content = res.content;
-
-        // Assuming the CSS-style string is in content[0].text
-        console.log("Response Content:", content[0].text);
-
-        // Parse the CSS-style string into an object
-        const newTheme = parseCSSVariables(content[0].text);
-
-        // Update the CSS variables dynamically
-        updateThemeVariables(newTheme);
-      })
-      .catch((err) => {
-        console.error("Error fetching theme:", err.message || err);
-      });
-  };
-
+  
   const onCreateRoomClick = async () => {
     let genRoom = null;
     let anotherRoom = true;
@@ -277,19 +224,6 @@ const Home = () => {
           </div>
           <div onClick={onSingleplayerClick} className="player-button">
             Singleplayer
-          </div>
-        </div>
-
-        <div className="theme-container">
-          <input
-            type="text"
-            placeholder="Enter theme"
-            value={theme}
-            onChange={(e) => setTheme(e.target.value)} // Update the theme state
-            className="theme-input"
-          />
-          <div onClick={onThemeClick} className="theme-button">
-            Apply Theme
           </div>
         </div>
 
