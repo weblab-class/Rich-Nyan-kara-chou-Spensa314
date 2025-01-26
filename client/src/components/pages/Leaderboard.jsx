@@ -1,7 +1,7 @@
 import React, { useState, useContext, useEffect } from "react";
 import "../../utilities.css";
 import NavBar from "../modules/NavBar";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { get } from "../../utilities";
 import { UserContext } from "../App";
 
@@ -12,10 +12,11 @@ const Leaderboard = () => {
   const [topPlayers, setTopPlayers] = useState([]);
   const [userRank, setUserRank] = useState(null);
   const [userScore, setUserScore] = useState(null);
-  const [minLetters, setMinLetters] = useState(3);
-  const [activeTime, setActiveTime] = useState(30);
-  const [hardMode, setHardMode] = useState(false);
-  const [hideLetter, setHideLetter] = useState(false);
+  const location = useLocation();
+  const [minLetters, setMinLetters] = useState(location.state?.minLetters || 3);
+  const [activeTime, setActiveTime] = useState(location.state?.activeTime || 30);
+  const [hideLetter, setHideLetter] = useState(location.state?.hideLetter || false);
+  const [hardMode, setHardMode] = useState(location.state?.hardMode || false);
 
   const navigate = useNavigate();
   const [isLoggedIn, setLoggedIn] = useState(false);
