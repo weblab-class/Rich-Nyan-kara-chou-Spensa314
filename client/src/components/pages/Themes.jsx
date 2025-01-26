@@ -93,9 +93,10 @@ const Themes = () => {
             }}
           />
           <div onClick={onThemeClick} className="theme-button">
-            Apply Theme
+            Generate Theme
           </div>
         </div>
+        <div className="save-theme-button">Save Theme</div>
         <div className="saved-themes-container">
           <div className="individual-theme">
             <div className="theme-text">Default</div>
