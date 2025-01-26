@@ -1,0 +1,142 @@
+.theme-container {
+  height: 100dvh;
+  width: 100vw;
+  box-shadow: inset 0 0 var(--xs) rgba(0, 0, 0, 0.3); /* Adjust as needed */
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  overflow-y: auto;
+  scroll-behavior: smooth;
+}
+
+.theme-container::-webkit-scrollbar {
+  display: none; /* This hides the scrollbar */
+}
+
+.theme-title {
+  margin: 0;
+  font-size: 6.5vw;
+  color: var(--beige);
+  font-weight: normal;
+  text-shadow: 0.1vw 0.1vw 0.4vw rgba(0, 0, 0, 0.7); /* Black shadow */
+}
+
+.input-theme-container {
+  display: flex;
+  flex-direction: row;
+}
+
+.theme-input {
+  width: 30vw;
+  padding: 0.5vw 0.7vw;
+  font-size: var(--s);
+  border: none;
+  border-radius: var(--xxs);
+  background-color: var(--dark--brown);
+  color: var(--beige);
+  font-family: inherit;
+  box-shadow: 0.1vw 0.1vw 0.2vw rgba(0, 0, 0, 0.5);
+  opacity: 0.6;
+}
+
+.theme-input:focus {
+  outline: none; /* Removes the default focus outline */
+  border: none; /* Ensure no border appears on focus */
+  opacity: 1;
+  filter: brightness(1);
+}
+
+.theme-input::placeholder {
+  color: var(--beige);
+  opacity: 0.6; /* Ensure the placeholder is not faded (opacity is usually less than 1) */
+}
+
+.theme-button {
+  background-image: linear-gradient(
+    45deg,
+    var(--dark--beige),
+    var(--beige),
+    white,
+    var(--light--beige),
+    var(--dark--beige)
+  );
+  color: var(--off--brown);
+  text-shadow: none;
+  padding: 0.5vw 0.7vw;
+  font-size: var(--s);
+  box-shadow: 0.1vw 0.1vw 0.2vw rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+  margin-left: var(--xs);
+  border-radius: var(--xxs);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.3s ease;
+  text-shadow: 0.03vw 0.03vw 0.1vw rgba(0, 0, 0, 0.5);
+}
+
+.theme-button:hover {
+  transform: scale(1.05);
+  filter: brightness(1.05);
+}
+
+.saved-themes-container {
+  border-radius: var(--s);
+  margin-top: var(--s);
+  margin-bottom: var(--l);
+  width: 60vw;
+  padding: var(--s) var(--m);
+  background: linear-gradient(45deg, var(--beige), var(--dark--beige), white, var(--light--beige));
+  box-shadow: 0.1vw 0.1vw 0.2vw rgba(0, 0, 0, 0.5);
+
+  display: flex;
+  flex-direction: column;
+  justify-content: top;
+  padding: var(--s);
+  overflow-y: auto;
+  scroll-behavior: smooth;
+}
+
+.saved-themes-container::-webkit-scrollbar {
+  display: none; /* This hides the scrollbar */
+}
+
+.individual-theme {
+  margin: var(--xxs);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: var(--beige);
+  background: linear-gradient(
+    45deg,
+    var(--dark--beige),
+    var(--brown),
+    var(--off--brown),
+    var(--dark--brown),
+    var(--off--dark--brown),
+    var(--dark--beige)
+  );
+  box-shadow: 0.1vw 0.1vw 0.2vw rgba(0, 0, 0, 0.5);
+
+  padding: 0.5vw 2vw;
+  border-radius: var(--m);
+  transition: all 0.3s ease;
+  filter: brightness(0.8);
+
+  cursor: pointer;
+}
+
+.theme-text {
+  font-size: var(--s);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.individual-theme:hover {
+  filter: brightness(1.1);
+  transform: scale(1.02);
+}
