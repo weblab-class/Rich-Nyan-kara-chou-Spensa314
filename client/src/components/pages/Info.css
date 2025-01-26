@@ -20,7 +20,7 @@
   margin-bottom: var(--s);
   text-shadow: none;
   border: 0.1vw solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0.1vw 0.1vw var(--xxs) rgba(0, 0, 0, 0.5);
+  box-shadow: 0.1vw 0.1vw 0.2vw rgba(0, 0, 0, 0.5);
   text-shadow: 0 0 1vw white;
 }
 

@@ -1,6 +1,6 @@
 /* General Container */
 .game-container {
-  height: 100vh;
+  height: 100dvh;
   width: 100vw;
   box-shadow: inset 0 0 var(--xs) rgba(0, 0, 0, 0.3);
   display: flex;
@@ -225,7 +225,7 @@
     var(--light--brown),
     var(--off--light--brown)
   );
-  height: 100vh;
+  height: 100dvh;
   width: 100vw;
   box-shadow: inset 0 0 var(--xs) rgba(0, 0, 0, 0.3); /* Adjust as needed */
   flex-grow: 1;

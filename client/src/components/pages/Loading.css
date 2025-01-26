@@ -1,5 +1,5 @@
 .loading-container {
-  height: 100vh;
+  height: 100dvh;
   width: 100vw;
   box-shadow: inset 0 0 var(--xs) rgba(0, 0, 0, 0.3);
   display: flex;
