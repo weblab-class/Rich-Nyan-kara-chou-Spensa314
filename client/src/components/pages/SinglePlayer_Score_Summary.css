@@ -94,6 +94,32 @@
   height: var(--m);
   width: var(--m);
   position: absolute;
+  bottom: 6vw;
+  right: var(--xs);
+  border-radius: 50%;
+  box-shadow: 0.1vw 0.1vw 0.4vw rgba(0, 0, 0, 0.7); /* Adjust as needed */
+  background-color: rgb(255, 240, 220);
+
+  cursor: pointer;
+  transition: all 0.2s ease; /* Smooth transition */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.leaderboard-after-sp {
+  height: var(--s);
+  width: var(--sm);
+}
+
+.next-leaderboard:hover {
+  transform: scale(1.2);
+}
+
+.next-game {
+  height: var(--m);
+  width: var(--m);
+  position: absolute;
   bottom: var(--xs);
   right: var(--xs);
   border-radius: 50%;
@@ -111,7 +137,7 @@
   transition: all 0.2s ease; /* Smooth transition */
 }
 
-.next-leaderboard:hover {
+.next-game:hover {
   transform: scale(1.2);
 }
 
