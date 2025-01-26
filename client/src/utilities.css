@@ -18,7 +18,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Paytone+One&display=swap");
 
 :root {
-  /* --white: #fff;
+  --white: #fff;
   --light--beige: #ffebdd;
   --dull--beige: #ede0d4;
   --beige: #fae0cf;
@@ -39,31 +39,7 @@
   --dark--brown: #4a230f;
   --dark--brown--glass: #4a230fcf;
 
-  --off--dark--brown: #411e0c; */
-  --white: #ffffff;
-  --light--beige: #f5c469;
-  --dull--beige: #e3ac4a;
-  --beige: #d69b2d;
-  --off--beige: #c4881b;
-  --dark--beige: #a76f14;
-  --off--dark--beige: #86580f;
-  --light--beige--glass: rgba(245, 196, 105, 0.353);
-  --beige--glass: rgba(214, 155, 45, 0.874);
-  --brown--glass: rgba(135, 110, 15, 0.708);
-  --light--brown: #000000;
-  --off--light--brown: #1a1a1a;
-  --dark--light--brown: #333333;
-  --brown: #4d4d4d;
-  --beige--shadow: rgb(214, 155, 45);
-  
-  --off--brown: #666666;
-  --dull--dark--brown: #808080;
-  --dark--brown: #999999;
-  --dark--brown--glass: #4d4d4dcf;
-  
-  --off--dark--brown: #cccccc;
-  
-  
+  --off--dark--brown: #411e0c;
 
   /* Leaderboard */
 
