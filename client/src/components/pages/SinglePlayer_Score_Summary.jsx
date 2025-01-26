@@ -18,9 +18,11 @@ const SinglePlayer_Score_Summary = () => {
   const [hardMode, setHardMode] = useState(false);
   const [isLoggedIn, setLoggedIn] = useState(false);
   const [guest, setGuest] = useState(false);
+  const [isSaving, setIsSaving] = useState(false); // To track saving state
 
   const location = useLocation();
   const navigate = useNavigate();
+
   useEffect(() => {
     get("/api/whoami").then((res) => {
       if (!res.name) {
@@ -35,6 +37,8 @@ const SinglePlayer_Score_Summary = () => {
       navigate("/home");
       return;
     }
+
+    // Set game state from location immediately
     if (location.state) {
       setQueries(location.state.queries || []);
       setScore(location.state.score || 0);
@@ -42,16 +46,21 @@ const SinglePlayer_Score_Summary = () => {
       setActiveTime(location.state.activeTime || 0);
       setHideLetter(location.state.hideLetter || false);
       setHardMode(location.state.hardMode || false);
-      // console.log(location.state);
+    }
+  }, [location.state]);
 
+  useEffect(() => {
+    if (location.state && !isSaving) {
+      // Save score asynchronously after rendering
+      setIsSaving(true); // Set saving state
       saveScore(userId, location.state.score, {
         minLetters: parseInt(location.state.minLetters, 10),
         activeTime: location.state.activeTime,
         hideLetter: location.state.hideLetter,
         hardMode: location.state.hardMode,
-      });
+      }); // Reset saving state
     }
-  }, [location.state]);
+  }, [location.state, userId]);
 
   const handleNextClick = () => {
     navigate("/leaderboard");
@@ -71,7 +80,7 @@ const SinglePlayer_Score_Summary = () => {
 
       if (response.success) {
         console.log("Score updated successfully:", response);
-        // alert("Score saved!");
+        // Optional: Provide user feedback
       } else {
         console.error("Failed to update score:", response);
         alert("Could not save the score.");
@@ -81,6 +90,7 @@ const SinglePlayer_Score_Summary = () => {
       alert("An error occurred while saving the score.");
     }
   };
+
   return !isLoggedIn ? (
     <div className="intermediate-container"></div>
   ) : (
@@ -89,14 +99,18 @@ const SinglePlayer_Score_Summary = () => {
       <div className="soloscore-container">
         <h1 className="score-title">Score</h1>
         <div className="score-list-container">
-          {queries.map((q) => (
-            <div className="score-result-container">
+          {queries.map((q, index) => (
+            <div key={index} className="score-result-container">
               <div className="score-result-term">{q[0]}</div>
               <div className="score-result-query">{parseInt(q[1]).toLocaleString()}</div>
             </div>
           ))}
         </div>
         <h2 className="total-points-title">Total Points: {parseInt(score).toLocaleString()}</h2>
+
+        {/* Show a loading indicator if saving */}
+        {isSaving && <div className="saving-indicator">Saving score...</div>}
+
         <div onClick={handleNextClick}>
           <img src="/images/next.png" alt="Next" className="next-leaderboard" />
         </div>
@@ -104,4 +118,5 @@ const SinglePlayer_Score_Summary = () => {
     </>
   );
 };
+
 export default SinglePlayer_Score_Summary;
