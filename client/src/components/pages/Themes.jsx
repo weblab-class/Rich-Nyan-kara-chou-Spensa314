@@ -5,9 +5,10 @@ import NavBar from "../modules/NavBar";
 import { get } from "../../utilities";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import "./Themes.css";
 
 const Themes = () => {
-  const [ isLoggedIn, setLoggedIn ] = useState(false);
+  const [isLoggedIn, setLoggedIn] = useState(false);
   const [theme, setTheme] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [guest, setGuest] = useState(false);
@@ -46,19 +47,19 @@ const Themes = () => {
   // Fetch and apply the theme
   const onThemeClick = () => {
     if (isLoading) return;
-  
+
     if (!theme.trim()) {
       alert("Please enter a theme.");
       return;
     }
-  
+
     setIsLoading(true); // Set loading to true
-  
+
     get("/api/getTheme", { theme })
       .then((res) => {
         const content = res.content;
         console.log("Response Content:", content[0].text);
-  
+
         const newTheme = parseCSSVariables(content[0].text);
         updateThemeVariables(newTheme);
       })
@@ -75,21 +76,34 @@ const Themes = () => {
   ) : (
     <>
       <NavBar />
+      <div className="theme-container">
+        <div className="theme-title">Themes</div>
 
-    <div className="theme-container">
+        <div className="input-theme-container">
           <input
             type="text"
             placeholder="Enter theme"
             value={theme}
             onChange={(e) => setTheme(e.target.value)} // Update the theme state
             className="theme-input"
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                onThemeClick(); // Trigger the join room click when Enter is pressed
+              }
+            }}
           />
           <div onClick={onThemeClick} className="theme-button">
             Apply Theme
           </div>
         </div>
+        <div className="saved-themes-container">
+          <div className="individual-theme">
+            <div className="theme-text">Default</div>
+          </div>
+        </div>
+      </div>
     </>
-  )
+  );
 };
 
 export default Themes;
