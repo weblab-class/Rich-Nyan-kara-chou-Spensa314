@@ -4,15 +4,20 @@ import NavBar from "../modules/NavBar";
 import { useNavigate, useLocation } from "react-router-dom";
 import "./SinglePlayer_Score_Summary.css";
 import { get } from "../../utilities";
+import { post } from "../../utilities";
+import { useContext } from "react";
+import { UserContext } from "../App";
 
 const SinglePlayer_Score_Summary = () => {
   const [queries, setQueries] = useState([]);
+  const { userId } = useContext(UserContext);
   const [score, setScore] = useState(0);
   const [minLetters, setMinLetters] = useState(0);
   const [activeTime, setActiveTime] = useState(0);
   const [hideLetter, setHideLetter] = useState(false);
   const [hardMode, setHardMode] = useState(false);
   const [isLoggedIn, setLoggedIn] = useState(false);
+  const [guest, setGuest] = useState(false);
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -23,6 +28,7 @@ const SinglePlayer_Score_Summary = () => {
         return;
       }
       setLoggedIn(true);
+      setGuest(res.isGuest);
     });
 
     if (!location.state) {
@@ -36,7 +42,14 @@ const SinglePlayer_Score_Summary = () => {
       setActiveTime(location.state.activeTime || 0);
       setHideLetter(location.state.hideLetter || false);
       setHardMode(location.state.hardMode || false);
-      console.log(location.state);
+      // console.log(location.state);
+
+      saveScore(userId, location.state.score, {
+        minLetters: parseInt(location.state.minLetters, 10),
+        activeTime: location.state.activeTime,
+        hideLetter: location.state.hideLetter,
+        hardMode: location.state.hardMode,
+      });
     }
   }, [location.state]);
 
@@ -44,6 +57,30 @@ const SinglePlayer_Score_Summary = () => {
     navigate("/leaderboard");
   };
 
+  // Save the score to the backend
+  const saveScore = async (userId, score, settings) => {
+    console.log("Saving score:", { userId, score, settings });
+
+    try {
+      const response = await post("/api/updateSinglePlayerScore", {
+        userId,
+        score: score,
+        settings: JSON.stringify(settings),
+        guest: guest,
+      });
+
+      if (response.success) {
+        console.log("Score updated successfully:", response);
+        // alert("Score saved!");
+      } else {
+        console.error("Failed to update score:", response);
+        alert("Could not save the score.");
+      }
+    } catch (error) {
+      console.error("Error updating score:", error);
+      alert("An error occurred while saving the score.");
+    }
+  };
   return !isLoggedIn ? (
     <div className="intermediate-container"></div>
   ) : (
