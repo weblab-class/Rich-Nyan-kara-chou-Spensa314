@@ -9,18 +9,46 @@ import seedrandom from "seedrandom";
 import "./Loading.css";
 
 const firstWord = () => {
-    const lister = [
-        "apple", "the", "over", "user", "under",
-        "banana", "cherry", "grape", "orange", "lemon",
-        "pineapple", "pear", "mango", "peach", "plum",
-        "table", "chair", "desk", "lamp", "window",
-        "happy", "sad", "excited", "calm", "angry",
-        "ocean", "mountain", "valley", "river", "forest",
-        "house", "building", "apartment", "cabin", "castle"
-      ];
-    const index = Math.floor(Math.random() * lister.length);
-      return lister[index];
-}
+  const lister = [
+    "apple",
+    "the",
+    "over",
+    "user",
+    "under",
+    "banana",
+    "cherry",
+    "grape",
+    "orange",
+    "lemon",
+    "pineapple",
+    "pear",
+    "mango",
+    "peach",
+    "plum",
+    "table",
+    "chair",
+    "desk",
+    "lamp",
+    "window",
+    "happy",
+    "sad",
+    "excited",
+    "calm",
+    "angry",
+    "ocean",
+    "mountain",
+    "valley",
+    "river",
+    "forest",
+    "house",
+    "building",
+    "apartment",
+    "cabin",
+    "castle",
+  ];
+  const index = Math.floor(Math.random() * lister.length);
+  return lister[index];
+};
 
 const SinglePlayer_Game = () => {
   const navigate = useNavigate();
@@ -52,13 +80,13 @@ const SinglePlayer_Game = () => {
 
   useEffect(() => {
     get("/api/whoami").then((res) => {
-        if (!res.name) {
-            navigate("/");
-            return;
-        }
-        setLoggedIn(true);
-        setGuest(res.isGuest);
-      })
+      if (!res.name) {
+        navigate("/");
+        return;
+      }
+      setLoggedIn(true);
+      setGuest(res.isGuest);
+    });
   });
 
   // Start the game
@@ -100,23 +128,22 @@ const SinglePlayer_Game = () => {
   // On Enter Key Press
   const onEnterKeyPress = (event) => {
     if (event.key === "Enter") {
-        if (
-            event.target.value.length < minLetters - 1 || 
-            /[^a-zA-Z]/.test(event.target.value) // Check for any non-letter characters
-          ) {
-            const errorMessage = 
-              /[^a-zA-Z]/.test(event.target.value)
-                ? 'Word can only contain letters (A-Z, a-z).'
-                : `Word must be at least ${minLetters} letters long.`;
-          
-            console.error(errorMessage);
-            setResultMessage(errorMessage);
-            setIsError(true);
-            setTimeout(() => {
-              setIsError(false);
-            }, 500); // 0.5 seconds
-            return;
-          }          
+      if (
+        event.target.value.length < minLetters - 1 ||
+        /[^a-zA-Z]/.test(event.target.value) // Check for any non-letter characters
+      ) {
+        const errorMessage = /[^a-zA-Z]/.test(event.target.value)
+          ? "Word can only contain letters (A-Z, a-z)."
+          : `Word must be at least ${minLetters} letters long.`;
+
+        console.error(errorMessage);
+        setResultMessage(errorMessage);
+        setIsError(true);
+        setTimeout(() => {
+          setIsError(false);
+        }, 500); // 0.5 seconds
+        return;
+      }
       const q = `${gameState.curLetter}${event.target.value}`;
       const queryText = `${gameState.prevWord} ${q}`;
       //console.log("Search Query:", queryText);
@@ -148,30 +175,30 @@ const SinglePlayer_Game = () => {
     }
   };
 
-//   // Save the score to the backend
-//   const saveScore = async (userId, score, settings) => {
-//     console.log("Saving score:", { userId, score, settings });
+  //   // Save the score to the backend
+  //   const saveScore = async (userId, score, settings) => {
+  //     console.log("Saving score:", { userId, score, settings });
 
-//     try {
-//       const response = await post("/api/updateSinglePlayerScore", {
-//         userId,
-//         score: score,
-//         settings: JSON.stringify(settings),
-//         guest: guest,
-//       });
+  //     try {
+  //       const response = await post("/api/updateSinglePlayerScore", {
+  //         userId,
+  //         score: score,
+  //         settings: JSON.stringify(settings),
+  //         guest: guest,
+  //       });
 
-//       if (response.success) {
-//         console.log("Score updated successfully:", response);
-//         // alert("Score saved!");
-//       } else {
-//         console.error("Failed to update score:", response);
-//         alert("Could not save the score.");
-//       }
-//     } catch (error) {
-//       console.error("Error updating score:", error);
-//       alert("An error occurred while saving the score.");
-//     }
-//   };
+  //       if (response.success) {
+  //         console.log("Score updated successfully:", response);
+  //         // alert("Score saved!");
+  //       } else {
+  //         console.error("Failed to update score:", response);
+  //         alert("Could not save the score.");
+  //       }
+  //     } catch (error) {
+  //       console.error("Error updating score:", error);
+  //       alert("An error occurred while saving the score.");
+  //     }
+  //   };
 
   useEffect(() => {
     if (isWaiting) return;
@@ -182,12 +209,12 @@ const SinglePlayer_Game = () => {
           clearInterval(timer);
 
           // call saveScore function editing
-        // saveScore(userId, prevState.score, {
-        //     minLetters: parseInt(minLetters, 10),
-        //     activeTime,
-        //     hideLetter,
-        //     hardMode,
-        //     });
+          // saveScore(userId, prevState.score, {
+          //     minLetters: parseInt(minLetters, 10),
+          //     activeTime,
+          //     hideLetter,
+          //     hardMode,
+          //     });
           navigate(`/results/solo`, {
             state: {
               queries: prevState.queries,
@@ -281,7 +308,7 @@ const SinglePlayer_Game = () => {
     const newSeed = "seed" + Math.floor(Math.random() * 1000000); // Generate a new seed
     const initialWord = firstWord(); // Get the initial word
     const firstLetter = generateRandomLetter(newSeed); // Generate the first letter
-  
+
     setIndex(0); // Reset index
     setGameState({
       prevWord: initialWord,
@@ -303,20 +330,14 @@ const SinglePlayer_Game = () => {
     }
   };
 
-  return (
-    !isLoggedIn ? 
-    <div className="intermediate-container">
-    </div>:(
+  return !isLoggedIn ? (
+    <div className="intermediate-container"></div>
+  ) : (
     <>
       <div className="game-container">
         {/* restart */}
-        <div className="restart-button-container">
-          <button
-            className="restart-button"
-            onClick={restartGame}
-          >
-            Restart Game
-          </button>
+        <div className="restart-button-container" onClick={restartGame}>
+          <img src="/images/restart.png" alt="Restart" className="restart-button" />
         </div>
 
         {/* Scoreboard */}
@@ -382,7 +403,6 @@ const SinglePlayer_Game = () => {
         <div className="time-container">{Math.max(0, gameState.timerValue.toFixed(1))}</div>
       </div>
     </>
-    )
   );
 };
 
