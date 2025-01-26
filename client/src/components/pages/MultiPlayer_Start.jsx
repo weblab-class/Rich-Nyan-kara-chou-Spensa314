@@ -359,17 +359,17 @@ const MultiPlayer_Start = () => {
               <div className="settings-modal-hideLetter">
                 Hide Next Letter
                 <label className="switch">
-                  <input type="checkbox" onClick={onHideLetterClick} />
-                  <span className="slider round"></span>
+                    <input type="checkbox" checked={hideLetter} onChange={onHideLetterClick} />
+                    <span className="slider round"></span>
                 </label>
-              </div>
-              <div className="settings-modal-hardMode">
+                </div>
+                <div className="settings-modal-hardMode">
                 Hard Mode
                 <label className="switch">
-                  <input type="checkbox" onClick={onHardModeClick} />
-                  <span className="slider round"></span>
+                    <input type="checkbox" checked={hardMode} onChange={onHardModeClick} />
+                    <span className="slider round"></span>
                 </label>
-              </div>
+                </div>
             </div>
           </div>
         )}
