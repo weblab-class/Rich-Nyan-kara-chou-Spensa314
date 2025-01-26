@@ -296,6 +296,7 @@
   justify-content: center;
   align-items: center;
   transition: all 0.3s ease;
+  text-shadow: 0.03vw 0.03vw 0.1vw rgba(0, 0, 0, 0.5);
 }
 
 .theme-button:hover {
