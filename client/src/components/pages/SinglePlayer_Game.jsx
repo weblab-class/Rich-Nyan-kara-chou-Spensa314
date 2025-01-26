@@ -8,6 +8,20 @@ import { UserContext } from "../App";
 import seedrandom from "seedrandom";
 import "./Loading.css";
 
+const firstWord = () => {
+    const lister = [
+        "apple", "the", "over", "user", "under",
+        "banana", "cherry", "grape", "orange", "lemon",
+        "pineapple", "pear", "mango", "peach", "plum",
+        "table", "chair", "desk", "lamp", "window",
+        "happy", "sad", "excited", "calm", "angry",
+        "ocean", "mountain", "valley", "river", "forest",
+        "house", "building", "apartment", "cabin", "castle"
+      ];
+    const index = Math.floor(Math.random() * lister.length);
+      return lister[index];
+}
+
 const SinglePlayer_Game = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -21,8 +35,9 @@ const SinglePlayer_Game = () => {
   const inputRef = useRef(null);
   const [guest, setGuest] = useState(false);
   const [isLoggedIn, setLoggedIn] = useState(false);
+  const fW = firstWord();
   const [gameState, setGameState] = useState({
-    prevWord: "apple",
+    prevWord: fW,
     score: 0,
     curScore: 0,
     curQuery: "",
@@ -32,7 +47,7 @@ const SinglePlayer_Game = () => {
     minWordLength: minLetters,
     seed: "",
     queries: [],
-    words: ["apple"],
+    words: [fW],
   });
 
   useEffect(() => {
@@ -261,12 +276,48 @@ const SinglePlayer_Game = () => {
     );
   }
 
+  const restartGame = () => {
+    const newSeed = "seed" + Math.floor(Math.random() * 1000000); // Generate a new seed
+    const initialWord = firstWord(); // Get the initial word
+    const firstLetter = generateRandomLetter(newSeed); // Generate the first letter
+  
+    setIndex(0); // Reset index
+    setGameState({
+      prevWord: initialWord,
+      score: 0,
+      curScore: 0,
+      curQuery: "",
+      curLetter: firstLetter,
+      nextLetter: generateRandomLetter(deriveSeed(newSeed, 1)),
+      timerValue: parseInt(activeTime),
+      minWordLength: minLetters,
+      seed: newSeed,
+      queries: [],
+      words: [initialWord],
+    });
+    setQuery(""); // Clear the input field
+    setIsWaiting(false); // Exit waiting mode
+    if (inputRef.current) {
+      inputRef.current.focus(); // Refocus the input field
+    }
+  };
+
   return (
     !isLoggedIn ? 
     <div className="intermediate-container">
     </div>:(
     <>
       <div className="game-container">
+        {/* restart */}
+        <div className="restart-button-container">
+          <button
+            className="restart-button"
+            onClick={restartGame}
+          >
+            Restart Game
+          </button>
+        </div>
+
         {/* Scoreboard */}
         <div className="highscore-container">
           <img src="/images/crown.png" alt="Crown" className="highscore-crown" />

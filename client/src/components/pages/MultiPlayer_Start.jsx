@@ -25,6 +25,7 @@ const MultiPlayer_Start = () => {
   const navigate = useNavigate();
   const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
   const [isLoggedIn, setLoggedIn] = useState(false);
+
   const onInfoButtonClick = () => {
     setIsInfoModalOpen(true);
   };
@@ -64,6 +65,10 @@ const MultiPlayer_Start = () => {
       setHost(updatedHost);
       if (updatedHost === id) {
         setIsHost(true);
+        setMinLetters(location.state.minLetters);
+        setActiveTime(location.state.time);
+        setHideLetter(location.state.hideLetter);
+        setHardMode(location.state.hardMode);
       }
     });
 
@@ -357,17 +362,17 @@ const MultiPlayer_Start = () => {
               <div className="settings-modal-hideLetter">
                 Hide Next Letter
                 <label className="switch">
-                  <input type="checkbox" onClick={onHideLetterClick} />
-                  <span className="slider round"></span>
+                    <input type="checkbox" checked={hideLetter} onChange={onHideLetterClick} />
+                    <span className="slider round"></span>
                 </label>
-              </div>
-              <div className="settings-modal-hardMode">
+                </div>
+                <div className="settings-modal-hardMode">
                 Hard Mode
                 <label className="switch">
-                  <input type="checkbox" onClick={onHardModeClick} />
-                  <span className="slider round"></span>
+                    <input type="checkbox" checked={hardMode} onChange={onHardModeClick} />
+                    <span className="slider round"></span>
                 </label>
-              </div>
+                </div>
             </div>
           </div>
         )}

@@ -41,7 +41,7 @@ const MultiPlayer_Score_Summary = () => {
       setRoomState(location.state.state || {});
       setQueries(location.state.queries || []);
       setOwnScore(location.state.score || 0);
-
+      console.log(location.state.state);
       // Default opponent setup
       const initialIndex = 0; // Start with the first opponent
       setIndex(initialIndex);
@@ -105,7 +105,14 @@ const MultiPlayer_Score_Summary = () => {
           if (res === true) {
             alert("Game already started!");
           } else {
-            navigate(`/room/${roomCode}`);
+            navigate(`/room/${roomCode}`, {
+              state: {
+                hideLetter: roomState.settings.hideLetter,
+                hardMode: roomState.settings.type,
+                minLetters: roomState.settings.minLength,
+                time: roomState.settings.time,
+              },
+            });
           }
         });
       } else {
