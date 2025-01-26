@@ -24,7 +24,14 @@ const NavBar = () => {
   };
 
   const handleLeaderboardClick = () => {
-    navigate("/leaderboard");
+    navigate("/leaderboard", {
+      state: {
+        minLetters: 3,
+        activeTime: 30,
+        hardMode: false,
+        hideLetter: false,
+      },
+    });
   };
 
   const handleProfileClick = () => {

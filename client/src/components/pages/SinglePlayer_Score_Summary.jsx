@@ -63,7 +63,25 @@ const SinglePlayer_Score_Summary = () => {
   }, [location.state, userId]);
 
   const handleNextClick = () => {
-    navigate("/leaderboard");
+    navigate("/leaderboard", {
+      state: {
+        minLetters,
+        activeTime,
+        hardMode,
+        hideLetter,
+      },
+    });
+  };
+
+  const handleAgainClick = () => {
+    navigate("/room/solo", {
+      state: {
+        minLetters: minLetters,
+        activeTime: activeTime,
+        hardMode: hardMode,
+        hideLetter: hideLetter,
+      },
+    });
   };
 
   // Save the score to the backend
@@ -112,7 +130,11 @@ const SinglePlayer_Score_Summary = () => {
         {isSaving && <div className="saving-indicator">Saving score...</div>}
 
         <div onClick={handleNextClick}>
-          <img src="/images/next.png" alt="Next" className="next-leaderboard" />
+          <img src="/images/crown.png" alt="Next" className="next-leaderboard" />
+        </div>
+
+        <div onClick={handleAgainClick}>
+          <img src="/images/next.png" alt="Again" className="again" />
         </div>
       </div>
     </>

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import "../../utilities.css";
 import NavBar from "../modules/NavBar";
 import { useNavigate, useParams } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import {get, post} from "../../utilities.js";
 import "./Settings.css";
 import "./Info.css";
@@ -9,14 +10,14 @@ import "./SinglePlayer_Start.css";
 
 const SinglePlayer_Start = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [minLetters, setMinLetters] = useState(3);
-  const [activeTime, setActiveTime] = useState(30);
-  const [hideLetter, setHideLetter] = useState(false);
-  const [hardMode, setHardMode] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [minLetters, setMinLetters] = useState(location.state?.minLetters || 3);
+  const [activeTime, setActiveTime] = useState(location.state?.activeTime || 30);
+  const [hideLetter, setHideLetter] = useState(location.state?.hideLetter || false);
+  const [hardMode, setHardMode] = useState(location.state?.hardMode || false);
   const [player, setPlayer] = useState(["Player 1"]); //tesp
   const [isLoggedIn, setLoggedIn] = useState(false);
-
-  const navigate = useNavigate();
 
   useEffect(() => {
     get("/api/whoami").then((res) => {

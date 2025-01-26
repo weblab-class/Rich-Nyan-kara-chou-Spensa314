@@ -39,7 +39,14 @@ const Home = () => {
     setIsModalOpen(true);
   };
   const onSingleplayerClick = () => {
-    navigate(`/room/solo`);
+    navigate(`/room/solo`, {
+      state: {
+        minLetters: 3,
+        activeTime: 30,
+        hardMode: false,
+        hideLetter: false,
+      },
+    });
   };
   const onExitClick = () => {
     setIsModalOpen(false);
