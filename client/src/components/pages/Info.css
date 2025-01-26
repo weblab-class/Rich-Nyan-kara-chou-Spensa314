@@ -18,10 +18,9 @@
   transition: all 0.2s ease; /* Smooth transition */
   padding: 0.3vw var(--xs);
   margin-bottom: var(--s);
-  text-shadow: none;
+  text-shadow: 0.03vw 0.03vw 0.1vw rgba(0, 0, 0, 0.5);
   border: 0.1vw solid rgba(255, 255, 255, 0.3);
   box-shadow: 0.1vw 0.1vw 0.2vw rgba(0, 0, 0, 0.5);
-  text-shadow: 0 0 1vw white;
 }
 
 .how-to-play-button:hover {
@@ -34,7 +33,6 @@
     var(--dark--brown)
   );
   color: var(--beige);
-  text-shadow: none;
 }
 
 .info-button {
