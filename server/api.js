@@ -164,16 +164,14 @@ router.post("/add-theme", auth.ensureLoggedIn, async (req, res) => {
       .status(400)
       .send({ msg: "Missing required fields: userId, themeName, or themeCode" });
   }
-  console.log("WTF", themeName);
   try {
     const user = await User.findById(userId);
     if (!user) {
       return res.status(404).send({ msg: "User not found" });
     }
-    if (user.savedThemes.contains(themeName)) {
-      return res.status(404).send({ msg: "Theme already present" });
+    if (user.savedThemes.some(theme => theme.name === themeName)) {
+      return res.status(404).send({ msg: "Theme present already" });
     }
-
     user.savedThemes.push({
       name: themeName,
       cssVariables: themeCode, // Save the stringified theme code
@@ -196,15 +194,15 @@ router.post("/delete-theme", auth.ensureLoggedIn, async (req, res) => {
   }
 
   try {
+    console.log(userId, themeName, themeCode);
     const user = await User.findById(userId);
     if (!user) {
-      return res.status(404).sSend({ msg: "User not found" });
+      return res.status(404).send({ msg: "User not found" });
     }
-    if (!user.savedThemes.has(themeName)) {
+    if (!user.savedThemes.some(theme => theme.name === themeName)) {
       return res.status(404).send({ msg: "Theme not found" });
     }
-    console.log(themeName);
-    delete user.savedThemes[themeName];
+    user.savedThemes = user.savedThemes.filter(theme => theme.name !== themeName);
     await user.save();
 
     res.status(200).send(user.savedThemes);

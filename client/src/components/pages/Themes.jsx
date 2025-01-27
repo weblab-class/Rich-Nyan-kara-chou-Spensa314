@@ -91,14 +91,13 @@ const Themes = () => {
       themeCode: JSON.stringify(curThemeCode), // Match the backend field name
     })
       .then((res) => {
-        console.log(res);
         setSavedThemes((prevThemes) => [
           ...prevThemes,
           { name: curTheme, cssVariables: JSON.stringify(curThemeCode) },
         ]); // Update state with the new theme
       })
       .catch((err) => {
-        console.error("Error saving theme:", err);
+        console.error("Theme already exists!");
       });
   };
 
@@ -108,7 +107,6 @@ const Themes = () => {
       themeName: curTheme,
       themeCode: JSON.stringify(curThemeCode),
     }).then((res) => {
-      console.log("Response from delete:", res); // Log the response to debug
       setSavedThemes(res); // Update state with the new theme list
     });
   };
@@ -158,9 +156,6 @@ const Themes = () => {
                 cssVariables = savedTheme.cssVariables || {};
               }
 
-              // Debugging the parsed variables
-              console.log(`Theme ${index + 1} CSS Variables:`, cssVariables);
-
               return (
                 <div
                   key={index}
@@ -176,7 +171,7 @@ const Themes = () => {
                       ${cssVariables["--light--brown"] || "#D7B8A2"}
                     )
                   `,
-                    color: cssVariables["--white"] || "#000000", // Fallback for text color
+                    color: cssVariables["--white"] || "#FFFFFF", // Fallback for text color
                     cursor: "pointer", // Visual cue for interactivity
                   }}
                   onClick={() => {
