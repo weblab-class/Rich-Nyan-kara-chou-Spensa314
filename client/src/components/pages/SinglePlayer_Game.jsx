@@ -188,31 +188,6 @@ const SinglePlayer_Game = () => {
     }
   };
 
-  //   // Save the score to the backend
-  //   const saveScore = async (userId, score, settings) => {
-  //     console.log("Saving score:", { userId, score, settings });
-
-  //     try {
-  //       const response = await post("/api/updateSinglePlayerScore", {
-  //         userId,
-  //         score: score,
-  //         settings: JSON.stringify(settings),
-  //         guest: guest,
-  //       });
-
-  //       if (response.success) {
-  //         console.log("Score updated successfully:", response);
-  //         // alert("Score saved!");
-  //       } else {
-  //         console.error("Failed to update score:", response);
-  //         alert("Could not save the score.");
-  //       }
-  //     } catch (error) {
-  //       console.error("Error updating score:", error);
-  //       alert("An error occurred while saving the score.");
-  //     }
-  //   };
-
   useEffect(() => {
     if (isWaiting) return;
     const timer = setInterval(() => {
@@ -221,13 +196,6 @@ const SinglePlayer_Game = () => {
         if (newTimerValue <= 0) {
           clearInterval(timer);
 
-          // call saveScore function editing
-          // saveScore(userId, prevState.score, {
-          //     minLetters: parseInt(minLetters, 10),
-          //     activeTime,
-          //     hideLetter,
-          //     hardMode,
-          //     });
           navigate(`/results/solo`, {
             state: {
               queries: prevState.queries,
@@ -236,6 +204,7 @@ const SinglePlayer_Game = () => {
               activeTime: activeTime,
               hardMode: hardMode,
               hideLetter: hideLetter,
+              words: prevState.words,
             },
           });
           return { ...prevState, timerValue: 0 }; // Stop timer at 0

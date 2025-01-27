@@ -9,6 +9,8 @@ import "./Leaderboard.css";
 
 const Leaderboard = () => {
   const { username, profilepicture, userId } = useContext(UserContext);
+  const [clickedPlayerId, setClickedPlayerId] = useState(null); // Track clicked player
+
   const [topPlayers, setTopPlayers] = useState([]);
   const location = useLocation();
   const [minLetters, setMinLetters] = useState(location.state?.minLetters || 3);
@@ -52,6 +54,11 @@ const Leaderboard = () => {
     };
     fetchLeaderboardData();
   }, [userId, minLetters, activeTime, hideLetter, hardMode]);
+
+  const handlePlayerClick = (playerId) => {
+    // Toggle visibility of queries for the clicked player
+    setClickedPlayerId(clickedPlayerId === playerId ? null : playerId);
+  };
 
   {
     /**settings adjustments */
@@ -100,6 +107,7 @@ const Leaderboard = () => {
                       ? "top-player-3"
                       : ""
               } ${player.playerId === userId ? "glowy" : ""}`}
+              onClick={() => handlePlayerClick(player.playerId)} // Add click event handler
             >
               <div
                 className={`leaderboard-place ${
@@ -115,13 +123,22 @@ const Leaderboard = () => {
                 {index + 1}
               </div>
               <div className="leaderboard-player-score-container">
-                <div className={`leaderboard-player`}>
-                  {" "}
-                  {player.playerId === userId ? `${player.name} (you)` : player.name}
-                </div>
-                <div className="leaderboard-player-score">
-                  {parseInt(player.highScore).toLocaleString()}
-                </div>
+                {clickedPlayerId === player.playerId ? (
+                  // When clicked, show the query list
+                  <div className="query-list-container show">
+                    {player.queries ? player.queries.join(" - ") : "No queries available"}
+                  </div>
+                ) : (
+                  // When not clicked, show the rank, username, and score
+                  <>
+                    <div className="leaderboard-player">
+                      {player.playerId === userId ? `${player.name} (you)` : player.name}
+                    </div>
+                    <div className="leaderboard-player-score">
+                      {parseInt(player.highScore).toLocaleString()}
+                    </div>
+                  </>
+                )}
               </div>
             </div>
           ))}

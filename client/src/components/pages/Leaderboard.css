@@ -76,6 +76,25 @@
 
   display: flex;
   align-items: center;
+  /* flex-wrap: nowrap; new for horizontal scrolling of queries
+  overflow-x: auto; */
+}
+
+.query-list-container {
+  display: none; /* Hide by default */
+  padding: var(--xs);
+  font-size: 2.5vw; /* Same as the player score text */
+  white-space: nowrap;
+}
+
+.query-list-container.show {
+  display: block; /* Show when clicked */
+  /* color: white; */
+}
+
+.query-item {
+  margin-right: var(--xs);
+  white-space: nowrap;
 }
 
 .leaderboard-place {

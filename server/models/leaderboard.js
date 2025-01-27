@@ -18,6 +18,10 @@ const leaderboardSchema = new mongoose.Schema({
     required: true,
     default: 0,
   },
+  queries: {
+    type: [String],
+    default: [],
+  },
   settings: {
     type: String, // JSON string for settings { minLetters, activeTime, hideLetter, hardMode }
     required: true,

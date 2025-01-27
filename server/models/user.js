@@ -6,6 +6,7 @@ const SinglePlayerSchema = new mongoose.Schema({
     required: true,
   },
   highScore: { type: Number, default: 0 },
+  queries: { type: [String], default: [] },
   totalScore: { type: Number, default: 0 },
   gamesPlayed: { type: Number, default: 0 },
 });
@@ -19,6 +20,7 @@ const MultiPlayerSchema = new mongoose.Schema({
   losses: { type: Number, default: 0 },
 });
 
+// this is not standard capitalization
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -63,11 +65,11 @@ const userSchema = new mongoose.Schema({
     default: [
       {
         name: "Default",
-        cssVariables: `{"--white":"#fff","--light--beige":"#ffebdd","--dull--beige":"#ede0d4","--beige":"#fae0cf","--off--beige":"#f2d3be","--dark--beige":"#e1b89c","--off--dark--beige":"#d2a68a","--light--beige--glass":"rgba(255, 226, 203, 0.353)","--beige--glass":"rgba(202, 162, 130, 0.874)","--brown--glass":"rgba(140, 100, 73, 0.708)","--light--brown":"#b08968","--off--light--brown":"#b17f59","--dark--light--brown":"#a87a55","--brown":"#7f5239","--beige--shadow":"rgb(179, 136, 87)","--off--brown":"#6e452f","--dull--dark--brown":"#5e402c","--dark--brown":"#4a230f","--dark--brown--glass":"#4a230fcf","--off--dark--brown":"#411e0c"}`
+        cssVariables: `{"--white":"#fff","--light--beige":"#ffebdd","--dull--beige":"#ede0d4","--beige":"#fae0cf","--off--beige":"#f2d3be","--dark--beige":"#e1b89c","--off--dark--beige":"#d2a68a","--light--beige--glass":"rgba(255, 226, 203, 0.353)","--beige--glass":"rgba(202, 162, 130, 0.874)","--brown--glass":"rgba(140, 100, 73, 0.708)","--light--brown":"#b08968","--off--light--brown":"#b17f59","--dark--light--brown":"#a87a55","--brown":"#7f5239","--beige--shadow":"rgb(179, 136, 87)","--off--brown":"#6e452f","--dull--dark--brown":"#5e402c","--dark--brown":"#4a230f","--dark--brown--glass":"#4a230fcf","--off--dark--brown":"#411e0c"}`,
       },
     ],
   },
-  
+
   createdAt: {
     type: Date,
     default: Date.now, // Automatically set the creation date
@@ -100,6 +102,38 @@ userSchema.statics.createGuestUser = async function () {
 
   return guestUser.save(); // Save and return the guest user
 };
+
+// honestly the time complexity is not. the best.
+// will revamp it if needed but there are pros and cons to all the different methods
+userSchema.post("findOneAndUpdate", async function (doc) {
+  if (!doc) return;
+
+  if (!doc.isGuest) {
+    // only real users have leaderboard entries
+    const Leaderboard = mongoose.model("Leaderboard");
+    await Leaderboard.updateMany(
+      { playerId: doc._id },
+      {
+        name: doc.name,
+        profilePicture: doc.profilePicture,
+      }
+    );
+  }
+});
+
+userSchema.post("save", async function () {
+  if (this.isGuest) return;
+
+  const Leaderboard = mongoose.model("Leaderboard");
+
+  await Leaderboard.updateMany(
+    { playerId: this._id },
+    {
+      name: this.name,
+      profilePicture: this.profilePicture,
+    }
+  );
+});
 
 const User = mongoose.model("User", userSchema);
 
