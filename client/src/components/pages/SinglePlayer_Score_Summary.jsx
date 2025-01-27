@@ -102,11 +102,11 @@ const SinglePlayer_Score_Summary = () => {
         // Optional: Provide user feedback
       } else {
         console.error("Failed to update score:", response);
-        alert("Could not save the score.");
+        //alert("Could not save the score.");
       }
     } catch (error) {
       console.error("Error updating score:", error);
-      alert("An error occurred while saving the score.");
+      //alert("An error occurred while saving the score.");
     }
   };
 

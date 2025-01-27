@@ -14,7 +14,7 @@ async function sendPromptToClaude(theme) {
 
   try {
     const prompt = `
-Hello, Claude! I want you to be a color palette generator. Can you keep the same names but change the theme of these colors? If the theme has multiple colors, make sure to have all the colors. Print only the same names and their values.
+Hello, Claude! I want you to be a color palette generator. Can you keep the same names but change the theme of these colors? If the theme has or names multiple colors, make sure to have an even split of each color. Print only the same names and their values.
 
 Theme: ${theme}
 
