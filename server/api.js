@@ -141,6 +141,47 @@ router.post("/update-username", auth.ensureLoggedIn, async (req, res) => {
   }
 });
 
+router.get("/getSavedThemes/:userId", async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    res.json(user.savedThemes || []);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+// Route to handle profile picture upload
+router.post("/add-theme", auth.ensureLoggedIn, async (req, res) => {
+  const { userId, themeName, themeCode } = req.body;
+
+  if (!userId || !themeName || !themeCode) {
+    return res.status(400).send({ msg: "Missing required fields: userId, themeName, or themeCode" });
+  }
+
+  try {
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).send({ msg: "User not found" });
+    }
+
+    user.savedThemes.push({
+      name: themeName,
+      cssVariables: themeCode, // Save the stringified theme code
+    });
+    await user.save();
+
+    res.status(200).send({ success: true, savedThemes: user.savedThemes });
+  } catch (err) {
+    console.error("Error saving theme:", err);
+    res.status(500).send({ msg: "Internal server error" });
+  }
+});
+
 // Update single-player scores
 router.post("/updateSinglePlayerScore", auth.ensureLoggedIn, async (req, res) => {
   const { userId, score, settings, guest } = req.body;
