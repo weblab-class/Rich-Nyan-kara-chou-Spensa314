@@ -53,7 +53,7 @@ const SinglePlayer_Score_Summary = () => {
     // if (location.state && isLoggedIn && !isSaving && guest === false) {
     if (location.state && isLoggedIn && !isSaving) {
       setIsSaving(true);
-      saveScore(userId, location.state.score, location.state.words, {
+      saveScore(userId, location.state.score, location.state.queries, {
         minLetters: parseInt(location.state.minLetters, 10),
         activeTime: parseInt(location.state.activeTime, 10),
         hideLetter: location.state.hideLetter,
@@ -85,16 +85,16 @@ const SinglePlayer_Score_Summary = () => {
   };
 
   // Save the score to the backend
-  const saveScore = async (userId, score, words, settings) => {
-    console.log("Saving score:", { userId, score, words, settings });
+  const saveScore = async (userId, score, queries, settings) => {
+    console.log("Saving score:", { userId, score, queries, settings });
 
     try {
       const response = await post("/api/updateSinglePlayerScore", {
         userId,
         score: score,
+        queries: JSON.stringify(queries),
         settings: JSON.stringify(settings),
         guest: guest,
-        words: words,
       });
 
       if (response.success) {

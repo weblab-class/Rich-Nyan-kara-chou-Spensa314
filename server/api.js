@@ -214,9 +214,9 @@ router.post("/delete-theme", auth.ensureLoggedIn, async (req, res) => {
 
 // Update single-player scores
 router.post("/updateSinglePlayerScore", auth.ensureLoggedIn, async (req, res) => {
-  const { userId, score, words, settings, guest } = req.body;
+  const { userId, score, queries, settings, guest } = req.body;
   console.log("Request Body:", req.body);
-  if (!userId || !settings || !words || score === undefined) {
+  if (!userId || !settings || !queries || score === undefined) {
     return res.status(400).json({ message: "Missing required fields" });
   }
 
@@ -244,7 +244,7 @@ router.post("/updateSinglePlayerScore", auth.ensureLoggedIn, async (req, res) =>
       scoreEntry = {
         settings: settingsString,
         highScore: score,
-        queries: words,
+        queries: queries,
         totalScore: score,
         gamesPlayed: 1,
       };
@@ -254,7 +254,7 @@ router.post("/updateSinglePlayerScore", auth.ensureLoggedIn, async (req, res) =>
       // Update the existing entry
       if (score > scoreEntry.highScore) {
         scoreEntry.highScore = score;
-        scoreEntry.queries = words;
+        scoreEntry.queries = queries;
       }
       // scoreEntry.highScore = Math.max(scoreEntry.highScore, score);
       scoreEntry.totalScore += score;
@@ -278,7 +278,7 @@ router.post("/updateSinglePlayerScore", auth.ensureLoggedIn, async (req, res) =>
           name: user.name,
           profilePicture: user.profilePicture,
           highScore: scoreEntry.highScore,
-          queries: words,
+          queries: queries,
           settings: settingsString,
           rank: 0, // rank will be calculated later
         });
@@ -287,7 +287,7 @@ router.post("/updateSinglePlayerScore", auth.ensureLoggedIn, async (req, res) =>
         // Update their score if it's higher
         if (existingLeaderboardEntry.highScore < scoreEntry.highScore) {
           existingLeaderboardEntry.highScore = scoreEntry.highScore;
-          existingLeaderboardEntry.queries = words;
+          existingLeaderboardEntry.queries = queries;
         }
         await existingLeaderboardEntry.save();
       }

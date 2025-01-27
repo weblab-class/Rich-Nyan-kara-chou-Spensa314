@@ -112,8 +112,8 @@ const SinglePlayer_Game = () => {
         hideLetter: hideLetter,
         hardMode: hardMode,
       });
-    get("/api/leaderboard", { userId, settings }).then((res) => {
-        if (res.userScore) setHighScore(res.userScore);
+    get("/api/topScore", { userId, settings }).then((res) => {
+        if (res.highScore) setHighScore(res.highScore);
     });
 
     if (inputRef.current) {

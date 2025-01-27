@@ -4,13 +4,11 @@ import NavBar from "../modules/NavBar";
 import { useNavigate, useLocation } from "react-router-dom";
 import { get } from "../../utilities";
 import { UserContext } from "../App";
-
 import "./Leaderboard.css";
 
 const Leaderboard = () => {
   const { username, profilepicture, userId } = useContext(UserContext);
-  const [clickedPlayerId, setClickedPlayerId] = useState(null); // Track clicked player
-
+  const [clickedPlayer, setClickedPlayer] = useState(null); // Store clicked player data
   const [topPlayers, setTopPlayers] = useState([]);
   const location = useLocation();
   const [minLetters, setMinLetters] = useState(location.state?.minLetters || 3);
@@ -20,8 +18,8 @@ const Leaderboard = () => {
 
   const navigate = useNavigate();
   const [isLoggedIn, setLoggedIn] = useState(false);
+
   useEffect(() => {
-    //todo neha: use usercontext later for this
     get("/api/whoami").then((res) => {
       if (!res.name) {
         navigate("/");
@@ -29,13 +27,13 @@ const Leaderboard = () => {
       }
       setLoggedIn(true);
     });
-  });
+  }, [navigate]);
 
   useEffect(() => {
     const fetchLeaderboardData = async () => {
       try {
         const settings = JSON.stringify({
-          minLetters: parseInt(minLetters, 10), //10 is the base that's so cool
+          minLetters: parseInt(minLetters, 10),
           activeTime: parseInt(activeTime, 10),
           hideLetter: hideLetter,
           hardMode: hardMode,
@@ -55,28 +53,21 @@ const Leaderboard = () => {
     fetchLeaderboardData();
   }, [userId, minLetters, activeTime, hideLetter, hardMode]);
 
-  const handlePlayerClick = (playerId) => {
-    // Toggle visibility of queries for the clicked player
-    setClickedPlayerId(clickedPlayerId === playerId ? null : playerId);
+  const handlePlayerClick = (player) => {
+    // Show modal with the clicked player's queries
+    setClickedPlayer(player);
   };
 
-  {
-    /**settings adjustments */
-  }
+  const closeModal = () => {
+    setClickedPlayer(null);
+  };
+
   const onMinLettersClick = () => {
-    if (parseInt(minLetters, 10) === 6) {
-      setMinLetters(3);
-    } else {
-      setMinLetters(parseInt(minLetters, 10) + 1);
-    }
+    setMinLetters((prev) => (prev === 6 ? 3 : prev + 1));
   };
 
   const onTimeClick = () => {
-    if (parseInt(activeTime, 10) === 30) {
-      setActiveTime(60);
-    } else {
-      setActiveTime(30);
-    }
+    setActiveTime((prev) => (prev === 30 ? 60 : 30));
   };
 
   const onHardModeClick = () => {
@@ -102,43 +93,33 @@ const Leaderboard = () => {
                 index === 0
                   ? "top-player-1"
                   : index === 1
-                    ? "top-player-2"
-                    : index === 2
-                      ? "top-player-3"
-                      : ""
+                  ? "top-player-2"
+                  : index === 2
+                  ? "top-player-3"
+                  : ""
               } ${player.playerId === userId ? "glowy" : ""}`}
-              onClick={() => handlePlayerClick(player.playerId)} // Add click event handler
+              onClick={() => handlePlayerClick(player)}
             >
               <div
                 className={`leaderboard-place ${
                   index === 0
                     ? "top-player-1-place"
                     : index === 1
-                      ? "top-player-2-place"
-                      : index === 2
-                        ? "top-player-3-place"
-                        : ""
+                    ? "top-player-2-place"
+                    : index === 2
+                    ? "top-player-3-place"
+                    : ""
                 }`}
               >
                 {index + 1}
               </div>
               <div className="leaderboard-player-score-container">
-                {clickedPlayerId === player.playerId ? (
-                  // When clicked, show the query list
-                  <div className="query-list-container show">
-                    {player.queries ? player.queries.join(" - ") : "No queries available"}
-                  </div>
-                ) : (
-                  // When not clicked, show the rank, username, and score
-                  <>
-                    <div className="leaderboard-player">
-                      {player.playerId === userId ? `${player.name} (you)` : player.name}
-                    </div>
-                    <div className="leaderboard-player-score">
-                      {parseInt(player.highScore).toLocaleString()}
-                    </div>
-                  </>
-                )}
+                <div className="leaderboard-player">
+                  {player.playerId === userId ? `${player.name} (you)` : player.name}
+                </div>
+                <div className="leaderboard-player-score">
+                  {parseInt(player.highScore).toLocaleString()}
+                </div>
               </div>
             </div>
           ))}
@@ -158,7 +139,33 @@ const Leaderboard = () => {
           </div>
         </div>
       </div>
-      ;
+
+      {/* Modal */}
+      {clickedPlayer && (
+        <div className="modal-overlay" onClick={closeModal}>
+          <div className="modal-content-container" onClick={(e) => e.stopPropagation()}>
+            <h2 className="modal-title">{clickedPlayer.name}'s Queries</h2>
+            <div className="modal-result-container">
+              {clickedPlayer.queries && clickedPlayer.queries.length > 0 ? (
+                // Parse the queries and display them
+                <ul>
+                  {JSON.parse(clickedPlayer.queries).map(([query, value], idx) => (
+                    <li key={idx} className="modal-result-term">
+                      <strong>{query}</strong>
+                      <span className="modal-result-query">{parseInt(value).toLocaleString()}</span>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p>No queries available</p>
+              )}
+            </div>
+            <button className="close-modal-button" onClick={closeModal}>
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </>
   );
 };
