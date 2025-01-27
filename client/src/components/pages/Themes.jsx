@@ -28,12 +28,13 @@ const Themes = () => {
       setLoggedIn(true);
       setGuest(res.isGuest);
       setUserId(res._id);
-      get(`/api/getSavedThemes/${res._id}`).then((themes) => {
-        setSavedThemes(themes || []); // Populate themes from the server
-      })
-      .catch((err) => {
-        console.error("Failed to fetch saved themes:", err);
-      });
+      get(`/api/getSavedThemes/${res._id}`)
+        .then((themes) => {
+          setSavedThemes(themes || []); // Populate themes from the server
+        })
+        .catch((err) => {
+          console.error("Failed to fetch saved themes:", err);
+        });
     });
   }, []);
 
@@ -89,15 +90,26 @@ const Themes = () => {
       themeName: curTheme, // Match the backend field name
       themeCode: JSON.stringify(curThemeCode), // Match the backend field name
     })
-    .then((res) => {
-      console.log(res);
-      setSavedThemes((prevThemes) => [
-        ...prevThemes,
-        { name: curTheme, cssVariables: JSON.stringify(curThemeCode) },
-      ]); // Update state with the new theme
-    })
-    .catch((err) => {
-      console.error("Error saving theme:", err);
+      .then((res) => {
+        console.log(res);
+        setSavedThemes((prevThemes) => [
+          ...prevThemes,
+          { name: curTheme, cssVariables: JSON.stringify(curThemeCode) },
+        ]); // Update state with the new theme
+      })
+      .catch((err) => {
+        console.error("Error saving theme:", err);
+      });
+  };
+
+  const onDeleteClick = () => {
+    post("/api/delete-theme", {
+      userId,
+      themeName: curTheme,
+      themeCode: JSON.stringify(curThemeCode),
+    }).then((res) => {
+      console.log("Response from delete:", res); // Log the response to debug
+      setSavedThemes(res); // Update state with the new theme list
     });
   };
 
@@ -126,30 +138,35 @@ const Themes = () => {
             Generate Theme
           </div>
         </div>
-        <div onClick={onSaveClick} className="save-theme-button">Save Theme</div>
+        <div onClick={onSaveClick} className="save-theme-button">
+          Save Theme
+        </div>
         <div className="saved-themes-container">
-        {savedThemes && savedThemes.length > 0 ? (
-          savedThemes.map((savedTheme, index) => {
-            let cssVariables = {};
-            if (typeof savedTheme.cssVariables === "string") {
-              try {
-                cssVariables = JSON.parse(savedTheme.cssVariables);
-              } catch (error) {
-                console.error(`Error parsing CSS variables for theme "${savedTheme.name}":`, error);
+          {savedThemes && savedThemes.length > 0 ? (
+            savedThemes.map((savedTheme, index) => {
+              let cssVariables = {};
+              if (typeof savedTheme.cssVariables === "string") {
+                try {
+                  cssVariables = JSON.parse(savedTheme.cssVariables);
+                } catch (error) {
+                  console.error(
+                    `Error parsing CSS variables for theme "${savedTheme.name}":`,
+                    error
+                  );
+                }
+              } else {
+                cssVariables = savedTheme.cssVariables || {};
               }
-            } else {
-              cssVariables = savedTheme.cssVariables || {};
-            }
 
-            // Debugging the parsed variables
-            console.log(`Theme ${index + 1} CSS Variables:`, cssVariables);
+              // Debugging the parsed variables
+              console.log(`Theme ${index + 1} CSS Variables:`, cssVariables);
 
-            return (
-              <div
-                key={index}
-                className="individual-theme"
-                style={{
-                  backgroundImage: `
+              return (
+                <div
+                  key={index}
+                  className="individual-theme"
+                  style={{
+                    backgroundImage: `
                     linear-gradient(
                       45deg,
                       ${cssVariables["--dark--brown"] || "#4B2E2A"},
@@ -159,23 +176,31 @@ const Themes = () => {
                       ${cssVariables["--light--brown"] || "#D7B8A2"}
                     )
                   `,
-                  color: cssVariables["--white"] || "#000000", // Fallback for text color
-                  cursor: "pointer", // Visual cue for interactivity
-                }}
-                onClick={() => {
-                  updateThemeVariables(cssVariables); // Apply theme globally
-                  setCurTheme(savedTheme.name);
-                  setCurThemeCode(savedTheme.cssVariables);
-                }}
-              >
-                <div className="theme-text">{savedTheme.name || `Theme ${index + 1}`}</div>
-              </div>
-            );
-          })
-        ) : (
-          <div className="no-themes">No saved themes available</div>
-        )}
-      </div>
+                    color: cssVariables["--white"] || "#000000", // Fallback for text color
+                    cursor: "pointer", // Visual cue for interactivity
+                  }}
+                  onClick={() => {
+                    updateThemeVariables(cssVariables); // Apply theme globally
+                    setCurTheme(savedTheme.name);
+                    setCurThemeCode(savedTheme.cssVariables);
+                  }}
+                >
+                  <div className="theme-text">{savedTheme.name || `Theme ${index + 1}`}</div>
+                  {index !== 0 && savedTheme.name == curTheme && (
+                    <img
+                      src="/images/trash.png"
+                      alt="Trash"
+                      className="trash"
+                      onClick={onDeleteClick}
+                    />
+                  )}
+                </div>
+              );
+            })
+          ) : (
+            <div className="no-themes">No saved themes available</div>
+          )}
+        </div>
       </div>
     </>
   );

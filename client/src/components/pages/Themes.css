@@ -172,3 +172,15 @@
   filter: brightness(1.1);
   transform: scale(1.02);
 }
+
+.trash {
+  height: var(--s);
+  width: var(--s);
+  position: absolute;
+  right: var(--xs);
+  transition: all 0.2s ease;
+}
+
+.trash:hover {
+  transform: scale(1.25);
+}
