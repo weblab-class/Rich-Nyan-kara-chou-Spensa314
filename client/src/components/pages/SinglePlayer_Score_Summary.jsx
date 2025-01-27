@@ -50,17 +50,16 @@ const SinglePlayer_Score_Summary = () => {
   }, [location.state]);
 
   useEffect(() => {
-    if (location.state && !isSaving && guest) {
-      // Save score asynchronously after rendering
-      setIsSaving(true); // Set saving state
+    if (location.state && isLoggedIn && !isSaving && guest === false) {
+      setIsSaving(true);
       saveScore(userId, location.state.score, {
         minLetters: parseInt(location.state.minLetters, 10),
         activeTime: location.state.activeTime,
         hideLetter: location.state.hideLetter,
         hardMode: location.state.hardMode,
-      }); // Reset saving state
+      });
     }
-  }, [location.state, userId]);
+  }, [location.state, userId, guest, isSaving]);
 
   const handleNextClick = () => {
     navigate("/leaderboard", {
