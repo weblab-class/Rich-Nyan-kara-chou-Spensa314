@@ -17,6 +17,7 @@ const Themes = () => {
   const [curThemeCode, setCurThemeCode] = useState("");
   const [savedThemes, setSavedThemes] = useState([]);
   const [userId, setUserId] = useState(undefined);
+  const [buttonText, setButtonText] = useState("Save Theme");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -95,6 +96,13 @@ const Themes = () => {
           ...prevThemes,
           { name: curTheme, cssVariables: JSON.stringify(curThemeCode) },
         ]); // Update state with the new theme
+
+        setButtonText("Theme Saved!");
+        setTheme("");
+        // Revert the button text back to "Save Theme" after 2 seconds
+        setTimeout(() => {
+          setButtonText("Save Theme");
+        }, 1000);
       })
       .catch((err) => {
         console.error("Theme already exists!");
@@ -133,11 +141,11 @@ const Themes = () => {
             }}
           />
           <div onClick={onThemeClick} className="theme-button">
-            Generate Theme
+            {isLoading ? "Generating theme..." : "Generate Theme"}
           </div>
         </div>
         <div onClick={onSaveClick} className="save-theme-button">
-          Save Theme
+          {buttonText}
         </div>
         <div className="saved-themes-container">
           {savedThemes && savedThemes.length > 0 ? (

@@ -36,7 +36,7 @@
   background-color: var(--beige);
   border-radius: var(--s);
   width: 70vw;
-  height: 22vw;
+  height: 50dvh;
   box-shadow: 0 0 var(--xxs) rgba(0, 0, 0, 0.5); /* Adjust as needed */
   margin-bottom: var(--xs);
   display: flex;
@@ -78,6 +78,12 @@
   align-items: center;
   /* flex-wrap: nowrap; new for horizontal scrolling of queries
   overflow-x: auto; */
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.leaderboard-player-container:hover {
+  transform: scale(1.02);
 }
 
 .query-list-container {
@@ -139,6 +145,12 @@
     0.2vw 0.2vw 0.4vw rgba(0, 0, 0, 0.7);
 
   filter: brightness(1.05);
+
+  transition: all 0.2s ease;
+}
+
+.glowy:hover {
+  transform: scale(1.04);
 }
 
 .leaderboard-settings-container {
@@ -298,67 +310,131 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  backdrop-filter: blur(0.1vw);
+  -webkit-backdrop-filter: blur(0.1vw);
+  animation: fadeInOverlay 0.2s forwards; /* Add animation */
+}
+
+/* Keyframe for overlay fade-in */
+@keyframes fadeInOverlay {
+  0% {
+    opacity: 0;
+    visibility: hidden;
+  }
+  100% {
+    opacity: 1;
+    visibility: visible;
+  }
 }
 
 .modal-content-container {
-  background-color: var(--off--beige);
+  background-color: var(--dark--beige);
   border-radius: var(--s);
-  width: 60%; /* Adjust the modal width */
-  height: 75%; /* Adjust the modal height */
-  max-width: 600px; /* Optional constraint for larger screens */
-  max-height: 600px; /* Optional height constraint */
+  width: 80vw; /* Adjust the modal width */
+  max-height: 75dvh; /* Adjust the modal height */
   box-shadow: 0 0 var(--xxs) rgba(0, 0, 0, 0.5);
   display: flex;
   flex-direction: column;
   padding: var(--s);
   overflow-y: auto;
   scroll-behavior: smooth;
+  position: relative;
+  background: linear-gradient(
+    45deg,
+    var(--brown),
+    var(--dark--brown),
+    var(--off--brown),
+    var(--brown)
+  );
 }
 
 .modal-title {
   text-align: center;
   font-size: var(--m);
-  color: var(--brown);
-  margin: 5px 0; /* Reduce the margin */
+  color: var(--light--beige);
+  font-weight: normal;
+  margin: 0;
+}
+
+.modal-list-container {
+  background-color: var(--light--beige);
+  border-radius: var(--s);
+  margin: var(--xs);
+  box-shadow: 0 0 var(--xxs) rgba(0, 0, 0, 0.5); /* Adjust as needed */
+  margin-bottom: var(--xs);
+  display: flex;
+  flex-direction: column;
+  justify-content: top;
+  padding: var(--s);
+  overflow-y: auto;
+  scroll-behavior: smooth;
+}
+
+.modal-list-container::-webkit-scrollbar {
+  display: none;
 }
 
 .modal-result-container {
-  flex-grow: 1;
   display: flex;
-  flex-direction: column;
-  overflow-y: auto;
-  gap: 5px; /* Add spacing between list items */
+  position: relative;
+  flex-direction: row;
+  justify-content: space-between;
+  background-image: linear-gradient(45deg, var(--dark--beige), var(--off--beige));
+  box-shadow:
+    inset 0.1vw 0.1vw 0.3vw rgba(255, 255, 255, 0.5),
+    0.1vw 0.1vw 0.2vw rgba(0, 0, 0, 0.6); /* Adjust as needed */
+  margin: var(--xxs);
+  padding: var(--xxs) var(--xs);
+  margin-bottom: var(--xs);
+  border-radius: var(--s);
+  color: white;
+  font-size: 2.5vw;
+
+  display: flex;
+  align-items: center;
 }
 
 .modal-result-term {
-  display: flex;
-  justify-content: space-between;
-  background-color: var(--brown);
-  box-shadow: 0 0.1vw 0.2vw rgba(0, 0, 0, 0.5);
-  padding: var(--xxs) var(--xs);
-  border-radius: var(--s);
-  color: var(--beige);
-  font-size: 1rem;
-  align-items: center;
-  background: linear-gradient(45deg, var(--brown), var(--off--brown), var(--dark--brown), var(--off--brown));
+  max-width: 45vw;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .modal-result-query {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  padding-left: var(--xxs);
-  color: var(--dark--beige);
+  display: flex;
+  text-align: right;
 }
 
 .close-modal-button {
-  margin-top: 10px;
-  padding: 10px;
+  font-size: 2vw;
+  position: absolute;
+  top: var(--xs);
+  right: var(--xs);
   background-color: var(--dark--brown);
-  color: var(--white);
-  border: none;
-  border-radius: 4px;
-  width: 50px;
+  color: var(--beige);
+  height: var(--sm);
+  width: var(--sm);
+  box-shadow: 0.1vw 0.1vw 0.3vw rgba(0, 0, 0, 0.5);
+
+  display: flex;
   text-align: center;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+  transition: all 0.2s ease;
   cursor: pointer;
+}
+
+.close-modal-button:hover {
+  background-color: var(--beige);
+  color: var(--dark--brown);
+  transform: scale(1.2);
+}
+
+.no-queries {
+  font-size: var(--m);
+  text-align: center;
+  color: var(--dark--brown);
 }
