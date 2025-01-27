@@ -10,8 +10,6 @@ import "./Leaderboard.css";
 const Leaderboard = () => {
   const { username, profilepicture, userId } = useContext(UserContext);
   const [topPlayers, setTopPlayers] = useState([]);
-  const [userRank, setUserRank] = useState(null);
-  const [userScore, setUserScore] = useState(null);
   const location = useLocation();
   const [minLetters, setMinLetters] = useState(location.state?.minLetters || 3);
   const [activeTime, setActiveTime] = useState(location.state?.activeTime || 30);
@@ -30,13 +28,6 @@ const Leaderboard = () => {
       setLoggedIn(true);
     });
   });
-  // const [players, setPlayers] = useState([
-  //   { name: "Player 1", score: "1000000000000", place: "1" },
-  //   { name: "Player 2", score: "900000", place: "2" },
-  //   { name: "Player 3", score: "800000", place: "3" },
-  //   { name: "Player 4", score: "700000", place: "4" },
-  //   { name: "Player 5", score: "600000", place: "5" },
-  // ]);
 
   useEffect(() => {
     const fetchLeaderboardData = async () => {
@@ -54,8 +45,6 @@ const Leaderboard = () => {
           console.error("Error in response:", response.error);
         } else {
           setTopPlayers(response.topPlayers || []);
-          setUserRank(response.userRank || null);
-          setUserScore(response.userScore || null);
         }
       } catch (error) {
         console.error("Error fetching leaderboard:", error);

@@ -50,7 +50,8 @@ const SinglePlayer_Score_Summary = () => {
   }, [location.state]);
 
   useEffect(() => {
-    if (location.state && isLoggedIn && !isSaving && guest === false) {
+    // if (location.state && isLoggedIn && !isSaving && guest === false) {
+    if (location.state && isLoggedIn && !isSaving) {
       setIsSaving(true);
       saveScore(userId, location.state.score, {
         minLetters: parseInt(location.state.minLetters, 10),

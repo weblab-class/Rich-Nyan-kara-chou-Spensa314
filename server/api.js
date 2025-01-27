@@ -169,7 +169,7 @@ router.post("/add-theme", auth.ensureLoggedIn, async (req, res) => {
     if (!user) {
       return res.status(404).send({ msg: "User not found" });
     }
-    if (user.savedThemes.some(theme => theme.name === themeName)) {
+    if (user.savedThemes.some((theme) => theme.name === themeName)) {
       return res.status(404).send({ msg: "Theme present already" });
     }
     user.savedThemes.push({
@@ -199,10 +199,10 @@ router.post("/delete-theme", auth.ensureLoggedIn, async (req, res) => {
     if (!user) {
       return res.status(404).send({ msg: "User not found" });
     }
-    if (!user.savedThemes.some(theme => theme.name === themeName)) {
+    if (!user.savedThemes.some((theme) => theme.name === themeName)) {
       return res.status(404).send({ msg: "Theme not found" });
     }
-    user.savedThemes = user.savedThemes.filter(theme => theme.name !== themeName);
+    user.savedThemes = user.savedThemes.filter((theme) => theme.name !== themeName);
     await user.save();
 
     res.status(200).send(user.savedThemes);
@@ -303,18 +303,14 @@ router.get("/leaderboard", async (req, res) => {
   }
 
   try {
+    const user = await User.findById(userId);
+    console.log("This is my user: ", user);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
     const settingsFilter = JSON.stringify(JSON.parse(settings)); // Normalize the settings
-
-    // Query: Top 10 players
-    const topPlayers = await Leaderboard.find({ settings: settingsFilter })
-      .sort({ highScore: -1 }) //because ranks haven't been calculated yet
-      .limit(10); // Get top 10 players
-
-    // Calculate ranks for each player. Sorry guys we can;t get around the nlogn
-    // we might just have to sticj with it
-    topPlayers.forEach((player, index) => {
-      player.rank = index + 1; // Rank is position in sorted list (1-based index)
-    });
 
     router.get("/topScore", async (req, res) => {
       const { userId, settings } = req.query;
@@ -380,19 +376,42 @@ router.get("/leaderboard", async (req, res) => {
     // If user is not in top 10, add them as 11th entry
     if (userRank > 10) {
       topPlayers.push({
+    // Query: All players
+    const allPlayers = await Leaderboard.find({ settings: settingsFilter });
+
+    let guestScore = 0;
+    if (user.isGuest) {
+      guestScore =
+        user.singlePlayerScores.find((entry) => entry.settings === settingsFilter)?.highScore || 0;
+    }
+    // Add guest score to the leaderboard (if it's greater than 0)
+    if (user.isGuest) {
+      allPlayers.push({
         playerId: userId,
-        name: "You", // Display "You" for the user
-        profilePicture: "", // Optional: Provide the user's profile picture if available
-        highScore: userScore,
-        rank: userRank,
+        name: user.name,
+        profilePicture: user.profilePicture,
+        highScore: guestScore,
       });
     }
 
-    // Return the leaderboard and user's rank
+    allPlayers.sort((a, b) => b.highScore - a.highScore);
+
+    allPlayers.forEach((player, index) => {
+      player.rank = index + 1;
+    });
+
+    // Find the rank for the guest user or the normal user
+    const userPlayer = allPlayers.find((player) => player.playerId.toString() === userId);
+    const topPlayers = allPlayers.slice(0, 10);
+
+    // If the user is not in the top 10, add them
+    if (userPlayer && !topPlayers.some((player) => player.playerId.toString() === userId)) {
+      topPlayers.push(userPlayer);
+    }
+
+    // Return the top players
     res.json({
       topPlayers,
-      userRank,
-      userScore,
     });
   } catch (err) {
     console.error(err);
