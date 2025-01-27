@@ -53,6 +53,21 @@ const userSchema = new mongoose.Schema({
     type: [MultiPlayerSchema],
     default: [], // Default to an empty array
   },
+  savedThemes: {
+    type: [
+      {
+        name: String,
+        cssVariables: String,
+      },
+    ],
+    default: [
+      {
+        name: "Default",
+        cssVariables: `{"--white":"#fff","--light--beige":"#ffebdd","--dull--beige":"#ede0d4","--beige":"#fae0cf","--off--beige":"#f2d3be","--dark--beige":"#e1b89c","--off--dark--beige":"#d2a68a","--light--beige--glass":"rgba(255, 226, 203, 0.353)","--beige--glass":"rgba(202, 162, 130, 0.874)","--brown--glass":"rgba(140, 100, 73, 0.708)","--light--brown":"#b08968","--off--light--brown":"#b17f59","--dark--light--brown":"#a87a55","--brown":"#7f5239","--beige--shadow":"rgb(179, 136, 87)","--off--brown":"#6e452f","--dull--dark--brown":"#5e402c","--dark--brown":"#4a230f","--dark--brown--glass":"#4a230fcf","--off--dark--brown":"#411e0c"}`
+      },
+    ],
+  },
+  
   createdAt: {
     type: Date,
     default: Date.now, // Automatically set the creation date

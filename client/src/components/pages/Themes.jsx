@@ -1,8 +1,9 @@
 import { updateThemeVariables } from "../../utilities";
 import { useState } from "react";
 import { useContext } from "react";
+import { UserContext } from "../App";
 import NavBar from "../modules/NavBar";
-import { get } from "../../utilities";
+import { get, post } from "../../utilities";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Themes.css";
@@ -12,6 +13,10 @@ const Themes = () => {
   const [theme, setTheme] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [guest, setGuest] = useState(false);
+  const [curTheme, setCurTheme] = useState("");
+  const [curThemeCode, setCurThemeCode] = useState("");
+  const [savedThemes, setSavedThemes] = useState([]);
+  const [userId, setUserId] = useState(undefined);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -22,8 +27,15 @@ const Themes = () => {
       }
       setLoggedIn(true);
       setGuest(res.isGuest);
+      setUserId(res._id);
+      get(`/api/getSavedThemes/${res._id}`).then((themes) => {
+        setSavedThemes(themes || []); // Populate themes from the server
+      })
+      .catch((err) => {
+        console.error("Failed to fetch saved themes:", err);
+      });
     });
-  });
+  }, []);
 
   // Function to parse CSS variables from a CSS-like string
   const parseCSSVariables = (cssString) => {
@@ -58,10 +70,10 @@ const Themes = () => {
     get("/api/getTheme", { theme })
       .then((res) => {
         const content = res.content;
-        console.log("Response Content:", content[0].text);
-
         const newTheme = parseCSSVariables(content[0].text);
         updateThemeVariables(newTheme);
+        setCurTheme(theme);
+        setCurThemeCode(newTheme);
       })
       .catch((err) => {
         console.error("Error fetching theme:", err.message || err);
@@ -69,6 +81,24 @@ const Themes = () => {
       .finally(() => {
         setIsLoading(false); // Reset loading state
       });
+  };
+
+  const onSaveClick = () => {
+    post("/api/add-theme", {
+      userId,
+      themeName: curTheme, // Match the backend field name
+      themeCode: JSON.stringify(curThemeCode), // Match the backend field name
+    })
+    .then((res) => {
+      console.log(res);
+      setSavedThemes((prevThemes) => [
+        ...prevThemes,
+        { name: curTheme, cssVariables: JSON.stringify(curThemeCode) },
+      ]); // Update state with the new theme
+    })
+    .catch((err) => {
+      console.error("Error saving theme:", err);
+    });
   };
 
   return !isLoggedIn ? (
@@ -96,12 +126,56 @@ const Themes = () => {
             Generate Theme
           </div>
         </div>
-        <div className="save-theme-button">Save Theme</div>
+        <div onClick={onSaveClick} className="save-theme-button">Save Theme</div>
         <div className="saved-themes-container">
-          <div className="individual-theme">
-            <div className="theme-text">Default</div>
-          </div>
-        </div>
+        {savedThemes && savedThemes.length > 0 ? (
+          savedThemes.map((savedTheme, index) => {
+            let cssVariables = {};
+            if (typeof savedTheme.cssVariables === "string") {
+              try {
+                cssVariables = JSON.parse(savedTheme.cssVariables);
+              } catch (error) {
+                console.error(`Error parsing CSS variables for theme "${savedTheme.name}":`, error);
+              }
+            } else {
+              cssVariables = savedTheme.cssVariables || {};
+            }
+
+            // Debugging the parsed variables
+            console.log(`Theme ${index + 1} CSS Variables:`, cssVariables);
+
+            return (
+              <div
+                key={index}
+                className="individual-theme"
+                style={{
+                  backgroundImage: `
+                    linear-gradient(
+                      45deg,
+                      ${cssVariables["--dark--brown"] || "#4B2E2A"},
+                      ${cssVariables["--brown"] || "#855E52"},
+                      ${cssVariables["--light--brown"] || "#D7B8A2"},
+                      ${cssVariables["--dark--brown"] || "#4B2E2A"},
+                      ${cssVariables["--light--brown"] || "#D7B8A2"}
+                    )
+                  `,
+                  color: cssVariables["--white"] || "#000000", // Fallback for text color
+                  cursor: "pointer", // Visual cue for interactivity
+                }}
+                onClick={() => {
+                  updateThemeVariables(cssVariables); // Apply theme globally
+                  setCurTheme(savedTheme.name);
+                  setCurThemeCode(savedTheme.cssVariables);
+                }}
+              >
+                <div className="theme-text">{savedTheme.name || `Theme ${index + 1}`}</div>
+              </div>
+            );
+          })
+        ) : (
+          <div className="no-themes">No saved themes available</div>
+        )}
+      </div>
       </div>
     </>
   );

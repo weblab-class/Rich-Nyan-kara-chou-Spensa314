@@ -19,7 +19,7 @@ const App = () => {
   const [username, setUsername] = useState("");
   const [isGuest, setGuest] = useState(false);
   const [profilepicture, setProfilePicture] = useState("");
-
+  const [savedThemes, setSavedThemes] = useState([]);
   useEffect(() => {
     get("/api/whoami").then((user) => {
       if (user._id) {
@@ -49,6 +49,12 @@ const App = () => {
         setUsername(updatedUser.name); // fetching the right one
         setProfilePicture(updatedUser.profilePicture);
         setGuest(false);
+        get(`/api/getSavedThemes/${user._id}`).then((themes) => {
+          setSavedThemes(themes || []); // Populate themes from the server
+        })
+        .catch((err) => {
+          console.error("Failed to fetch saved themes:", err);
+        });
       });
       post("/api/initsocket", { socketid: socket.id });
     });
@@ -60,6 +66,12 @@ const App = () => {
       setUserId(response._id);
       setUsername(response.name);
       setProfilePicture(response.profilePicture);
+      get(`/api/getSavedThemes/${response._id}`).then((themes) => {
+        setSavedThemes(themes || []); // Populate themes from the server
+      })
+      .catch((err) => {
+        console.error("Failed to fetch saved themes:", err);
+      });
       setGuest(true);
       // Initialize socket after successful guest login
       if (socket && socket.id) {
@@ -85,6 +97,7 @@ const App = () => {
     username,
     profilepicture,
     setUsername,
+    savedThemes,
     handleLogin,
     handleGuestLogin,
     handleLogout,
