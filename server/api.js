@@ -160,15 +160,18 @@ router.post("/add-theme", auth.ensureLoggedIn, async (req, res) => {
   const { userId, themeName, themeCode } = req.body;
 
   if (!userId || !themeName || !themeCode) {
-    return res.status(400).send({ msg: "Missing required fields: userId, themeName, or themeCode" });
+    return res
+      .status(400)
+      .send({ msg: "Missing required fields: userId, themeName, or themeCode" });
   }
-
   try {
     const user = await User.findById(userId);
     if (!user) {
       return res.status(404).send({ msg: "User not found" });
     }
-
+    if (user.savedThemes.some(theme => theme.name === themeName)) {
+      return res.status(404).send({ msg: "Theme present already" });
+    }
     user.savedThemes.push({
       name: themeName,
       cssVariables: themeCode, // Save the stringified theme code
@@ -176,6 +179,33 @@ router.post("/add-theme", auth.ensureLoggedIn, async (req, res) => {
     await user.save();
 
     res.status(200).send({ success: true, savedThemes: user.savedThemes });
+  } catch (err) {
+    console.error("Error saving theme:", err);
+    res.status(500).send({ msg: "Internal server error" });
+  }
+});
+
+router.post("/delete-theme", auth.ensureLoggedIn, async (req, res) => {
+  const { userId, themeName, themeCode } = req.body;
+  if (!userId || !themeName || !themeCode) {
+    return res
+      .status(400)
+      .send({ msg: "Missing required fields: userId, themeName, or themeCode" });
+  }
+
+  try {
+    console.log(userId, themeName, themeCode);
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).send({ msg: "User not found" });
+    }
+    if (!user.savedThemes.some(theme => theme.name === themeName)) {
+      return res.status(404).send({ msg: "Theme not found" });
+    }
+    user.savedThemes = user.savedThemes.filter(theme => theme.name !== themeName);
+    await user.save();
+
+    res.status(200).send(user.savedThemes);
   } catch (err) {
     console.error("Error saving theme:", err);
     res.status(500).send({ msg: "Internal server error" });
@@ -258,11 +288,10 @@ router.post("/updateSinglePlayerScore", auth.ensureLoggedIn, async (req, res) =>
 
       res.status(200).send({ success: true, msg: "Score updated succsessfully!" });
     }
-    } catch (err) {
-      console.error("Error updating score:", err);
-      res.status(500).send({ msg: "Internal server error" });
-    }
-  
+  } catch (err) {
+    console.error("Error updating score:", err);
+    res.status(500).send({ msg: "Internal server error" });
+  }
 });
 
 // GET leaderboard
@@ -663,6 +692,7 @@ router.get("/getTheme", async (req, res) => {
     res.status(500).send({ error: "Failed to process theme." });
   }
 });
+
 // Catch-all for undefined routes
 router.all("*", (req, res) => {
   console.log(`API route not found: ${req.method} ${req.url}`);
