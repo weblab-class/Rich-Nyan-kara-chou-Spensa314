@@ -19,10 +19,6 @@ const Leaderboard = () => {
   const navigate = useNavigate();
   const [isLoggedIn, setLoggedIn] = useState(false);
 
-  let currentRank = 0; // Start from rank 1
-  let previousScore = null; // Track the previous player's score
-  let rankOffset = 0;
-
   useEffect(() => {
     get("/api/whoami").then((res) => {
       if (!res.name) {
@@ -90,28 +86,17 @@ const Leaderboard = () => {
       <div className="leaderboard-page-container">
         <h1 className="leaderboard-title">Leaderboard</h1>
         <div className="leaderboard-list-container">
-        {topPlayers.map((player, index) => {
-          // If the current player's score is the same as the previous score, they share the same rank
-          if (player.highScore === previousScore) {
-            rankOffset++; // Increment rank offset due to a tie
-          } else {
-            currentRank += rankOffset + 1; // Advance the rank
-            rankOffset = 0; // Reset offset for non-tied scores
-          }
-
-          previousScore = player.highScore; // Update the previous score
-
-          return (
+          {topPlayers.map((player, index) => (
             <div
               key={player.playerId}
               className={`leaderboard-player-container ${
-                currentRank === 1
+                index === 0
                   ? "top-player-1"
                   : index === 1
-                    ? "top-player-2"
-                    : index === 2
-                      ? "top-player-3"
-                      : ""
+                  ? "top-player-2"
+                  : index === 2
+                  ? "top-player-3"
+                  : ""
               } ${player.playerId === userId ? "glowy" : ""}`}
               onClick={() => handlePlayerClick(player)}
             >
@@ -120,13 +105,13 @@ const Leaderboard = () => {
                   index === 0
                     ? "top-player-1-place"
                     : index === 1
-                      ? "top-player-2-place"
-                      : index === 2
-                        ? "top-player-3-place"
-                        : ""
+                    ? "top-player-2-place"
+                    : index === 2
+                    ? "top-player-3-place"
+                    : ""
                 }`}
               >
-                {index + 1}
+                {player.rank}
               </div>
               <div className="leaderboard-player-score-container">
                 <div className="leaderboard-player">
@@ -137,8 +122,7 @@ const Leaderboard = () => {
                 </div>
               </div>
             </div>
-          );
-        })}
+          ))}
         </div>
         <div className="leaderboard-settings-container">
           <div className="leaderboard-dropdown-container" onClick={onMinLettersClick}>
@@ -161,24 +145,24 @@ const Leaderboard = () => {
         <div className="modal-overlay" onClick={closeModal}>
           <div className="modal-content-container" onClick={(e) => e.stopPropagation()}>
             <h2 className="modal-title">{clickedPlayer.name}'s Queries</h2>
-            <div className="modal-list-container">
+            <div className="modal-result-container">
               {clickedPlayer.queries && clickedPlayer.queries.length > 0 ? (
                 // Parse the queries and display them
-                <div>
+                <ul>
                   {JSON.parse(clickedPlayer.queries).map(([query, value], idx) => (
-                    <div key={idx} className="modal-result-container">
-                      <div className="modal-result-term">{query}</div>
-                      <div className="modal-result-query">{parseInt(value).toLocaleString()}</div>
-                    </div>
+                    <li key={idx} className="modal-result-term">
+                      <strong>{query}</strong>
+                      <span className="modal-result-query">{parseInt(value).toLocaleString()}</span>
+                    </li>
                   ))}
-                </div>
+                </ul>
               ) : (
-                <p className="no-queries">No queries available</p>
+                <p>No queries available</p>
               )}
             </div>
-            <div className="close-modal-button" onClick={closeModal}>
-              X
-            </div>
+            <button className="close-modal-button" onClick={closeModal}>
+              Close
+            </button>
           </div>
         </div>
       )}

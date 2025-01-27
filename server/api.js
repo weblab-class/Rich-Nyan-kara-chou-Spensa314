@@ -379,8 +379,23 @@ router.get("/leaderboard", async (req, res) => {
 
     allPlayers.sort((a, b) => b.highScore - a.highScore);
 
+    let currentRank = 1; // Start ranking from 1
+    let previousScore = null; // Track the previous score
+    let rankOffset = 0; // Track skipped ranks due to ties
+
     allPlayers.forEach((player, index) => {
-      player.rank = index + 1;
+      if (player.highScore === previousScore) {
+        // If scores are tied, assign the same rank as the previous player
+        player.rank = currentRank;
+        rankOffset++; // Increment rank offset
+      } else {
+        // Assign the next rank, adjusted for skipped ranks
+        currentRank += rankOffset + (index === 0 ? 0 : 1); 
+        player.rank = currentRank;
+        rankOffset = 0; // Reset rank offset
+      }
+
+      previousScore = player.highScore; // Update the previous score
     });
 
     // Find the rank for the guest user or the normal user
