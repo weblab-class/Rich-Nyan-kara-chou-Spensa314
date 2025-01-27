@@ -55,6 +55,7 @@ const SinglePlayer_Game = () => {
   const location = useLocation();
   const { userId } = useContext(UserContext);
   const { minLetters, activeTime, hideLetter, hardMode, player } = location.state || {};
+  const [highScore, setHighScore] = useState(0);
   const [isWaiting, setIsWaiting] = useState(true); // Flag for waiting state
   const [query, setQuery] = useState(""); // Input query
   const [resultMessage, setResultMessage] = useState(""); // Result feedback
@@ -87,7 +88,7 @@ const SinglePlayer_Game = () => {
       setLoggedIn(true);
       setGuest(res.isGuest);
     });
-  });
+  }, []);
 
   // Start the game
   const startGame = () => {
@@ -105,6 +106,15 @@ const SinglePlayer_Game = () => {
       nextLetter: generateRandomLetter(deriveSeed(gameSeed, index)), // Generate next letter using the same seed
       seed: gameSeed, // Store the seed for the game
     }));
+    const settings = JSON.stringify({
+        minLetters: parseInt(minLetters, 10), //10 is the base that's so cool
+        activeTime: parseInt(activeTime, 10),
+        hideLetter: hideLetter,
+        hardMode: hardMode,
+      });
+    get("/api/leaderboard", { userId, settings }).then((res) => {
+        if (res.userScore) setHighScore(res.userScore);
+    });
 
     if (inputRef.current) {
       inputRef.current.focus();
@@ -153,6 +163,9 @@ const SinglePlayer_Game = () => {
           // Update index and state in a controlled manner
           setIndex((prevIndex) => prevIndex + 1);
           setGameState((prevState) => {
+            if (prevState.score + (parseInt(res.totalResults, 10) || 0) > highScore) {
+                setHighScore(prevState.score + (parseInt(res.totalResults, 10) || 0));
+              }
             const newLetter = generateRandomLetter(deriveSeed(prevState.seed, index)); // Generate new letter using seed
             return {
               ...prevState,
@@ -343,7 +356,7 @@ const SinglePlayer_Game = () => {
         {/* Scoreboard */}
         <div className="highscore-container">
           <img src="/images/crown.png" alt="Crown" className="highscore-crown" />
-          {parseInt(gameState.highScore).toLocaleString}
+          {parseInt(highScore).toLocaleString()}
         </div>
 
         <div className="score-container">
