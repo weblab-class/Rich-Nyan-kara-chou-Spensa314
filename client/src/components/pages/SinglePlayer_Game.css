@@ -28,6 +28,7 @@
 .highscore-crown {
   height: var(--s);
   width: var(--sm);
+  margin-right: var(--xxs);
 }
 
 .score-container {
