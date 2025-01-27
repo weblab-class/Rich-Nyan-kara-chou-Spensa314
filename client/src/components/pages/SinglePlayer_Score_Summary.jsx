@@ -129,12 +129,12 @@ const SinglePlayer_Score_Summary = () => {
         {/* Show a loading indicator if saving */}
         {isSaving && <div className="saving-indicator">Saving score...</div>}
 
-        <div onClick={handleNextClick}>
-          <img src="/images/crown.png" alt="Next" className="next-leaderboard" />
+        <div onClick={handleNextClick} className="next-leaderboard">
+          <img src="/images/crown.png" alt="Next" className="leaderboard-after-sp" />
         </div>
 
         <div onClick={handleAgainClick}>
-          <img src="/images/next.png" alt="Again" className="again" />
+          <img src="/images/next.png" alt="Again" className="next-game" />
         </div>
       </div>
     </>
