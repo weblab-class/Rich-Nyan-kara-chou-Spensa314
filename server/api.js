@@ -316,6 +316,38 @@ router.get("/leaderboard", async (req, res) => {
       player.rank = index + 1; // Rank is position in sorted list (1-based index)
     });
 
+    router.get("/topScore", async (req, res) => {
+      const { userId, settings } = req.query;
+
+      if (!userId || !settings) {
+        return res.status(400).json({ message: "Missing required fields: userId or settings" });
+      }
+
+      try {
+        // Find the user in the database
+        const user = await User.findById(userId);
+        if (!user) {
+          return res.status(404).json({ message: "User not found" });
+        }
+
+        // Normalize the settings string
+        const normalizedSettings = JSON.stringify(JSON.parse(settings));
+        // Find the user's top score for the given settings
+        const scoreEntry = user.singlePlayerScores.find(
+          (score) => score.settings === normalizedSettings
+        );
+        if (!scoreEntry) {
+          return res.status(404).json({ message: "No scores found for the given settings" });
+        }
+
+        res.status(200).send({
+          highScore: scoreEntry.highScore,
+        });
+      } catch (err) {
+        console.error("Error fetching top score:", err);
+        res.status(500).send({ message: "Internal server error" });
+      }
+    });
     // Get the user's rank
     const userRankResult = await Leaderboard.aggregate([
       { $match: { settings: settingsFilter, playerId: new mongoose.Types.ObjectId(userId) } },
