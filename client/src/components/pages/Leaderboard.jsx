@@ -19,6 +19,10 @@ const Leaderboard = () => {
   const navigate = useNavigate();
   const [isLoggedIn, setLoggedIn] = useState(false);
 
+  let currentRank = 0; // Start from rank 1
+  let previousScore = null; // Track the previous player's score
+  let rankOffset = 0;
+
   useEffect(() => {
     get("/api/whoami").then((res) => {
       if (!res.name) {
@@ -86,11 +90,22 @@ const Leaderboard = () => {
       <div className="leaderboard-page-container">
         <h1 className="leaderboard-title">Leaderboard</h1>
         <div className="leaderboard-list-container">
-          {topPlayers.map((player, index) => (
+        {topPlayers.map((player, index) => {
+          // If the current player's score is the same as the previous score, they share the same rank
+          if (player.highScore === previousScore) {
+            rankOffset++; // Increment rank offset due to a tie
+          } else {
+            currentRank += rankOffset + 1; // Advance the rank
+            rankOffset = 0; // Reset offset for non-tied scores
+          }
+
+          previousScore = player.highScore; // Update the previous score
+
+          return (
             <div
               key={player.playerId}
               className={`leaderboard-player-container ${
-                index === 0
+                currentRank === 1
                   ? "top-player-1"
                   : index === 1
                     ? "top-player-2"
@@ -122,7 +137,8 @@ const Leaderboard = () => {
                 </div>
               </div>
             </div>
-          ))}
+          );
+        })}
         </div>
         <div className="leaderboard-settings-container">
           <div className="leaderboard-dropdown-container" onClick={onMinLettersClick}>
