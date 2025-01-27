@@ -68,15 +68,15 @@ const Leaderboard = () => {
     /**settings adjustments */
   }
   const onMinLettersClick = () => {
-    if (minLetters === 6) {
+    if (parseInt(minLetters, 10) === 6) {
       setMinLetters(3);
     } else {
-      setMinLetters(minLetters + 1);
+      setMinLetters(parseInt(minLetters, 10) + 1);
     }
   };
 
   const onTimeClick = () => {
-    if (activeTime === 30) {
+    if (parseInt(activeTime, 10) === 30) {
       setActiveTime(60);
     } else {
       setActiveTime(30);

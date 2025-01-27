@@ -42,8 +42,8 @@ const SinglePlayer_Score_Summary = () => {
     if (location.state) {
       setQueries(location.state.queries || []);
       setScore(location.state.score || 0);
-      setMinLetters(location.state.minLetters || 0);
-      setActiveTime(location.state.activeTime || 0);
+      setMinLetters(parseInt(location.state.minLetters, 10) || 3);
+      setActiveTime(parseInt(location.state.activeTime, 10) || 30);
       setHideLetter(location.state.hideLetter || false);
       setHardMode(location.state.hardMode || false);
     }
@@ -54,7 +54,7 @@ const SinglePlayer_Score_Summary = () => {
       setIsSaving(true);
       saveScore(userId, location.state.score, {
         minLetters: parseInt(location.state.minLetters, 10),
-        activeTime: location.state.activeTime,
+        activeTime: parseInt(location.state.activeTime, 10),
         hideLetter: location.state.hideLetter,
         hardMode: location.state.hardMode,
       });
