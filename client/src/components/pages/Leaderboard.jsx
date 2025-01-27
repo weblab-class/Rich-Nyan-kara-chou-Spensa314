@@ -93,10 +93,10 @@ const Leaderboard = () => {
                 index === 0
                   ? "top-player-1"
                   : index === 1
-                  ? "top-player-2"
-                  : index === 2
-                  ? "top-player-3"
-                  : ""
+                    ? "top-player-2"
+                    : index === 2
+                      ? "top-player-3"
+                      : ""
               } ${player.playerId === userId ? "glowy" : ""}`}
               onClick={() => handlePlayerClick(player)}
             >
@@ -105,10 +105,10 @@ const Leaderboard = () => {
                   index === 0
                     ? "top-player-1-place"
                     : index === 1
-                    ? "top-player-2-place"
-                    : index === 2
-                    ? "top-player-3-place"
-                    : ""
+                      ? "top-player-2-place"
+                      : index === 2
+                        ? "top-player-3-place"
+                        : ""
                 }`}
               >
                 {player.rank}
@@ -145,24 +145,24 @@ const Leaderboard = () => {
         <div className="modal-overlay" onClick={closeModal}>
           <div className="modal-content-container" onClick={(e) => e.stopPropagation()}>
             <h2 className="modal-title">{clickedPlayer.name}'s Queries</h2>
-            <div className="modal-result-container">
+            <div className="modal-list-container">
               {clickedPlayer.queries && clickedPlayer.queries.length > 0 ? (
                 // Parse the queries and display them
-                <ul>
+                <div>
                   {JSON.parse(clickedPlayer.queries).map(([query, value], idx) => (
-                    <li key={idx} className="modal-result-term">
-                      <strong>{query}</strong>
-                      <span className="modal-result-query">{parseInt(value).toLocaleString()}</span>
-                    </li>
+                    <div key={idx} className="modal-result-container">
+                      <div className="modal-result-term">{query}</div>
+                      <div className="modal-result-query">{parseInt(value).toLocaleString()}</div>
+                    </div>
                   ))}
-                </ul>
+                </div>
               ) : (
-                <p>No queries available</p>
+                <p className="no-queries">No queries available</p>
               )}
             </div>
-            <button className="close-modal-button" onClick={closeModal}>
-              Close
-            </button>
+            <div className="close-modal-button" onClick={closeModal}>
+              X
+            </div>
           </div>
         </div>
       )}
