@@ -32,7 +32,6 @@ const Themes = () => {
       get(`/api/getSavedThemes/${res._id}`)
         .then((themes) => {
           setSavedThemes(themes || []); // Populate themes from the server
-          console.log(themes);
         })
         .catch((err) => {
           console.error("Failed to fetch saved themes:", err);
@@ -126,7 +125,7 @@ const Themes = () => {
     <>
       <NavBar />
       <div className="theme-container">
-        <div className="theme-title">Themes</div>
+        <div className="theme-title">Color Themes</div>
 
         <div className="input-theme-container">
           <input

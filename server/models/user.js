@@ -73,7 +73,7 @@ const userSchema = new mongoose.Schema({
       // },
       {
         name: "MIT",
-        cssVariables: `{"--white":"#fff","--light--beige":"#ffcdd1","--dull--beige":"#edd0d4","--beige":"#fac5cf","--off--beige":"#f2b8be","--dark--beige":"#e19c9c","--off--dark--beige":"#d28a8a","--light--beige--glass":"rgba(255, 203, 209, 0.353)","--beige--glass":"rgba(202, 130, 130, 0.874)","--brown--glass":"rgba(140, 73, 73, 0.708)","--light--brown":"#b06868","--off--light--brown":"#b15959","--dark--light--brown":"#a85555","--brown":"#7f3939","--beige--shadow":"rgb(179, 87, 87)","--off--brown":"#6e2f2f","--dull--dark--brown":"#5e2c2c","--dark--brown":"#4a0f0f","--dark--brown--glass":"#4a0f0fcf","--off--dark--brown":"#410c0c"}`,
+        cssVariables: `{"--white":"#fff","--light--beige":"#CCD5DC","--dull--beige":"#A4B2BF","--beige":"#8494A4","--off--beige":"#6D7A89","--dark--beige":"#526273","--off--dark--beige":"#384857","--light--beige--glass":"rgba(204, 213, 220, 0.353)","--beige--glass":"rgba(132, 148, 164, 0.874)","--brown--glass":"rgba(56, 72, 87, 0.708)","--light--brown":"#A31F34","--off--light--brown":"#8E1B2D","--dark--light--brown":"#791726","--brown":"#631320","--beige--shadow":"#4D0F19","--off--brown":"#370B12","--dull--dark--brown":"#21070B","--dark--brown":"#000000","--dark--brown--glass":"#000000cf","--off--dark--brown":"#000000"}`,
       },
       // {
       //   name: "Mint Whisper",
@@ -91,9 +91,7 @@ const userSchema = new mongoose.Schema({
       //   name: "Lilac Rain",
       //   cssVariables: `{"--white":"#fff","--light--beige":"#f0e6f5","--dull--beige":"#e8ddf0","--beige":"#e6d4f2","--off--beige":"#dcc9ea","--dark--beige":"#d1bce3","--off--dark--beige":"#c5aed8","--light--beige--glass":"rgba(230, 212, 242, 0.353)","--beige--glass":"rgba(197, 174, 216, 0.874)","--brown--glass":"rgba(147, 116, 179, 0.708)","--light--brown":"#9f89b3","--off--light--brown":"#927aa8","--dark--light--brown":"#856c9e","--brown":"#6a4d85","--beige--shadow":"rgb(156, 136, 179)","--off--brown":"#5d4275","--dull--dark--brown":"#513865","--dark--brown":"#422952","--dark--brown--glass":"#422952cf","--off--dark--brown":"#382347"}`,
       // },
-      
-
-    ]    
+    ],
   },
 
   createdAt: {
