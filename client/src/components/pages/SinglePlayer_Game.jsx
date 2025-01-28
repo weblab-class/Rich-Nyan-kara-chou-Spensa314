@@ -344,7 +344,8 @@ const SinglePlayer_Game = () => {
           </div>
           <div className="settings-summary-container">
             <div className="settings-title">Room Settings</div>
-            Minimum Length: <span className="white">{minLetters}</span>
+            <div>Minimum Length: <span className="white">{minLetters}</span></div>
+            <div>Game Timer: <span className="white">{activeTime}</span></div>
             {hideLetter && (
               <div>
                 Hide Letter: <span className="green">True</span>
@@ -365,7 +366,6 @@ const SinglePlayer_Game = () => {
                 Mode: <span className="red">Hard</span>
               </div>
             )}
-            Game Timer: <span className="white">{activeTime}</span>
           </div>
         </div>
       </>

@@ -145,11 +145,11 @@ const Leaderboard = () => {
           <div className="leaderboard-dropdown-container" onClick={onTimeClick}>
             Time: {activeTime}
           </div>
-          <div className="leaderboard-dropdown-container" onClick={onHardModeClick}>
-            {hardMode ? "Hard Mode" : "Normal Mode"}
-          </div>
           <div className="leaderboard-dropdown-container" onClick={onNextLetterClick}>
             {hideLetter ? "Next Letter: Hidden" : "Next Letter: Shown"}
+          </div>
+          <div className="leaderboard-dropdown-container" onClick={onHardModeClick}>
+            {hardMode ? "Hard Mode" : "Normal Mode"}
           </div>
         </div>
       </div>

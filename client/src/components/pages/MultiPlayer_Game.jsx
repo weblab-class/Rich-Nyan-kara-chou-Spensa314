@@ -229,7 +229,8 @@ const MultiPlayer_Game = () => {
 
           <div className="settings-summary-container">
             <div className="settings-title">Room Settings</div>
-            Minimum Length: <span className="white">{roomSettings.minLength}</span>
+            <div>Minimum Length: <span className="white">{roomSettings.minLength}</span></div>
+            <div>Game Timer: <span className="white">{initialTime}</span></div>
             {roomSettings.hideLetter && (
               <div>
                 Hide Letter: <span className="green">True</span>
@@ -250,7 +251,6 @@ const MultiPlayer_Game = () => {
                 Mode: <span className="red">Hard</span>
               </div>
             )}
-            Game Timer: <span className="white">{initialTime}</span>
           </div>
         </div>
       </>
