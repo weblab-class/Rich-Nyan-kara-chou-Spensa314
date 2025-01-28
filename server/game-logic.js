@@ -7,7 +7,7 @@ const seedrandom = require("seedrandom"); // For seed-based random generation
 const DEFAULT_SEQUENCE_LENGTH = 200;
 const DEFAULT_TIMER_VALUE = 60;
 const DEFAULT_MIN_WORD_LENGTH = 3;
-const ROOM_EXPIRATION_TIME = 300000; //900000; // 15 minutes in milliseconds
+const ROOM_EXPIRATION_TIME = 900000; // 15 minutes in milliseconds
 
 const letters = {
   false: "aaaaaaaabbccccddddeeeeeeeeeeeffggghhhiiiiiiiiijkllllllmmmnnnnnnnnooooooopppqrrrrrrrrssssssssstttttttuuuuvwxyyz",
