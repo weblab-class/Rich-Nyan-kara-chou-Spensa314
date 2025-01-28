@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef } from "react";
 import { socket } from "../../client-socket.js";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { get, post } from "../../utilities";
+import { updateThemeVariables } from "../../utilities";
+
 
 import "../../utilities.css";
 import "./MultiPlayer_Game.css";
@@ -46,6 +48,24 @@ const MultiPlayer_Game = () => {
       const r = await get("/api/whoami");
       const userId = r._id;
       
+      const savedTheme = localStorage.getItem("selectedTheme");
+
+      if (savedTheme) {
+        try {
+          const parsedTheme = JSON.parse(savedTheme);
+  
+          const cssVariablesMap = JSON.parse(parsedTheme.cssVariables);
+          // Apply the saved theme globally
+          updateThemeVariables(cssVariablesMap);
+  
+          // Update state with the saved theme
+          setCurTheme(parsedTheme.name);
+          setCurThemeCode(parsedTheme.cssVariables);
+        } catch (err) {
+          console.error("Error parsing saved theme from localStorage:", err);
+        }
+      }
+    
       try {
         const response = await get(`/api/getInitiated/${roomCode}?userId=${userId}`);
         if (!response) {

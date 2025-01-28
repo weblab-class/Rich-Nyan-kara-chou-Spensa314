@@ -37,6 +37,22 @@ const Themes = () => {
           console.error("Failed to fetch saved themes:", err);
         });
     });
+    const savedTheme = localStorage.getItem("selectedTheme");
+    if (savedTheme) {
+      try {
+        const parsedTheme = JSON.parse(savedTheme);
+
+        const cssVariablesMap = JSON.parse(parsedTheme.cssVariables);
+        // Apply the saved theme globally
+        updateThemeVariables(cssVariablesMap);
+
+        // Update state with the saved theme
+        setCurTheme(parsedTheme.name);
+        setCurThemeCode(parsedTheme.cssVariables);
+      } catch (err) {
+        console.error("Error parsing saved theme from localStorage:", err);
+      }
+    }
   }, []);
 
   // Function to parse CSS variables from a CSS-like string
@@ -89,6 +105,7 @@ const Themes = () => {
         
             setButtonText("Theme Saved!");
             setTheme("");
+            localStorage.setItem("selectedTheme", JSON.stringify({ name: theme, cssVariables: newTheme }));
             // Revert the button text back to "Save Theme" after 2 seconds
             setTimeout(() => {
               setButtonText("Save Theme");
@@ -177,9 +194,12 @@ const Themes = () => {
                     cursor: "pointer", // Visual cue for interactivity
                   }}
                   onClick={() => {
+                    console.log(cssVariables);
                     updateThemeVariables(cssVariables); // Apply theme globally
                     setCurTheme(savedTheme.name);
                     setCurThemeCode(savedTheme.cssVariables);
+                    localStorage.setItem("selectedTheme", JSON.stringify({ name: savedTheme.name, cssVariables: savedTheme.cssVariables }));
+                    console.log(localStorage.getItem("selectedTheme"));
                   }}
                 >
                   <div className="theme-text">{savedTheme.name || `Theme ${index + 1}`}</div>

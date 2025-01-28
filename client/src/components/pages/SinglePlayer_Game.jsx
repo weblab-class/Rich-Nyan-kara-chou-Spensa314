@@ -7,6 +7,8 @@ import { get, post } from "../../utilities";
 import { UserContext } from "../App";
 import seedrandom from "seedrandom";
 import "./Loading.css";
+import { updateThemeVariables } from "../../utilities";
+
 
 const firstWord = () => {
   const lister = [
@@ -165,6 +167,24 @@ const SinglePlayer_Game = () => {
       }
       setLoggedIn(true);
       setGuest(res.isGuest);
+
+      const savedTheme = localStorage.getItem("selectedTheme");
+
+      if (savedTheme) {
+        try {
+          const parsedTheme = JSON.parse(savedTheme);
+  
+          const cssVariablesMap = JSON.parse(parsedTheme.cssVariables);
+          // Apply the saved theme globally
+          updateThemeVariables(cssVariablesMap);
+  
+          // Update state with the saved theme
+          setCurTheme(parsedTheme.name);
+          setCurThemeCode(parsedTheme.cssVariables);
+        } catch (err) {
+          console.error("Error parsing saved theme from localStorage:", err);
+        }
+      }
     });
   }, []);
 

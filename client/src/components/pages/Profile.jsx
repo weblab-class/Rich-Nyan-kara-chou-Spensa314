@@ -5,6 +5,8 @@ import NavBar from "../modules/NavBar";
 import { get, post } from "../../utilities";
 import { UserContext } from "../App";
 import "./Profile.css";
+import { updateThemeVariables } from "../../utilities";
+
 
 const Profile = () => {
   const { username, setUsername, profilepicture, userId } = useContext(UserContext);
@@ -32,6 +34,24 @@ const Profile = () => {
       }
       setIsLoggedIn(true);
       setGuest(res.isGuest);
+
+      const savedTheme = localStorage.getItem("selectedTheme");
+
+      if (savedTheme) {
+        try {
+          const parsedTheme = JSON.parse(savedTheme);
+  
+          const cssVariablesMap = JSON.parse(parsedTheme.cssVariables);
+          // Apply the saved theme globally
+          updateThemeVariables(cssVariablesMap);
+  
+          // Update state with the saved theme
+          setCurTheme(parsedTheme.name);
+          setCurThemeCode(parsedTheme.cssVariables);
+        } catch (err) {
+          console.error("Error parsing saved theme from localStorage:", err);
+        }
+      }
     })
 
   const handleEditClick = () => setIsEditing(true);

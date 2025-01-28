@@ -5,6 +5,8 @@ import { socket } from "../../client-socket.js";
 import { useNavigate, useLocation, useParams } from "react-router-dom";
 import { get, post } from "../../utilities";
 import "./Standings.css";
+import { updateThemeVariables } from "../../utilities";
+
 const Standings = () => {
   const [standings, setStandings] = useState([]);
   const [players, setPlayers] = useState([]);
@@ -29,6 +31,24 @@ const Standings = () => {
         return;
       }
       setLoggedIn(true);
+
+      const savedTheme = localStorage.getItem("selectedTheme");
+
+      if (savedTheme) {
+        try {
+          const parsedTheme = JSON.parse(savedTheme);
+  
+          const cssVariablesMap = JSON.parse(parsedTheme.cssVariables);
+          // Apply the saved theme globally
+          updateThemeVariables(cssVariablesMap);
+  
+          // Update state with the saved theme
+          setCurTheme(parsedTheme.name);
+          setCurThemeCode(parsedTheme.cssVariables);
+        } catch (err) {
+          console.error("Error parsing saved theme from localStorage:", err);
+        }
+      }
     });
     if (!location.state) {
       navigate("/home");

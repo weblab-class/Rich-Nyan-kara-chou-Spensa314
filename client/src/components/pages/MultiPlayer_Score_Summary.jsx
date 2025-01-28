@@ -3,6 +3,8 @@ import "../../utilities.css";
 import NavBar from "../modules/NavBar";
 import { useNavigate, useLocation, useParams } from "react-router-dom";
 import { get, post } from "../../utilities";
+import { updateThemeVariables } from "../../utilities";
+
 import "./MultiPlayer_Score_Summary.css";
 
 const MultiPlayer_Score_Summary = () => {
@@ -30,6 +32,24 @@ const MultiPlayer_Score_Summary = () => {
             return;
         }
         setLoggedIn(true);
+
+        const savedTheme = localStorage.getItem("selectedTheme");
+
+        if (savedTheme) {
+          try {
+            const parsedTheme = JSON.parse(savedTheme);
+    
+            const cssVariablesMap = JSON.parse(parsedTheme.cssVariables);
+            // Apply the saved theme globally
+            updateThemeVariables(cssVariablesMap);
+    
+            // Update state with the saved theme
+            setCurTheme(parsedTheme.name);
+            setCurThemeCode(parsedTheme.cssVariables);
+          } catch (err) {
+            console.error("Error parsing saved theme from localStorage:", err);
+          }
+        }
       })
       if(!location.state) {
         navigate("/home");

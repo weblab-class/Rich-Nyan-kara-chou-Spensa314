@@ -6,6 +6,8 @@ import "./Settings.css";
 import "./Info.css";
 import "./MultiPlayer_Start.css";
 import { post, get } from "../../utilities";
+import { updateThemeVariables } from "../../utilities";
+
 import { socket } from "../../client-socket"; // Import Socket.IO client
 
 const MultiPlayer_Start = () => {
@@ -49,6 +51,24 @@ const MultiPlayer_Start = () => {
           user: res,
           settings: { hideLetter, hardMode, minWordLength: minLetters, type: "false" },
         });
+      }
+
+    const savedTheme = localStorage.getItem("selectedTheme");
+
+    if (savedTheme) {
+        try {
+          const parsedTheme = JSON.parse(savedTheme);
+  
+          const cssVariablesMap = JSON.parse(parsedTheme.cssVariables);
+          // Apply the saved theme globally
+          updateThemeVariables(cssVariablesMap);
+  
+          // Update state with the saved theme
+          setCurTheme(parsedTheme.name);
+          setCurThemeCode(parsedTheme.cssVariables);
+        } catch (err) {
+          console.error("Error parsing saved theme from localStorage:", err);
+        }
       }
     });
     if (!username) {

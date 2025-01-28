@@ -7,6 +7,8 @@ import { get } from "../../utilities";
 import { post } from "../../utilities";
 import { useContext } from "react";
 import { UserContext } from "../App";
+import { updateThemeVariables } from "../../utilities";
+
 
 const SinglePlayer_Score_Summary = () => {
   const [queries, setQueries] = useState([]);
@@ -31,6 +33,24 @@ const SinglePlayer_Score_Summary = () => {
       }
       setLoggedIn(true);
       setGuest(res.isGuest);
+
+      const savedTheme = localStorage.getItem("selectedTheme");
+
+      if (savedTheme) {
+        try {
+          const parsedTheme = JSON.parse(savedTheme);
+  
+          const cssVariablesMap = JSON.parse(parsedTheme.cssVariables);
+          // Apply the saved theme globally
+          updateThemeVariables(cssVariablesMap);
+  
+          // Update state with the saved theme
+          setCurTheme(parsedTheme.name);
+          setCurThemeCode(parsedTheme.cssVariables);
+        } catch (err) {
+          console.error("Error parsing saved theme from localStorage:", err);
+        }
+      }
     });
 
     if (!location.state) {

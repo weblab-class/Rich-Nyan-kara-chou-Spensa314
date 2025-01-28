@@ -6,6 +6,8 @@ import { UserContext } from "../App";
 import { get } from "../../utilities";
 import "../../utilities.css";
 import "./Login.css";
+import { updateThemeVariables } from "../../utilities";
+
 
 const Login = () => {
   const { handleLogin, handleGuestLogin } = useContext(UserContext);
@@ -34,7 +36,6 @@ const Login = () => {
         }
       });
       resetThemeVariables();
-
     } catch (error) {
       console.error("Error fetching user data:", error);
     }
