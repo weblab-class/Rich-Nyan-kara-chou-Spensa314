@@ -127,9 +127,6 @@ const SinglePlayer_Score_Summary = () => {
         </div>
         <h2 className="total-points-title">Total Points: {parseInt(score).toLocaleString()}</h2>
 
-        {/* Show a loading indicator if saving */}
-        {isSaving && <div className="saving-indicator">Saving score...</div>}
-
         <div onClick={handleNextClick} className="next-leaderboard">
           <img src="/images/crown.png" alt="Next" className="leaderboard-after-sp" />
         </div>
