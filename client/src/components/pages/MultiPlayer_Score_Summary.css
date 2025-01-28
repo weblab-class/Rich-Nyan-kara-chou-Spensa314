@@ -60,9 +60,7 @@
   margin-bottom: var(--xs);
   box-shadow: 0 0 0.2vw rgba(0, 0, 0, 0.5); /* Adjust as needed */
   cursor: pointer;
-  transition:
-    background-color 0.2s ease,
-    color 0.2s ease;
+  transition: all 0.2s ease;
   background: linear-gradient(
     45deg,
     var(--brown),
@@ -87,6 +85,7 @@
     var(--dark--beige),
     var(--off--beige)
   );
+  transform: scale(1.1);
 }
 
 .multi-individual-content {
