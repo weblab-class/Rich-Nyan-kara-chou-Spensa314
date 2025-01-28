@@ -246,6 +246,12 @@
   background: linear-gradient(45deg, var(--brown), var(--off--brown), var(--brown));
 
   border: 0.2vw solid var(--dark--brown);
+  overflow-y: auto;
+  scroll-behavior: smooth;
+}
+
+.scoreboard-container::-webkit-scrollbar {
+  display: none;
 }
 
 .mp-scoreboard-text {
