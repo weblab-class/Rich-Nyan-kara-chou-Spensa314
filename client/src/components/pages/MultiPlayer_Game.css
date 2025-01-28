@@ -242,12 +242,13 @@
   width: 30vw;
   margin: 2.5vw;
   margin-top: var(--ml);
-  height: 35vw;
+  height: 33vw;
   background: linear-gradient(45deg, var(--brown), var(--off--brown), var(--brown));
 
   border: 0.2vw solid var(--dark--brown);
   overflow-y: auto;
   scroll-behavior: smooth;
+  padding-bottom: var(--s);
 }
 
 .scoreboard-container::-webkit-scrollbar {
