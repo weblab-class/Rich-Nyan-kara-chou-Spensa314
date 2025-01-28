@@ -37,21 +37,30 @@ const MultiPlayer_Start = () => {
   };
 
   useEffect(() => {
-    get("/api/whoami").then((res) => {
-      if (!res.name) {
-        navigate("/");
-        return;
-      }
-      setLoggedIn(true);
-      if (res.name !== null) {
-        setUsername(res.name);
-        setId(res._id);
-        socket.emit("joinRoom", {
-          roomId: roomCode,
-          user: res,
-          settings: { hideLetter, hardMode, minWordLength: minLetters, type: "false" },
-        });
-      }
+    get(`/api/getRoom/${roomCode}`).then((res) => {
+        console.log(res);
+        if (res === true) {
+          navigate("/home"); // Redirect to the homepage or another relevant page
+          return;
+        }
+        get("/api/whoami").then((res) => {
+            if (!res.name) {
+              navigate("/");
+              return;
+            }
+            
+            setLoggedIn(true);
+            if (res.name !== null) {
+              setUsername(res.name);
+              setId(res._id);
+              socket.emit("joinRoom", {
+                roomId: roomCode,
+                user: res,
+                settings: { hideLetter, hardMode, minWordLength: minLetters, type: "false" },
+              });
+            }
+      });
+
 
     const savedTheme = localStorage.getItem("selectedTheme");
 
