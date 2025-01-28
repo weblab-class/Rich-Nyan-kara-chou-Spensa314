@@ -237,6 +237,7 @@
   font-size: var(--s); /* Larger size for 'Chain' */
   font-weight: normal;
   color: var(--dull--beige); /* Dark color for 'Chain' */
+  letter-spacing: 0.17vw;
 }
 
 .info-logo {
@@ -249,6 +250,7 @@
 .first-letter {
   color: var(--dark--brown);
   text-shadow: none;
+  margin-right: 0.16vw;
 }
 
 .curr-word-text {
@@ -260,7 +262,7 @@
   overflow: hidden; /* Ensures the content is not revealed until the animation */
   white-space: nowrap; /* Keeps the content on a single line */
   margin: 0;
-  letter-spacing: 0.08vw;
+  letter-spacing: 0.17vw;
 }
 
 .curr-word-line {
@@ -279,10 +281,10 @@
 /* The typing effect */
 @keyframes typing {
   0% {
-    width: 4.25%;
+    width: 4.7%;
   }
   30% {
-    width: 4.25%;
+    width: 4.7%;
   }
   100% {
     width: 100%;

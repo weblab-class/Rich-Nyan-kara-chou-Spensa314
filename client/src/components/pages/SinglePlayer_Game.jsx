@@ -11,7 +11,6 @@ import "./Loading.css";
 const firstWord = () => {
   const lister = [
     "apple",
-    "the",
     "over",
     "user",
     "under",
@@ -45,6 +44,85 @@ const firstWord = () => {
     "apartment",
     "cabin",
     "castle",
+    "craft",
+    "chill",
+    "coffee",
+    "mood",
+    "emotional",
+    "social",
+    "comfort",
+    "escape",
+    "tree",
+    "sky",
+    "cloud",
+    "rain",
+    "sun",
+    "snow",
+    "wind",
+    "star",
+    "night",
+    "day",
+    "moon",
+    "earth",
+    "desert",
+    "beach",
+    "forest",
+    "mountain",
+    "lake",
+    "stream",
+    "field",
+    "garden",
+    "flower",
+    "leaf",
+    "cactus",
+    "forest",
+    "path",
+    "trail",
+    "home",
+    "cottage",
+    "villa",
+    "garage",
+    "library",
+    "kitchen",
+    "bathroom",
+    "balcony",
+    "attic",
+    "basement",
+    "painting",
+    "sculpture",
+    "instrument",
+    "book",
+    "novel",
+    "poem",
+    "painting",
+    "song",
+    "melody",
+    "harmony",
+    "travel",
+    "adventure",
+    "journey",
+    "explore",
+    "discover",
+    "learning",
+    "growth",
+    "change",
+    "new",
+    "vintage",
+    "retro",
+    "modern",
+    "classic",
+    "vibe",
+    "energy",
+    "vibration",
+    "mood",
+    "dream",
+    "hope",
+    "love",
+    "peace",
+    "joy",
+    "grateful",
+    "harmony",
+    "serenity",
   ];
   const index = Math.floor(Math.random() * lister.length);
   return lister[index];
@@ -107,13 +185,13 @@ const SinglePlayer_Game = () => {
       seed: gameSeed, // Store the seed for the game
     }));
     const settings = JSON.stringify({
-        minLetters: parseInt(minLetters, 10), //10 is the base that's so cool
-        activeTime: parseInt(activeTime, 10),
-        hideLetter: hideLetter,
-        hardMode: hardMode,
-      });
+      minLetters: parseInt(minLetters, 10), //10 is the base that's so cool
+      activeTime: parseInt(activeTime, 10),
+      hideLetter: hideLetter,
+      hardMode: hardMode,
+    });
     get("/api/topScore", { userId, settings }).then((res) => {
-        if (res.highScore) setHighScore(res.highScore);
+      if (res.highScore) setHighScore(res.highScore);
     });
 
     if (inputRef.current) {
@@ -164,8 +242,8 @@ const SinglePlayer_Game = () => {
           setIndex((prevIndex) => prevIndex + 1);
           setGameState((prevState) => {
             if (prevState.score + (parseInt(res.totalResults, 10) || 0) > highScore) {
-                setHighScore(prevState.score + (parseInt(res.totalResults, 10) || 0));
-              }
+              setHighScore(prevState.score + (parseInt(res.totalResults, 10) || 0));
+            }
             const newLetter = generateRandomLetter(deriveSeed(prevState.seed, index)); // Generate new letter using seed
             return {
               ...prevState,

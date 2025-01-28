@@ -215,36 +215,26 @@ const MultiPlayer_Start = () => {
     /* info animation */
   }
 
-  const [prevWord, setPrevWord] = useState("Chain"); // Set the last word initially
-  const [currWord, setCurrWord] = useState("Reaction");
+  const [prevWord, setPrevWord] = useState("Door"); // Set the last word initially
+  const [currWord, setCurrWord] = useState("Handle");
   const [isAnimating, setIsAnimating] = useState(false);
+  const words = ["Door", "Handle", "Bar", "Fight", "Back"];
 
   useEffect(() => {
     const intervalDuration = 4000; // the interval duration
     setIsAnimating(true);
 
     const interval = setInterval(() => {
-      if (currWord === "Chain") {
-        setPrevWord("Chain");
-        setCurrWord("Reaction");
-      } else {
-        setPrevWord("Reaction");
-        setCurrWord("Chain");
-      }
+      const currentIndex = words.indexOf(currWord);
+      const nextIndex = (currentIndex + 1) % 5;
+      setPrevWord(currWord);
+      setCurrWord(words[nextIndex]);
 
       // Clean up timeout on the next cycle
     }, intervalDuration);
 
     return () => clearInterval(interval); // Cleanup on unmount
   }, [prevWord, currWord]); // Only runs when currWord changes
-
-  useEffect(() => {
-    if (isInfoModalOpen) {
-      setPrevWord("Chain");
-      setCurrWord("Reaction");
-      setIsAnimating(false);
-    }
-  }, [isInfoModalOpen]); // Dependency on modal opening
 
   return !isLoggedIn ? (
     <div className="intermediate-container"></div>
@@ -362,17 +352,17 @@ const MultiPlayer_Start = () => {
               <div className="settings-modal-hideLetter">
                 Hide Next Letter
                 <label className="switch">
-                    <input type="checkbox" checked={hideLetter} onChange={onHideLetterClick} />
-                    <span className="slider round"></span>
+                  <input type="checkbox" checked={hideLetter} onChange={onHideLetterClick} />
+                  <span className="slider round"></span>
                 </label>
-                </div>
-                <div className="settings-modal-hardMode">
+              </div>
+              <div className="settings-modal-hardMode">
                 Hard Mode
                 <label className="switch">
-                    <input type="checkbox" checked={hardMode} onChange={onHardModeClick} />
-                    <span className="slider round"></span>
+                  <input type="checkbox" checked={hardMode} onChange={onHardModeClick} />
+                  <span className="slider round"></span>
                 </label>
-                </div>
+              </div>
             </div>
           </div>
         )}
