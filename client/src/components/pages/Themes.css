@@ -85,36 +85,6 @@
   filter: brightness(1.05);
 }
 
-.save-theme-button {
-  width: 45vw;
-  margin-top: var(--xs);
-  background-image: linear-gradient(
-    45deg,
-    var(--dark--brown),
-    var(--brown),
-    var(--light--brown),
-    var(--dark--brown),
-    var(--light--brown)
-  );
-  color: white;
-  text-shadow: none;
-  padding: 0.5vw 0.7vw;
-  font-size: var(--s);
-  box-shadow: 0.1vw 0.1vw 0.2vw rgba(0, 0, 0, 0.5);
-  cursor: pointer;
-  border-radius: var(--xxs);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  transition: all 0.3s ease;
-  text-shadow: 0.03vw 0.03vw 0.1vw rgba(0, 0, 0, 0.5);
-}
-
-.save-theme-button:hover {
-  transform: scale(1.05);
-  filter: brightness(1.05);
-}
-
 .saved-themes-container {
   border-radius: var(--s);
   margin-top: var(--s);

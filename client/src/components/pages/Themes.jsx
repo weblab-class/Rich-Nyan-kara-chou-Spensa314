@@ -77,36 +77,33 @@ const Themes = () => {
         updateThemeVariables(newTheme);
         setCurTheme(theme);
         setCurThemeCode(newTheme);
+        post("/api/add-theme", {
+          userId,
+          themeName: theme, // Match the backend field name
+          themeCode: JSON.stringify(newTheme), // Match the backend field name
+        })
+          .then((res) => {
+            setSavedThemes((prevThemes) => [
+              ...prevThemes,
+              { name: theme, cssVariables: JSON.stringify(newTheme) },
+            ]); // Add the new theme to the savedThemes state
+        
+            setButtonText("Theme Saved!");
+            setTheme("");
+            // Revert the button text back to "Save Theme" after 2 seconds
+            setTimeout(() => {
+              setButtonText("Save Theme");
+            }, 1000);
+          })
+          .catch((err) => {
+            console.error("Theme already exists or error while saving:", err);
+          });
       })
       .catch((err) => {
         console.error("Error fetching theme:", err.message || err);
       })
       .finally(() => {
         setIsLoading(false); // Reset loading state
-      });
-  };
-
-  const onSaveClick = () => {
-    post("/api/add-theme", {
-      userId,
-      themeName: curTheme, // Match the backend field name
-      themeCode: JSON.stringify(curThemeCode), // Match the backend field name
-    })
-      .then((res) => {
-        setSavedThemes((prevThemes) => [
-          ...prevThemes,
-          { name: curTheme, cssVariables: JSON.stringify(curThemeCode) },
-        ]); // Update state with the new theme
-
-        setButtonText("Theme Saved!");
-        setTheme("");
-        // Revert the button text back to "Save Theme" after 2 seconds
-        setTimeout(() => {
-          setButtonText("Save Theme");
-        }, 1000);
-      })
-      .catch((err) => {
-        console.error("Theme already exists!");
       });
   };
 
@@ -144,9 +141,6 @@ const Themes = () => {
           <div onClick={onThemeClick} className="theme-button">
             {isLoading ? "Generating theme..." : "Generate Theme"}
           </div>
-        </div>
-        <div onClick={onSaveClick} className="save-theme-button">
-          {buttonText}
         </div>
         <div className="saved-themes-container">
           {savedThemes && savedThemes.length > 0 ? (
