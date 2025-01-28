@@ -1,4 +1,5 @@
 import React, { useContext, useEffect } from "react";
+import { resetThemeVariables } from "../../utilities";
 import { GoogleLogin } from "@react-oauth/google";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../App";
@@ -32,6 +33,8 @@ const Login = () => {
           navigate("/home");
         }
       });
+      resetThemeVariables();
+
     } catch (error) {
       console.error("Error fetching user data:", error);
     }
