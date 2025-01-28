@@ -38,14 +38,13 @@ const Themes = () => {
         });
     });
     const savedTheme = localStorage.getItem("selectedTheme");
+    console.log(savedTheme);
     if (savedTheme) {
       try {
         const parsedTheme = JSON.parse(savedTheme);
-
-        const cssVariablesMap = JSON.parse(parsedTheme.cssVariables);
         // Apply the saved theme globally
-        updateThemeVariables(cssVariablesMap);
-
+        updateThemeVariables(parsedTheme.cssVariables);
+        
         // Update state with the saved theme
         setCurTheme(parsedTheme.name);
         setCurThemeCode(parsedTheme.cssVariables);
@@ -92,6 +91,8 @@ const Themes = () => {
         updateThemeVariables(newTheme);
         setCurTheme(theme);
         setCurThemeCode(newTheme);
+        localStorage.setItem("selectedTheme", JSON.stringify({ name: theme, cssVariables: newTheme }));
+        console.log(localStorage.getItem("selectedTheme"));
         post("/api/add-theme", {
           userId,
           themeName: theme, // Match the backend field name
@@ -105,7 +106,7 @@ const Themes = () => {
         
             setButtonText("Theme Saved!");
             setTheme("");
-            localStorage.setItem("selectedTheme", JSON.stringify({ name: theme, cssVariables: newTheme }));
+            
             // Revert the button text back to "Save Theme" after 2 seconds
             setTimeout(() => {
               setButtonText("Save Theme");
@@ -194,12 +195,10 @@ const Themes = () => {
                     cursor: "pointer", // Visual cue for interactivity
                   }}
                   onClick={() => {
-                    console.log(cssVariables);
                     updateThemeVariables(cssVariables); // Apply theme globally
                     setCurTheme(savedTheme.name);
-                    setCurThemeCode(savedTheme.cssVariables);
-                    localStorage.setItem("selectedTheme", JSON.stringify({ name: savedTheme.name, cssVariables: savedTheme.cssVariables }));
-                    console.log(localStorage.getItem("selectedTheme"));
+                    setCurThemeCode(cssVariables);
+                    localStorage.setItem("selectedTheme", JSON.stringify({ name: savedTheme.name, cssVariables: cssVariables }));
                   }}
                 >
                   <div className="theme-text">{savedTheme.name || `Theme ${index + 1}`}</div>

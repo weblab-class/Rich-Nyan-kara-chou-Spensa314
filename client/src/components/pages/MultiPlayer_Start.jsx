@@ -58,14 +58,8 @@ const MultiPlayer_Start = () => {
     if (savedTheme) {
         try {
           const parsedTheme = JSON.parse(savedTheme);
-  
-          const cssVariablesMap = JSON.parse(parsedTheme.cssVariables);
           // Apply the saved theme globally
-          updateThemeVariables(cssVariablesMap);
-  
-          // Update state with the saved theme
-          setCurTheme(parsedTheme.name);
-          setCurThemeCode(parsedTheme.cssVariables);
+          updateThemeVariables(parsedTheme.cssVariables);
         } catch (err) {
           console.error("Error parsing saved theme from localStorage:", err);
         }
