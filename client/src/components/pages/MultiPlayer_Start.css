@@ -83,7 +83,33 @@
 .mp-players-list {
   display: flex;
   flex-direction: row;
-  justify-content: center;
+  justify-content: space-evenly; /* Center the items initially */
+  align-items: center; /* Align items at the top */
+  overflow-x: auto; /* Allow horizontal overflow */
+  white-space: nowrap;
+  width: 48vw;
+  scroll-behavior: smooth;
+}
+
+.mp-players-list::-webkit-scrollbar {
+  height: var(--xs); /* Height of the scrollbar (for horizontal scrolling) */
+}
+
+.mp-players-list::-webkit-scrollbar-thumb {
+  background-color: var(--beige--glass); /* Color of the thumb */
+  border-radius: var(--xs); /* Rounded corners for the thumb */
+  border: 0.05vw solid rgba(255, 255, 255, 0.3); /* Optional: border around thumb */
+  background-clip: content-box; /* Ensures thumb is not squished */
+  transition: all 0.5s ease;
+}
+
+.mp-players-list::-webkit-scrollbar-thumb:hover {
+  background-color: var(--brown--glass); /* Darker color when hovered */
+}
+
+.mp-players-list::-webkit-scrollbar-track {
+  background-color: var(--beige); /* Color of the track */
+  border-radius: var(--xs); /* Rounded corners for the track */
 }
 
 .mp-players-item {
