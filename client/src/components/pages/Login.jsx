@@ -36,6 +36,7 @@ const Login = () => {
         }
       });
       resetThemeVariables();
+      localStorage.clear();
     } catch (error) {
       console.error("Error fetching user data:", error);
     }
