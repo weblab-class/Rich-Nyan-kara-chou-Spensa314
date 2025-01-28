@@ -89,6 +89,7 @@
   white-space: nowrap;
   width: 48vw;
   scroll-behavior: smooth;
+  overflow-y: hidden;
 }
 
 .mp-players-list::-webkit-scrollbar {
