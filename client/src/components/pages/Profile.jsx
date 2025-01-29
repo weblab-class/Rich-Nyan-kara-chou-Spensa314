@@ -94,7 +94,7 @@ const Profile = () => {
           hideLetter: hideLetter,
           hardMode: hardMode,
         });
-        console.log("Sending: ", userId, settings);
+        //console.log("Sending: ", userId, settings);
         const response = await get("/api/getScores", { userId, settings });
 
         if (response.error) {

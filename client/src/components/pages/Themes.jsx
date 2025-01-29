@@ -38,7 +38,6 @@ const Themes = () => {
         });
     });
     const savedTheme = localStorage.getItem("selectedTheme");
-    console.log(savedTheme);
     if (savedTheme) {
       try {
         const parsedTheme = JSON.parse(savedTheme);
@@ -92,7 +91,6 @@ const Themes = () => {
         setCurTheme(theme);
         setCurThemeCode(newTheme);
         localStorage.setItem("selectedTheme", JSON.stringify({ name: theme, cssVariables: newTheme }));
-        console.log(localStorage.getItem("selectedTheme"));
         post("/api/add-theme", {
           userId,
           themeName: theme, // Match the backend field name

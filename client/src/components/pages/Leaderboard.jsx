@@ -52,7 +52,6 @@ const Leaderboard = () => {
           hideLetter: hideLetter,
           hardMode: hardMode,
         });
-        console.log("Sending: ", userId, settings);
         const response = await get("/api/leaderboard", { userId, settings });
 
         if (response.error) {

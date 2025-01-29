@@ -19,9 +19,7 @@ const getNameFromUserID = (userid) => userIDtoNameMap[userid];
 const getPhotoFromUserID = (userid) => userIDtoPhotoMap[userid];
 
 const addUser = (user, socket) => {
-  console.log('wtf', user._id);
   if (!user || !user._id) {
-    console.log(user);
     console.error("Invalid user object provided to addUser");
     return;
   }
@@ -35,7 +33,6 @@ const addUser = (user, socket) => {
       delete socketToIDMap[oldSocket.id];
     }
   }
-  console.log(user);
   userToSocketMap[user._id] = socket;
   socketToUserMap[socket.id] = user;
   socketToIDMap[socket.id] = user._id;
@@ -69,7 +66,6 @@ const joinRoom = (roomId, user, socket, settings) => {
   if (!room.players.some((p) => p.id === socket.id)) {
     room.players.push({ id: socket.id, name: user.name, photo: user.profilePicture, userId: user._id });
   }
-  console.log("FUCK THIS SHIT", rooms[roomId]);
 
   socket.join(roomId);
   gameLogic.setRoomId(roomId, rooms[roomId].players);
@@ -127,7 +123,6 @@ const endGame = (roomId, socket) => {
     console.error(`Room ${roomId} not found in endGame`);
     return;
   }
-  console.log(roomId, 'asfkhasdlfahsdfjkdasfljkasdh');
   socket.leave(roomId);
   gameLogic.endGame(roomId);
   inRoom[roomId] = [];
@@ -255,7 +250,7 @@ const getActiveRooms = (roomId) => {
     return false;
   }
   for (const key of Object.entries(rooms)) {
-    console.log("ACTIVE ROOMS",key);
+    //console.log("ACTIVE ROOMS",key);
     if (key === roomId) {
       return true;
     }

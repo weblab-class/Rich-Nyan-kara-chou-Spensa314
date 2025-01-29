@@ -55,7 +55,6 @@ const MultiPlayer_Score_Summary = () => {
       setRoomState(location.state.state || {});
       setQueries(location.state.queries || []);
       setOwnScore(location.state.score || 0);
-      console.log(location.state.state);
       // Default opponent setup
       const initialIndex = 0; // Start with the first opponent
       setIndex(initialIndex);
@@ -66,9 +65,6 @@ const MultiPlayer_Score_Summary = () => {
       const topScore = location.state.standings?.[0]?.score || 0;
       const topPlayers = location.state.standings?.filter(player => player.score === topScore);
       setWinner(topPlayers || []);
-
-      console.log("location.state", location.state);
-
       // Loop over all players to update their scores
       location.state.players.forEach((playerId) => {
         if (!updatedPlayersRef.current.has(playerId)) {
@@ -88,8 +84,6 @@ const MultiPlayer_Score_Summary = () => {
             hideLetter: rawSettings.hideLetter,
             hardMode: rawSettings.type, // hardMode maps from `type`
           });
-
-          console.log("sending ", playerId, isWinner, formattedSettings);
 
           post("/api/updateMultiPlayerScore", {
             userId: playerId,
@@ -111,11 +105,8 @@ const MultiPlayer_Score_Summary = () => {
 
   const handleNextClick = () => {
     get(`/api/room/${roomCode}`).then((res) => {
-      console.log(res);
       if (res.exists === true) {
-        console.log(res);
         get(`/api/getRoom/${roomCode}`).then((res) => {
-          console.log(res);
           if (res === true) {
             alert("Game already started!");
           } else {

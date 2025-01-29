@@ -72,11 +72,9 @@ const Home = () => {
       const newRoomCode = Math.floor(Math.random() * 10000).toString();
 
       try {
-        const res = await get(`/api/activeRooms/${newRoomCode}`); // Wait for the API response
-        console.log(`Checking room code ${newRoomCode}:`, res);
+        const res = await get(`/api/activeRooms/${newRoomCode}`);
 
         if (res === false) {
-          // If room code is available
           anotherRoom = false;
           genRoom = newRoomCode;
         }
@@ -101,11 +99,8 @@ const Home = () => {
 
   const onJoinRoomClick = () => {
     get(`/api/room/${roomCode}`).then((res) => {
-      console.log(res);
       if (res.exists === true) {
-        console.log(res);
         get(`/api/getRoom/${roomCode}`).then((res) => {
-          console.log(res);
           if (res === true) {
             alert("Game already started!");
           } else {

@@ -226,7 +226,6 @@ async function handlePlayerSearch(playerId, roomId, query) {
   }
 
   const url = `https://www.googleapis.com/customsearch/v1?key=${apiKey}&cx=${cx}&q=${quotedQuery}`;
-  console.log(url);
   try {
     const response = await fetch(url);
     const data = await response.json();
@@ -282,7 +281,6 @@ function getGameStarted(roomId) {
 function setInitiated(playerId) {
   const state = getPlayerState(playerId);
   state.initiated = true;
-  console.log("Initiated:", state.initiated);
 }
 
 function getInitiated(playerId, roomId) {

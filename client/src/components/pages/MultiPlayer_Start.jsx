@@ -38,7 +38,7 @@ const MultiPlayer_Start = () => {
 
   useEffect(() => {
     get(`/api/getRoom/${roomCode}`).then((res) => {
-      console.log(res);
+      //console.log(res);
       if (res === true) {
         navigate("/home"); // Redirect to the homepage or another relevant page
         return;
@@ -133,7 +133,7 @@ const MultiPlayer_Start = () => {
     const resetScoreFlag = async () => {
       try {
         await post("/api/reset-score-update");
-        console.log("Score update flag reset for new game.");
+        //console.log("Score update flag reset for new game.");
       } catch (err) {
         console.error("Error resetting score flag:", err);
       }
@@ -143,7 +143,7 @@ const MultiPlayer_Start = () => {
 
     // Notify the server to start the game
     post(`/api/startGame/${roomCode}/${id}`, gameDetails).then((res) => {
-      console.log(res);
+      //console.log(res);
       if (res.error) {
         alert(res.error);
         return;
@@ -163,7 +163,7 @@ const MultiPlayer_Start = () => {
 
   useEffect(() => {
     socket.on("gameStarted", ({ message, gameState }) => {
-      console.log(message);
+      //console.log(message);
       setStarted(true);
       // Debug message
       // Update game state or navigate to the game page

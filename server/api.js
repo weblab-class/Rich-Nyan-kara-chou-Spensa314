@@ -134,7 +134,7 @@ router.post("/update-username", auth.ensureLoggedIn, async (req, res) => {
     user.name = newUsername.trim();
     await user.save();
 
-    console.log("newUsername saved successfully");
+    //console.log("newUsername saved successfully");
 
     res.status(200).send({ success: true, username: user.name });
   } catch (err) {
@@ -197,7 +197,6 @@ router.post("/delete-theme", auth.ensureLoggedIn, async (req, res) => {
   }
 
   try {
-    console.log(userId, themeName, themeCode);
     const user = await User.findById(userId);
     if (!user) {
       return res.status(404).send({ msg: "User not found" });
@@ -218,14 +217,13 @@ router.post("/delete-theme", auth.ensureLoggedIn, async (req, res) => {
 // Update single-player scores
 router.post("/updateSinglePlayerScore", auth.ensureLoggedIn, async (req, res) => {
   const { userId, score, queries, settings, guest } = req.body;
-  console.log("Request Body:", req.body);
   if (!userId || !settings || !queries || score === undefined) {
     return res.status(400).json({ message: "Missing required fields" });
   }
 
   try {
     const user = await User.findById(userId);
-    console.log("This is my user: ", user);
+    //console.log("This is my user: ", user);
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
@@ -234,16 +232,16 @@ router.post("/updateSinglePlayerScore", auth.ensureLoggedIn, async (req, res) =>
     const settingsString = settings; // Use settings directly as a string
 
     // const settingsString = JSON.stringify(JSON.parse(settings)); //lifesaver tbh
-    console.log("settingsString working okay", settingsString);
+    //console.log("settingsString working okay", settingsString);
     // checking if these settings have been played before
     // should probably check .find() complexity
     // but there's no workaround afaik and it shouldn't be too harsh
     let scoreEntry = user.singlePlayerScores.find((entry) => entry.settings === settingsString);
-    console.log("got until here", scoreEntry);
+   // console.log("got until here", scoreEntry);
 
     if (!scoreEntry) {
       // Add a new entry for these settings
-      console.log("Adding a new entry for these settings");
+     // console.log("Adding a new entry for these settings");
       scoreEntry = {
         settings: settingsString,
         highScore: score,
@@ -346,7 +344,7 @@ router.get("/leaderboard", async (req, res) => {
 
   try {
     const user = await User.findById(userId);
-    console.log("This is my user: ", user);
+   // console.log("This is my user: ", user);
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
@@ -422,7 +420,7 @@ router.get("/leaderboard", async (req, res) => {
 router.get("/getScores", async (req, res) => {
   const { userId, settings } = req.query;
 
-  console.log("Request Query:", req.query);
+  //console.log("Request Query:", req.query);
   if (!userId || !settings) {
     return res.status(400).json({ message: "Missing required fields" });
   }
@@ -435,12 +433,12 @@ router.get("/getScores", async (req, res) => {
 
     // Parse settings to ensure comparison works
     const parsedSettings = JSON.stringify(JSON.parse(settings)); // Normalize JSON string format
-    console.log("parsedSettings:", parsedSettings);
+    //console.log("parsedSettings:", parsedSettings);
 
     const scoreSinglePlayerEntry = user.singlePlayerScores.find(
       (score) => score.settings === parsedSettings
     );
-    console.log("scoreSinglePlayerEntry: ", scoreSinglePlayerEntry);
+    //console.log("scoreSinglePlayerEntry: ", scoreSinglePlayerEntry);
     // Default values if score entry does not exist
     const highScore = scoreSinglePlayerEntry?.highScore || 0;
     const totalScore = scoreSinglePlayerEntry?.totalScore || 0;
@@ -450,7 +448,7 @@ router.get("/getScores", async (req, res) => {
     const scoreMultiPlayerEntry = user.multiPlayerScores.find(
       (score) => score.settings === parsedSettings
     );
-    console.log("scoreMultiPlayerEntry: ", scoreMultiPlayerEntry);
+    //console.log("scoreMultiPlayerEntry: ", scoreMultiPlayerEntry);
 
     // default values again ;-;
     const wins = scoreMultiPlayerEntry?.wins || 0;
@@ -476,7 +474,7 @@ router.post("/reset-score-update", (req, res) => {
 
 router.post("/updateMultiPlayerScore", auth.ensureLoggedIn, async (req, res) => {
   const { userId, isWinner, settings } = req.body;
-  console.log("Req body:", req.body);
+  //console.log("Req body:", req.body);
 
   if (!userId || isWinner === undefined || !settings) {
     return res.status(400).json({ message: "Missing required fields" });
@@ -487,18 +485,18 @@ router.post("/updateMultiPlayerScore", auth.ensureLoggedIn, async (req, res) => 
       return res.status(400).json({ message: "Score has already been updated." });
     }
     const user = await User.findById(userId);
-    console.log("This is my user: ", user);
+    //console.log("This is my user: ", user);
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
     const settingsString = settings;
-    console.log("settingsString working okay", settingsString);
+   // console.log("settingsString working okay", settingsString);
 
     // do the settings already exist for this user?
     let scoreEntry = user.multiPlayerScores.find((entry) => entry.settings === settingsString);
-    console.log("scoreEntry: ", scoreEntry);
+   // console.log("scoreEntry: ", scoreEntry);
 
     if (!scoreEntry) {
       // Add a new entry for these settings
@@ -512,7 +510,7 @@ router.post("/updateMultiPlayerScore", auth.ensureLoggedIn, async (req, res) => 
       user.multiPlayerScores.push(scoreEntry); // array
     } else {
       // Update the existing entry
-      console.log("Updating an existing entry");
+      //console.log("Updating an existing entry");
       if (isWinner) {
         scoreEntry.wins += 1;
       } else {
@@ -541,7 +539,7 @@ router.post("/initsocket", (req, res) => {
 
 router.get("/room/:roomCode", (req, res) => {
   const roomCode = req.params.roomCode;
-  console.log(roomCode);
+  //console.log(roomCode);
   // Check if the roomCode exists in the rooms object
   if (socketManager.gR(roomCode)) {
     // Room exists
@@ -556,8 +554,8 @@ router.get("/roomer/:roomCode/:id", (req, res) => {
   const roomCode = req.params.roomCode;
   const id = req.params.id;
   socketManager.addInRoom(roomCode, id);
-  console.log("this is the id", id);
-  console.log(roomCode);
+  // console.log("this is the id", id);
+  // console.log(roomCode);
 
   // Check if the roomCode exists in the rooms object
   if (socketManager.gR(roomCode)) {
@@ -573,7 +571,7 @@ router.get("/roomer/:roomCode/:id", (req, res) => {
 router.get("/game/status/:roomCode", (req, res) => {
   const roomCode = req.params.roomCode;
   const username = req.query.username.slice(0, -1);
-  console.log(`Received request for roomCode: ${roomCode} and username: ${username}`);
+ // console.log(`Received request for roomCode: ${roomCode} and username: ${username}`);
 
   const game = games[roomCode];
   if (!game) {
@@ -586,7 +584,7 @@ router.get("/game/status/:roomCode", (req, res) => {
         return res.status(403).send({ error: "User not in the game" });
       }
       game.state = "waiting";
-      console.log(`Game ${roomCode} is in waiting state.`);
+      //console.log(`Game ${roomCode} is in waiting state.`);
 
       // Start a timer to transition to "started"
       setTimeout(() => {
@@ -633,7 +631,7 @@ router.post("/startGame/:roomCode/:id", (req, res) => {
     // Respond with a success message
     res.status(200).send({ msg: "Game started successfully" });
   } catch (err) {
-    console.error("Error in /startGame route:", err.message);
+    //console.error("Error in /startGame route:", err.message);
 
     // Send a clear error response to the client
     res.status(500).send({
@@ -673,9 +671,9 @@ router.get("/search", async (req, res) => {
   try {
     const response = await fetch(url);
     const data = await response.json();
-    console.log(data);
+    //console.log(data);
     const totalResults = data.searchInformation.totalResults || 0;
-    console.log(totalResults);
+   // console.log(totalResults);
     res.send({
       phrase: query,
       totalResults,
@@ -709,9 +707,9 @@ router.get("/getNextLetter/:roomId", (req, res) => {
 router.get("/getInitiated/:roomId", (req, res) => {
   const roomId = req.params.roomId;
   const userId = req.query.userId.slice(0, -1);
-  console.timeLog(roomId, userId);
+  //console.timeLog(roomId, userId);
   const initiated = socketManager.initiated(userId, roomId);
-  console.log(initiated);
+  //console.log(initiated);
   res.send(initiated);
 });
 
