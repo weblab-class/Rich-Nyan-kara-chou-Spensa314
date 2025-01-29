@@ -87,8 +87,8 @@
   padding: var(--xs);
   border-radius: var(--xxs);
   box-shadow: 0 0 var(--xs) rgba(0, 0, 0, 0.3);
-  width: 30vw; /* Set the width of the modal */
-  height: 25vw;
+  width: 60vw; /* Set the width of the modal */
+  height: 35vw;
   position: relative;
 }
 
@@ -112,14 +112,14 @@
 }
 
 .info-title {
-  font-size: var(--s);
+  font-size: var(--sm);
   color: white;
   margin: var(--xs);
   margin-bottom: var(--xs);
 }
 
 .info-text {
-  font-size: 1.7vw;
+  font-size: 2vw;
   color: var(--beige);
   margin-left: var(--xs);
   margin-right: var(--xs);
@@ -136,15 +136,15 @@
 }
 
 .info-close-button {
-  font-size: 1.5vw;
+  font-size: 2vw;
   position: absolute;
   top: var(--xs);
   right: var(--xs);
   background-color: var(--dark--brown);
   color: var(--beige);
-  height: var(--s);
-  width: var(--s);
-  box-shadow: 0 0 var(--xs) rgba(0, 0, 0, 0.3);
+  height: var(--sm);
+  width: var(--sm);
+  box-shadow: 0.1vw 0.1vw 0.2vw rgba(0, 0, 0, 0.7);
 
   display: flex;
   text-align: center;
@@ -208,7 +208,7 @@
 }
 
 .prev-word-container {
-  width: 18vw;
+  width: 30vw;
   padding: var(--xxs) var(--xs);
 
   border: 0.1vw solid var(--dull--beige); /* **Added Border** */
@@ -234,27 +234,27 @@
 }
 
 .prev-word-text {
-  font-size: var(--s); /* Larger size for 'Chain' */
+  font-size: var(--sm); /* Larger size for 'Chain' */
   font-weight: normal;
   color: var(--dull--beige); /* Dark color for 'Chain' */
-  letter-spacing: 0.17vw;
+  letter-spacing: 0.2vw;
 }
 
 .info-logo {
   position: absolute;
-  height: var(--s);
-  width: var(--s);
+  height: var(--sm);
+  width: var(--sm);
   left: var(--xs);
 }
 
 .first-letter {
   color: var(--dark--brown);
   text-shadow: none;
-  margin-right: 0.16vw;
+  margin-right: 0.2vw;
 }
 
 .curr-word-text {
-  font-size: var(--s); /* Smaller size for 'Reaction' */
+  font-size: var(--sm); /* Smaller size for 'Reaction' */
   font-weight: normal;
 
   color: var(--beige);
@@ -262,11 +262,11 @@
   overflow: hidden; /* Ensures the content is not revealed until the animation */
   white-space: nowrap; /* Keeps the content on a single line */
   margin: 0;
-  letter-spacing: 0.17vw;
+  letter-spacing: 0.2vw;
 }
 
 .curr-word-line {
-  width: 16vw; /* Adjust this width to your preference */
+  width: 30vw; /* Adjust this width to your preference */
   border: none;
   border-top: 0.2vw solid var(--dark--brown); /* Make the line using a border */
   border-radius: var(--s); /* Adjust the radius value as needed */
@@ -281,12 +281,17 @@
 /* The typing effect */
 @keyframes typing {
   0% {
-    width: 4.7%;
+    width: 3.6%;
   }
   30% {
-    width: 4.7%;
+    width: 3.6%;
   }
   100% {
     width: 100%;
   }
+}
+
+.separator {
+  margin: var(--xs);
+  border: 0.01vw solid var(--dark--brown);
 }
