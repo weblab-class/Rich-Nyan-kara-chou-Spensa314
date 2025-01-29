@@ -196,6 +196,12 @@ function leaveRoom(roomId, playerId) {
 }
 
 function endGame(roomId) {
+    if (!roomStates[roomId]) {
+        return;
+    }
+    if (!roomToPlayers[roomId]) {
+        return;
+    }
     for (const playerId in roomToPlayers[roomId]) {
         resetPlayerState(playerId, roomId);
     }
