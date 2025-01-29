@@ -664,8 +664,10 @@ router.get("/search", async (req, res) => {
 
   let url;
   if (currentHour >= 0 && currentHour < 12) {
+    console.log("12 AM - 12 PM");
     url = `https://www.googleapis.com/customsearch/v1?key=${apiKey}&cx=${cx}&q=${quotedQuery}`;
   } else {
+    console.log("12 PM - 12 AM");
     url = `https://www.googleapis.com/customsearch/v1?key=${apiKey2}&cx=${cx2}&q=${quotedQuery}`;
   }
   try {
