@@ -211,9 +211,22 @@ async function handlePlayerSearch(playerId, roomId, query) {
   const currentWord = `${state.curLetter}${query}`;
   const queryText = `${state.prevWord} ${currentWord}`;
   const quotedQuery = `"${queryText}"`;
-  // const url = `https://www.googleapis.com/customsearch/v1?key=${apiKey}&cx=${cx}&q=${quotedQuery}`; FIX ME
-  const url = `https://www.googleapis.com/customsearch/v1?key=AIzaSyBZpVCZKwRmfBNuZJjRQuBhEc2h68DYrso&cx=450f8832fcce44a27&q=${quotedQuery}`;
-console.log(roomStates[roomId].randomLetters);
+
+  const currentHour = new Date().getHours();
+  let apiKey, cx;
+
+  if (currentHour >= 0 && currentHour < 12) {
+    // 12 AM - 12 PM
+    apiKey = "AIzaSyBZpVCZKwRmfBNuZJjRQuBhEc2h68DYrso";
+    cx = "450f8832fcce44a27";
+  } else {
+    // 12 PM - 12 AM
+    apiKey = "AIzaSyAjqHL2eqHdkj0ROMlZCAtLc7pgNNx87NE";
+    cx = "624cb6fad01334dfa";
+  }
+
+  const url = `https://www.googleapis.com/customsearch/v1?key=${apiKey}&cx=${cx}&q=${quotedQuery}`;
+  console.log(url);
   try {
     const response = await fetch(url);
     const data = await response.json();

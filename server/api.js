@@ -20,6 +20,8 @@ const mongoose = require("mongoose");
 const apiKey = process.env.GOOGLE_API_KEY;
 const cx = process.env.GOOGLE_CX;
 
+const apiKey2 = process.env.GOOGLE_API_KEY_2;
+const cx2 = process.env.GOOGLE_CX_2;
 const games = {}; // In-memory store for game states
 
 router.post("/login", auth.login);
@@ -660,8 +662,14 @@ router.get("/search", async (req, res) => {
 
   const quotedQuery = `"${query}"`;
 
-  const url = `https://www.googleapis.com/customsearch/v1?key=${apiKey}&cx=${cx}&q=${quotedQuery}`;
-  console.log(url);
+  const currentHour = new Date().getHours();
+
+  let url;
+  if (currentHour >= 0 && currentHour < 12) {
+    url = `https://www.googleapis.com/customsearch/v1?key=${apiKey}&cx=${cx}&q=${quotedQuery}`;
+  } else {
+    url = `https://www.googleapis.com/customsearch/v1?key=${apiKey2}&cx=${cx2}&q=${quotedQuery}`;
+  }
   try {
     const response = await fetch(url);
     const data = await response.json();
