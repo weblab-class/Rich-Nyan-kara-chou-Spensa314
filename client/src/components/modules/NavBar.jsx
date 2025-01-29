@@ -75,11 +75,13 @@ const NavBar = () => {
           )}
           {username || "Guest"} {/* put in actual name */}
         </div>
-        <div onClick={handleThemesClick} className="navbar-link">
+        <div onClick={handleThemesClick} className="navbar-link themes-container">
           <img src="/images/themes.png" alt="Themes" className="themes" />
+          Themes
         </div>
-        <div onClick={handleLeaderboardClick} className="navbar-link">
+        <div onClick={handleLeaderboardClick} className="navbar-link lb-container">
           <img src="/images/crown.png" alt="Crown" className="leaderboard" />
+          Leaderboard
         </div>
         <div onClick={handleLogoutButtonClick} className="navbar-link">
           <img src="/images/logout.png" alt="Logout" className="logout" />

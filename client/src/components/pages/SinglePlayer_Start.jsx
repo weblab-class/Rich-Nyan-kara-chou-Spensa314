@@ -9,7 +9,6 @@ import "./Info.css";
 import "./SinglePlayer_Start.css";
 import { updateThemeVariables } from "../../utilities";
 
-
 const SinglePlayer_Start = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
@@ -33,14 +32,14 @@ const SinglePlayer_Start = () => {
     const savedTheme = localStorage.getItem("selectedTheme");
 
     if (savedTheme) {
-        try {
-          const parsedTheme = JSON.parse(savedTheme);
-          // Apply the saved theme globally
-          updateThemeVariables(parsedTheme.cssVariables);
-        } catch (err) {
-          console.error("Error parsing saved theme from localStorage:", err);
-        }
+      try {
+        const parsedTheme = JSON.parse(savedTheme);
+        // Apply the saved theme globally
+        updateThemeVariables(parsedTheme.cssVariables);
+      } catch (err) {
+        console.error("Error parsing saved theme from localStorage:", err);
       }
+    }
   });
 
   const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
@@ -147,14 +146,36 @@ const SinglePlayer_Start = () => {
                   <hr className="curr-word-line" />
                 </div>
                 <div className="info-text">
-                  <span className="info-text-title">Objective: </span> Score the highest points by
-                  entering the trendiest search terms.
+                  <span className="info-text-title">Objective: </span> Score as many points as
+                  possible by entering the trendiest search terms.
                 </div>
                 <div className="info-text">
-                  <span className="info-text-title">Game Mechanics: </span> You're given a starting
-                  word and the starting letter for the following word in the phrase. You are to fill
-                  in the following word. Once you enter your phrase, the word you filled in will now
-                  become the starting word. This process is repeated within the given time limit.
+                  <span className="info-text-title">Game Mechanics: </span> You are finding the
+                  trendiest 2-word phrase. You are given the first word and the starting letter of
+                  the second word. You are to fill in the second word. Once you enter your phrase,
+                  the second word becomes the first word and you are provided with a new letter.
+                  This process is repeated within the given time limit.
+                </div>
+                <div className="separator" />
+                <div className="info-title">Settings</div>
+                <div className="info-text">
+                  <span className="info-text-title">Min Letters: </span> Each word must be a minimum
+                  of 3 letters long. This can be increased up to a minimum of 6 letters. Only
+                  characters found in the English alphabet can be used.
+                </div>
+                <div className="info-text">
+                  <span className="info-text-title">Time: </span> You have 30 seconds to score as
+                  many points as possible. This can be increased to 60 seconds.
+                </div>
+                <div className="info-text">
+                  <span className="info-text-title">Hide Next Letter: </span> You are shown the
+                  starting letter of the next word in the sequence. You have the option to hide this
+                  letter.
+                </div>
+                <div className="info-text">
+                  <span className="info-text-title">Hard Mode: </span> By default, common letters
+                  have a higher likelihood of being selected as the starting letter. In Hard Mode,
+                  all letters are equally likely to be chosen.
                 </div>
               </div>
               <div onClick={onInfoExitClick} className="room-button info-close-button">

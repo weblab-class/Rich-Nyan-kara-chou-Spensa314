@@ -38,33 +38,32 @@ const MultiPlayer_Start = () => {
 
   useEffect(() => {
     get(`/api/getRoom/${roomCode}`).then((res) => {
-        console.log(res);
-        if (res === true) {
-          navigate("/home"); // Redirect to the homepage or another relevant page
+      console.log(res);
+      if (res === true) {
+        navigate("/home"); // Redirect to the homepage or another relevant page
+        return;
+      }
+      get("/api/whoami").then((res) => {
+        if (!res.name) {
+          navigate("/");
           return;
         }
-        get("/api/whoami").then((res) => {
-            if (!res.name) {
-              navigate("/");
-              return;
-            }
-            
-            setLoggedIn(true);
-            if (res.name !== null) {
-              setUsername(res.name);
-              setId(res._id);
-              socket.emit("joinRoom", {
-                roomId: roomCode,
-                user: res,
-                settings: { hideLetter, hardMode, minWordLength: minLetters, type: "false" },
-              });
-            }
+
+        setLoggedIn(true);
+        if (res.name !== null) {
+          setUsername(res.name);
+          setId(res._id);
+          socket.emit("joinRoom", {
+            roomId: roomCode,
+            user: res,
+            settings: { hideLetter, hardMode, minWordLength: minLetters, type: "false" },
+          });
+        }
       });
 
+      const savedTheme = localStorage.getItem("selectedTheme");
 
-    const savedTheme = localStorage.getItem("selectedTheme");
-
-    if (savedTheme) {
+      if (savedTheme) {
         try {
           const parsedTheme = JSON.parse(savedTheme);
           // Apply the saved theme globally
@@ -325,14 +324,36 @@ const MultiPlayer_Start = () => {
                   <hr className="curr-word-line" />
                 </div>
                 <div className="info-text">
-                  <span className="info-text-title">Objective: </span> Score the highest points by
-                  entering the trendiest search terms.
+                  <span className="info-text-title">Objective: </span> Score as many points as
+                  possible by entering the trendiest search terms.
                 </div>
                 <div className="info-text">
-                  <span className="info-text-title">Game Mechanics: </span> You're given a starting
-                  word and the starting letter for the following word in the phrase. You are to fill
-                  in the following word. Once you enter your phrase, the word you filled in will now
-                  become the starting word. This process is repeated within the given time limit.
+                  <span className="info-text-title">Game Mechanics: </span> You are finding the
+                  trendiest 2-word phrase. You are given the first word and the starting letter of
+                  the second word. You are to fill in the second word. Once you enter your phrase,
+                  the second word becomes the first word and you are provided with a new letter.
+                  This process is repeated within the given time limit.
+                </div>
+                <div className="separator" />
+                <div className="info-title">Settings</div>
+                <div className="info-text">
+                  <span className="info-text-title">Min Letters: </span> Each word must be a minimum
+                  of 3 letters long. This can be increased up to a minimum of 6 letters. Only
+                  characters found in the English alphabet can be used.
+                </div>
+                <div className="info-text">
+                  <span className="info-text-title">Time: </span> You have 30 seconds to score as
+                  many points as possible. This can be increased to 60 seconds.
+                </div>
+                <div className="info-text">
+                  <span className="info-text-title">Hide Next Letter: </span> You are shown the
+                  starting letter of the next word in the sequence. You have the option to hide this
+                  letter.
+                </div>
+                <div className="info-text">
+                  <span className="info-text-title">Hard Mode: </span> By default, common letters
+                  have a higher likelihood of being selected as the starting letter. In Hard Mode,
+                  all letters are equally likely to be chosen.
                 </div>
               </div>
               <div onClick={onInfoExitClick} className="room-button info-close-button">
