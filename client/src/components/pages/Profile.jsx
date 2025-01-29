@@ -226,11 +226,11 @@ const Profile = () => {
             <div className="p-leaderboard-dropdown-container" onClick={onTimeClick}>
               Time: {activeTime}
             </div>
-            <div className="p-leaderboard-dropdown-container" onClick={onHardModeClick}>
-              {hardMode ? "Hard Mode" : "Normal Mode"}
-            </div>
             <div className="p-leaderboard-dropdown-container" onClick={onNextLetterClick}>
               {hideLetter ? "Next Letter: Hidden" : "Next Letter: Shown"}
+            </div>
+            <div className="p-leaderboard-dropdown-container" onClick={onHardModeClick}>
+              {hardMode ? "Hard Mode" : "Normal Mode"}
             </div>
           </div>
         </div>
