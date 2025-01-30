@@ -39,17 +39,22 @@ const App = () => {
     const decodedCredential = jwt_decode(userToken);
     console.log(`Logged in as ${decodedCredential.name}`);
     post("/api/login", { token: userToken }).then((user) => {
-      setUserId(user._id);
+      if (user.token) {
+        localStorage.setItem("token", user.token); // Store JWT in localStorage
+      } else {
+        console.error("Token missing in backend response");
+      }
+      setUserId(user.user._id);
       // if (user.name) {
-      setUsername(user.name); //should be required
+      setUsername(user.user.name); //should be required
       // }
-      setProfilePicture(user.profilePicture);
+      setProfilePicture(user.user.profilePicture);
       get("/api/whoami").then((updatedUser) => {
         // setUserId(updatedUser._id); //this should never change tho-
         setUsername(updatedUser.name); // fetching the right one
         setProfilePicture(updatedUser.profilePicture);
         setGuest(false);
-        get(`/api/getSavedThemes/${user._id}`).then((themes) => {
+        get(`/api/getSavedThemes/${user.user._id}`).then((themes) => {
           setSavedThemes(themes || []); // Populate themes from the server
         })
         .catch((err) => {

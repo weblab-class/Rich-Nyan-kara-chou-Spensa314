@@ -103,7 +103,7 @@ const MultiPlayer_Game = () => {
           setUsername(res.name);
           setId(res._id);
         //
-        }
+        }  
         get(`/api/inRoom/${roomCode}/${res._id}`).then((inRoom) => {
             // console.log(inRoom);
             if (!inRoom) {

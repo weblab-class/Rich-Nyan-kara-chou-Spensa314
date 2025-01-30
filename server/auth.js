@@ -1,11 +1,13 @@
 const { OAuth2Client } = require("google-auth-library");
 const User = require("./models/user");
 const socketManager = require("./server-socket");
+require("dotenv").config();
 
 // create a new OAuth client used to verify google sign-in
 //    TODO: replace with your own CLIENT_ID
 const CLIENT_ID = "556427429721-c6jrkk95p10b0491p13668k1agvv66oe.apps.googleusercontent.com";
 const client = new OAuth2Client(CLIENT_ID);
+const jwt = require("jsonwebtoken");
 
 // accepts a login token from the frontend, and verifies that it's legit
 function verify(token) {
@@ -59,14 +61,13 @@ function login(req, res) {
 
   // Handle Google user login
   verify(token)
+    .then((user) => getOrCreateUser(user))
     .then((user) => {
-      console.log("Verified user:", user);
-      return getOrCreateUser(user);
-    })
-    .then((user) => {
-      console.log("User retrieved or created:", user);
       req.session.user = user;
-      res.send(user);
+      const jwtToken = jwt.sign({ id: user._id, googleid: user.googleid, name: user.name }, process.env.JWT_SECRET, {
+        expiresIn: "24h",
+      });
+      res.send({ user, token: jwtToken });
     })
     .catch((err) => {
       console.error("Login error:", err.message || err);
@@ -86,11 +87,30 @@ function populateCurrentUser(req, res, next) {
 }
 
 function ensureLoggedIn(req, res, next) {
-  if (!req.user) {
-    return res.status(401).send({ err: "not logged in" });
+  // if (req.user) {
+  //   return next();
+  // }
+
+  const isGuest = req.user?.isGuest;
+  if (isGuest === true) { 
+    return next();
   }
 
-  next();
+  // Check if JWT token is present in Authorization header
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return res.status(401).send({ err: "Not logged in" });
+  }
+
+  const token = authHeader.split(" ")[1]; // Extract token after "Bearer "
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = decoded; // Attach user payload to req.user
+    next();
+  } catch (err) {
+    return res.status(401).send({ err: "Invalid or expired token" });
+  }
 }
 
 module.exports = {

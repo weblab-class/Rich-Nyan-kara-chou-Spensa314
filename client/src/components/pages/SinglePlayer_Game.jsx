@@ -200,6 +200,8 @@ const SinglePlayer_Game = () => {
     });
     get("/api/topScore", { userId, settings }).then((res) => {
       if (res.highScore) setHighScore(res.highScore);
+    }).catch((err) => {
+      //console.error(err);
     });
 
     if (inputRef.current) {

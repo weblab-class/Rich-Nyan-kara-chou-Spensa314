@@ -29,8 +29,9 @@ router.post("/logout", auth.logout);
 
 router.post("/guestlogin", async (req, res) => {
   try {
+    req.guest = true;
     let isUnique = false;
-
+    
     // Ensure the generated guest ID is unique
     while (!isUnique) {
       // Generate a unique guest ID
@@ -92,7 +93,7 @@ router.get("/whoami", async (req, res) => {
 });
 
 // Route to handle profile picture upload
-router.post("/upload-profile-picture", auth.ensureLoggedIn, async (req, res) => {
+router.post("/upload-profile-picture", async (req, res) => {
   const { userId, profilePicture } = req.body;
 
   if (!userId || !profilePicture) {
@@ -159,7 +160,7 @@ router.get("/getSavedThemes/:userId", async (req, res) => {
 });
 
 // Route to handle profile picture upload
-router.post("/add-theme", auth.ensureLoggedIn, async (req, res) => {
+router.post("/add-theme", async (req, res) => {
   const { userId, themeName, themeCode } = req.body;
 
   if (!userId || !themeName || !themeCode) {
@@ -188,7 +189,7 @@ router.post("/add-theme", auth.ensureLoggedIn, async (req, res) => {
   }
 });
 
-router.post("/delete-theme", auth.ensureLoggedIn, async (req, res) => {
+router.post("/delete-theme", async (req, res) => {
   const { userId, themeName, themeCode } = req.body;
   if (!userId || !themeName || !themeCode) {
     return res
@@ -303,7 +304,6 @@ router.post("/updateSinglePlayerScore", auth.ensureLoggedIn, async (req, res) =>
 
 router.get("/topScore", async (req, res) => {
   const { userId, settings } = req.query;
-
   if (!userId || !settings) {
     return res.status(400).json({ message: "Missing required fields: userId or settings" });
   }
@@ -314,7 +314,6 @@ router.get("/topScore", async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
-
     // Normalize the settings string
     const normalizedSettings = JSON.stringify(JSON.parse(settings));
     // Find the user's top score for the given settings
@@ -324,7 +323,7 @@ router.get("/topScore", async (req, res) => {
     if (!scoreEntry) {
       return res.status(404).json({ message: "No scores found for the given settings" });
     }
-
+    console.log("scoreEntry: ", scoreEntry);
     res.status(200).send({
       highScore: scoreEntry.highScore,
     });

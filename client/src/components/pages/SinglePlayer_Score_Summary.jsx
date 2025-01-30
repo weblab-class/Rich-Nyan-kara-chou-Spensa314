@@ -33,7 +33,7 @@ const SinglePlayer_Score_Summary = () => {
       }
       setLoggedIn(true);
       setGuest(res.isGuest);
-
+      
       const savedTheme = localStorage.getItem("selectedTheme");
 
       if (savedTheme) {
@@ -100,18 +100,31 @@ const SinglePlayer_Score_Summary = () => {
 
   // Save the score to the backend
   const saveScore = async (userId, score, queries, settings) => {
-    console.log("Saving score:", { userId, score, queries, settings });
-
+    // console.log("Saving score:", { userId, score, queries, settings });
+    const token = localStorage.getItem("token");
+    if (!token && !guest) {
+      console.error("No token found in localStorage!");
+      return;
+    }
     try {
-      const response = await post("/api/updateSinglePlayerScore", {
-        userId,
-        score: score,
-        queries: JSON.stringify(queries),
-        settings: JSON.stringify(settings),
-        guest: guest,
+      const response = await fetch("/api/updateSinglePlayerScore", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`, // Attach token here
+        },
+        body: JSON.stringify({
+          userId,
+          score,
+          queries: JSON.stringify(queries),
+          settings: JSON.stringify(settings),
+          guest,
+        }),
       });
 
-      if (response.success) {
+      const data = await response.json();
+
+      if (response.ok) {
         console.log("Score updated successfully:", response);
         // Optional: Provide user feedback
       } else {

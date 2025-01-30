@@ -31,7 +31,6 @@ const Standings = () => {
         return;
       }
       setLoggedIn(true);
-
       const savedTheme = localStorage.getItem("selectedTheme");
 
       if (savedTheme) {
