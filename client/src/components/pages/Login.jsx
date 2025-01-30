@@ -30,7 +30,7 @@ const Login = () => {
   useEffect(() => {
     try {
       get("/api/whoami").then((user) => {
-        if (user._id) {
+        if (user._id && !(!user.isGuest && localStorage.getItem("token") === null)) {
           // they are registed in the database, and currently logged in.
           navigate("/home");
         }

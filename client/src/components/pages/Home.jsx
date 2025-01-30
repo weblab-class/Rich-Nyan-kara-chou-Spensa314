@@ -26,7 +26,9 @@ const Home = () => {
           }
         } else {
           setLoggedIn(true);
-
+          if (!res.isGuest && localStorage.getItem("token") === null) {
+            navigate("/");
+          }
           const savedTheme = localStorage.getItem("selectedTheme");
 
           if (savedTheme) {
