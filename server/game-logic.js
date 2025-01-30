@@ -249,7 +249,7 @@ async function handlePlayerSearch(playerId, roomId, query) {
 
   } catch (error) {
     console.error("Error during Google API search:", error.message);
-    throw new Error("Failed to fetch search results.");
+    //throw new Error("Failed to fetch search results.");
   }
 }
 
