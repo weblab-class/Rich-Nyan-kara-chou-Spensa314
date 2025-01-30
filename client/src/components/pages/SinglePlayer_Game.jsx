@@ -162,6 +162,10 @@ const SinglePlayer_Game = () => {
       setLoggedIn(true);
       setGuest(res.isGuest);
 
+      if (!res.isGuest && localStorage.getItem("token") === null) {
+        navigate("/");
+      }
+
       const savedTheme = localStorage.getItem("selectedTheme");
 
       if (savedTheme) {

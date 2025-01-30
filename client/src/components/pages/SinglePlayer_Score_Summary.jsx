@@ -33,6 +33,10 @@ const SinglePlayer_Score_Summary = () => {
       }
       setLoggedIn(true);
       setGuest(res.isGuest);
+
+      if (!res.isGuest && localStorage.getItem("token") === null) {
+        navigate("/");
+      }
       
       const savedTheme = localStorage.getItem("selectedTheme");
 

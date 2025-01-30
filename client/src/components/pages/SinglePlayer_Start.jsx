@@ -26,6 +26,9 @@ const SinglePlayer_Start = () => {
         navigate("/");
         return;
       }
+      if (!res.isGuest && localStorage.getItem("token") === null) {
+        navigate("/");
+      }
       setLoggedIn(true);
     });
 
