@@ -116,7 +116,7 @@ router.post("/upload-profile-picture", async (req, res) => {
   }
 });
 
-router.post("/update-username", auth.ensureLoggedIn, async (req, res) => {
+router.post("/update-username", async (req, res) => {
   const { userId, newUsername } = req.body;
 
   if (!userId || !newUsername || !newUsername.trim()) {
@@ -471,7 +471,7 @@ router.post("/reset-score-update", (req, res) => {
   res.status(200).send({ message: "Score update flag reset successfully." });
 });
 
-router.post("/updateMultiPlayerScore", auth.ensureLoggedIn, async (req, res) => {
+router.post("/updateMultiPlayerScore", async (req, res) => {
   const { userId, isWinner, settings } = req.body;
   //console.log("Req body:", req.body);
 
